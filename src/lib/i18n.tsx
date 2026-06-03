@@ -1,0 +1,67 @@
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+
+type Lang = "bn" | "en";
+
+const dict = {
+  // Nav / common
+  signIn: { bn: "লগইন", en: "Sign In" },
+  signUp: { bn: "সাইন-আপ", en: "Sign Up" },
+  signOut: { bn: "লগআউট", en: "Sign Out" },
+  dashboard: { bn: "ড্যাশবোর্ড", en: "Dashboard" },
+  pricing: { bn: "প্ল্যান", en: "Pricing" },
+  features: { bn: "ফিচার", en: "Features" },
+  // Hero
+  heroTitle: { bn: "আপনার ব্যবসার পূর্ণ ম্যানেজমেন্ট, এক জায়গায়", en: "Run your entire business from one beautiful place" },
+  heroSub: { bn: "Ristop Management — স্মার্ট স্টক, সেলস, প্রফিট ও কাস্টমার ম্যানেজমেন্ট সাথে AI অ্যাসিস্ট্যান্ট Ris।", en: "Smart stock, sales, profit & customer management — supercharged by Ris, your AI assistant." },
+  getStarted: { bn: "ফ্রি শুরু করুন", en: "Get Started Free" },
+  watchDemo: { bn: "ফিচার দেখুন", en: "Explore Features" },
+  // Sidebar items
+  products: { bn: "প্রডাক্ট", en: "Products" },
+  sales: { bn: "সেলস", en: "Sales" },
+  purchases: { bn: "পারচেস", en: "Purchases" },
+  stock: { bn: "স্টক", en: "Stock" },
+  customers: { bn: "কাস্টমার", en: "Customers" },
+  suppliers: { bn: "সাপ্লায়ার", en: "Suppliers" },
+  reports: { bn: "রিপোর্ট", en: "Reports" },
+  profile: { bn: "আমার প্রোফাইল", en: "My Profile" },
+  admin: { bn: "এডমিন প্যানেল", en: "Admin Panel" },
+  search: { bn: "যেকোনো কিছু সার্চ করুন...", en: "Search anything..." },
+  // Dashboard cards
+  totalSales: { bn: "মোট বিক্রি", en: "Total Sales" },
+  totalProfit: { bn: "মোট লাভ", en: "Total Profit" },
+  totalOrders: { bn: "মোট অর্ডার", en: "Total Orders" },
+  lowStock: { bn: "লো স্টক আইটেম", en: "Low Stock Items" },
+  salesOverview: { bn: "সেলস অভারভিউ", en: "Sales Overview" },
+  profitOverview: { bn: "প্রফিট অভারভিউ", en: "Profit Overview" },
+  categorySales: { bn: "ক্যাটাগরি অনুযায়ী বিক্রি", en: "Category-wise Sales" },
+  topProducts: { bn: "টপ প্রডাক্ট", en: "Top Products" },
+  recentActivity: { bn: "রিসেন্ট একটিভিটি", en: "Recent Activity" },
+  // Pricing
+  planMonthly: { bn: "মাসিক প্ল্যান", en: "Monthly Plan" },
+  planQuarterly: { bn: "তৃমাসিক প্ল্যান", en: "Quarterly Plan" },
+  planBiannual: { bn: "ছয়মাসিক প্ল্যান", en: "Biannual Plan" },
+  popular: { bn: "জনপ্রিয়", en: "Popular" },
+  buyNow: { bn: "এখনই কিনুন", en: "Buy Now" },
+} as const;
+
+type Key = keyof typeof dict;
+
+interface I18nCtx { lang: Lang; setLang: (l: Lang) => void; t: (k: Key) => string; }
+const Ctx = createContext<I18nCtx | null>(null);
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("bn");
+  useEffect(() => {
+    const saved = (typeof window !== "undefined" && localStorage.getItem("ristop_lang")) as Lang | null;
+    if (saved === "bn" || saved === "en") setLangState(saved);
+  }, []);
+  const setLang = (l: Lang) => { setLangState(l); if (typeof window !== "undefined") localStorage.setItem("ristop_lang", l); };
+  const t = (k: Key) => dict[k][lang];
+  return <Ctx.Provider value={{ lang, setLang, t }}>{children}</Ctx.Provider>;
+}
+
+export function useI18n() {
+  const c = useContext(Ctx);
+  if (!c) throw new Error("useI18n outside provider");
+  return c;
+}
