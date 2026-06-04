@@ -1,11 +1,11 @@
-import logoAsset from "@/assets/ristop-logo.png.asset.json";
+import logoAsset from "@/assets/ristop-logo-transparent.png.asset.json";
 
-export function Logo({ className = "h-16 w-auto" }: { className?: string }) {
+export function Logo({ className = "h-20 w-auto" }: { className?: string }) {
   return (
     <img
       src={logoAsset.url}
       alt="Ristop Management"
-      className={`${className} drop-shadow-[0_0_18px_oklch(0.65_0.22_300/0.55)]`}
+      className={`${className} object-contain drop-shadow-[0_0_28px_oklch(0.65_0.25_300/0.65)]`}
     />
   );
 }
