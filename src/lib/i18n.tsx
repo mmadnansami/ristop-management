@@ -55,6 +55,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const saved = (typeof window !== "undefined" && localStorage.getItem("ristop_lang")) as Lang | null;
     if (saved === "bn" || saved === "en") setLangState(saved);
   }, []);
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = lang;
+  }, [lang]);
   const setLang = (l: Lang) => { setLangState(l); if (typeof window !== "undefined") localStorage.setItem("ristop_lang", l); };
   const t = (k: Key) => dict[k][lang];
   return <Ctx.Provider value={{ lang, setLang, t }}>{children}</Ctx.Provider>;
