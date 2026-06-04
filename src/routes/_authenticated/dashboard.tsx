@@ -86,26 +86,30 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card title={t("salesOverview")}>
-          <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={monthly}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#3b2a55" />
-              <XAxis dataKey="month" stroke="#a78bfa" fontSize={11} />
-              <YAxis stroke="#a78bfa" fontSize={11} />
-              <Tooltip contentStyle={{ background: "#1a1030", border: "1px solid #6b21a8", borderRadius: 8 }} />
-              <Line type="monotone" dataKey="sales" stroke="#c084fc" strokeWidth={3} dot={{ r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
+          {sales.length === 0 ? <Empty /> : (
+            <ResponsiveContainer width="100%" height={240}>
+              <LineChart data={monthly}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#3b2a55" />
+                <XAxis dataKey="month" stroke="#a78bfa" fontSize={11} />
+                <YAxis stroke="#a78bfa" fontSize={11} />
+                <Tooltip contentStyle={{ background: "#1a1030", border: "1px solid #6b21a8", borderRadius: 8 }} />
+                <Line type="monotone" dataKey="sales" stroke="#c084fc" strokeWidth={3} dot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </Card>
         <Card title={t("profitOverview")}>
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={monthly}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#3b2a55" />
-              <XAxis dataKey="month" stroke="#a78bfa" fontSize={11} />
-              <YAxis stroke="#a78bfa" fontSize={11} />
-              <Tooltip contentStyle={{ background: "#1a1030", border: "1px solid #6b21a8", borderRadius: 8 }} />
-              <Bar dataKey="profit" fill="#a855f7" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {sales.length === 0 ? <Empty /> : (
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={monthly}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#3b2a55" />
+                <XAxis dataKey="month" stroke="#a78bfa" fontSize={11} />
+                <YAxis stroke="#a78bfa" fontSize={11} />
+                <Tooltip contentStyle={{ background: "#1a1030", border: "1px solid #6b21a8", borderRadius: 8 }} />
+                <Bar dataKey="profit" fill="#a855f7" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </Card>
       </div>
 
