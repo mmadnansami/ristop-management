@@ -28,7 +28,7 @@ function Landing() {
       {/* Nav */}
       <header className="sticky top-0 z-40 glass border-b border-border/50">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2"><Logo className="h-10 w-auto" /></Link>
+          <Link to="/" className="flex items-center gap-2"><Logo className="h-16 w-auto" /></Link>
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#features" className="text-muted-foreground hover:text-foreground transition">{t("features")}</a>
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition">{t("pricing")}</a>

@@ -57,7 +57,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-sidebar border-r border-sidebar-border transition-transform ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="p-5 border-b border-sidebar-border flex items-center justify-between">
-          <Link to="/"><Logo className="h-9 w-auto" /></Link>
+          <Link to="/"><Logo className="h-14 w-auto" /></Link>
           <button onClick={() => setOpen(false)} className="lg:hidden"><X className="h-5 w-5" /></button>
         </div>
         <nav className="p-3 space-y-1">

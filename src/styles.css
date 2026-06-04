@@ -112,4 +112,7 @@
 .animate-float { animation: float-slow 5s ease-in-out infinite; }
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap');
+
+html:lang(bn), [lang="bn"], .font-bn { font-family: "Hind Siliguri", "Noto Sans Bengali", system-ui, sans-serif; }
+:lang(bn) h1, :lang(bn) h2, :lang(bn) h3, :lang(bn) h4 { font-family: "Hind Siliguri", "Tiro Bangla", serif; letter-spacing: 0; }
