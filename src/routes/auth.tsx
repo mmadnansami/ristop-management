@@ -78,7 +78,7 @@ function AuthPage() {
   return (
     <div className="min-h-screen bg-gradient-hero flex flex-col">
       <header className="container mx-auto flex justify-between items-center px-4 py-4">
-        <Link to="/"><Logo className="h-10 w-auto" /></Link>
+        <Link to="/"><Logo className="h-16 w-auto" /></Link>
         <LanguageToggle />
       </header>
       <main className="flex-1 flex items-center justify-center px-4 py-10">

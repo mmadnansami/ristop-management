@@ -62,7 +62,7 @@ function SubscribePage() {
   return (
     <div className="min-h-screen bg-gradient-hero">
       <header className="container mx-auto flex justify-between items-center px-4 py-4">
-        <Link to="/"><Logo className="h-10 w-auto" /></Link>
+        <Link to="/"><Logo className="h-16 w-auto" /></Link>
         <LanguageToggle />
       </header>
       <main className="container mx-auto px-4 py-8 max-w-2xl">
