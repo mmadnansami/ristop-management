@@ -99,7 +99,7 @@ function Profile() {
           <div className="text-sm text-muted-foreground truncate">{data?.user?.email}</div>
           <div className="mt-2 flex items-center gap-2 flex-wrap">
             {isPremium ? (
-              <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground shadow-glow"><Crown className="h-3 w-3" /> {String(data.sub.plan).toUpperCase()} • Premium</span>
+              <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground shadow-glow"><Crown className="h-3 w-3" /> {String(data?.sub?.plan ?? "").toUpperCase()} • Premium</span>
             ) : (
               <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full border border-border bg-secondary/50">{lang === "bn" ? "ফ্রি প্ল্যান" : "Free Plan"}</span>
             )}
