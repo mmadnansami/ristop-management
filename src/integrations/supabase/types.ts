@@ -125,6 +125,12 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          company_address: string | null
+          company_email: string | null
+          company_logo_url: string | null
+          company_name: string | null
+          company_phone: string | null
+          company_tagline: string | null
           created_at: string
           email: string
           full_name: string | null
@@ -135,6 +141,12 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          company_address?: string | null
+          company_email?: string | null
+          company_logo_url?: string | null
+          company_name?: string | null
+          company_phone?: string | null
+          company_tagline?: string | null
           created_at?: string
           email: string
           full_name?: string | null
@@ -145,6 +157,12 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          company_address?: string | null
+          company_email?: string | null
+          company_logo_url?: string | null
+          company_name?: string | null
+          company_phone?: string | null
+          company_tagline?: string | null
           created_at?: string
           email?: string
           full_name?: string | null
