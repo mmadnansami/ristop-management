@@ -131,8 +131,7 @@
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 .animate-aurora { animation: aurora-pulse 6s ease-in-out infinite; }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&family=Sora:wght@500;600;700;800&display=swap');
-
 html:lang(bn), [lang="bn"], .font-bn { font-family: "Hind Siliguri", "Noto Sans Bengali", system-ui, sans-serif; }
-:lang(bn) h1, :lang(bn) h2, :lang(bn) h3, :lang(bn) h4 { font-family: "Hind Siliguri", "Tiro Bangla", serif; letter-spacing: 0; }
-:lang(en) h1, :lang(en) h2, :lang(en) h3, :lang(en) h4 { font-family: "Sora", "Space Grotesk", system-ui, sans-serif; }
+:lang(bn) h1, :lang(bn) h2, :lang(bn) h3, :lang(bn) h4 { font-family: "Hind Siliguri", system-ui, sans-serif; letter-spacing: 0; font-weight: 700; }
+html, body { font-family: "Outfit", "Hind Siliguri", system-ui, sans-serif; }
+:lang(en) h1, :lang(en) h2, :lang(en) h3, :lang(en) h4 { font-family: "Outfit", "Sora", system-ui, sans-serif; font-weight: 700; }
