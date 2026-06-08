@@ -229,7 +229,7 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
 </style>`;
 
   const handler = async (event: MessageEvent) => {
-    if (event.origin !== window.location.origin || event.data?.type !== "ristop-download-invoice" || event.data?.token !== token) return;
+    if (event.source !== w || event.data?.type !== "ristop-download-invoice" || event.data?.token !== token) return;
     window.removeEventListener("message", handler);
     await downloadInvoicePdf(invoiceMarkup, styles, invNo);
   };
@@ -237,7 +237,7 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
 
   w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${invNo}</title>${styles}</head><body>
 <div class="actions">
-  <button onclick="window.opener.postMessage({type:'ristop-download-invoice',token:'${token}'}, window.location.origin)">⬇ Download PDF</button>
+  <button onclick="window.opener.postMessage({type:'ristop-download-invoice',token:'${token}'}, '*')">⬇ Download PDF</button>
   <button class="alt" onclick="window.close()">Close</button>
 </div>
 ${invoiceMarkup}
