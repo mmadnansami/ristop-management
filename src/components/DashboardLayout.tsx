@@ -15,12 +15,13 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const { t, lang } = useI18n();
   const loc = useLocation();
   const nav = useNavigate();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
   const { data: profile } = useQuery({
@@ -46,7 +47,12 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     { to: "/profile", icon: User, label: t("profile") },
   ] as const;
 
-  const signOut = async () => { await supabase.auth.signOut(); nav({ to: "/", replace: true }); };
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    nav({ to: "/auth", replace: true });
+  };
 
   useEffect(() => { setOpen(false); }, [loc.pathname]);
 
