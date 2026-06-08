@@ -291,15 +291,16 @@ function SaleForm({ products, customers, onDone }: { products: { id: string; nam
     if (!p) { toast.error("Pick a product"); return; }
     setLoading(true);
     const { data: u } = await supabase.auth.getUser();
+    if (!u.user) { toast.error(lang === "bn" ? "আবার লগইন করুন" : "Please sign in again"); setLoading(false); return; }
     const total = p.price * qty;
     const profit = (p.price - p.cost_price) * qty;
     const { error } = await supabase.from("sales").insert({
-      user_id: u.user!.id, product_id: p.id, customer_id: customerId || null,
+      user_id: u.user.id, product_id: p.id, customer_id: customerId || null,
       product_name: p.name, quantity: qty, unit_price: p.price, unit_cost: p.cost_price, total, profit,
     });
     if (!error) {
       await supabase.from("products").update({ stock: Math.max(0, p.stock - qty) }).eq("id", p.id);
-      await supabase.from("activity_log").insert({ user_id: u.user!.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
+      await supabase.from("activity_log").insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
     }
     setLoading(false);
     if (error) toast.error(error.message); else { toast.success(lang === "bn" ? "সেল রেকর্ড হয়েছে" : "Sale recorded"); onDone(); }
