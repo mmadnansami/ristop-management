@@ -32,17 +32,18 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
   useEffect(() => { reportLovableError(error, { boundary: "tanstack_root_error_component" }); }, [error]);
+  const message = error instanceof Error ? error.message : typeof error === "string" && error ? error : "A temporary issue happened. Please try again.";
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold">Something went wrong</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+      <div className="glass-strong max-w-md rounded-3xl p-8 text-center shadow-glow">
+        <h1 className="text-xl font-semibold text-gradient">Something went wrong</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-md bg-gradient-primary px-4 py-2 text-sm text-primary-foreground">Try again</button>
-          <a href="/" className="rounded-md border border-border px-4 py-2 text-sm">Go home</a>
+          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-xl bg-gradient-primary px-4 py-2 text-sm text-primary-foreground shadow-glow">Try again</button>
+          <a href="/" className="rounded-xl border border-border px-4 py-2 text-sm">Go home</a>
         </div>
       </div>
     </div>
