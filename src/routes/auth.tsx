@@ -77,17 +77,30 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex flex-col bg-[oklch(0.08_0.03_290)] overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80vw] h-[80vh] rounded-full bg-[oklch(0.45_0.30_295/0.35)] blur-[120px] animate-aurora" />
-        <div className="absolute bottom-0 right-0 w-[40vw] h-[40vw] rounded-full bg-[oklch(0.55_0.25_320/0.25)] blur-[100px]" />
+    <div className="auth-scene min-h-screen relative flex flex-col overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <div className="absolute -top-24 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full aurora-arc animate-aurora" />
+        <div className="absolute bottom-[-10rem] right-[-8rem] h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-[110px]" />
+        <div className="absolute left-0 top-1/3 h-72 w-72 rounded-full bg-success/10 blur-[90px]" />
       </div>
-      <header className="container mx-auto flex justify-between items-center px-4 py-5">
+      <header className="container relative z-10 mx-auto flex justify-between items-center px-4 py-5">
         <Link to="/"><Logo className="h-14 md:h-16 w-auto" /></Link>
         <LanguageToggle />
       </header>
-      <main className="flex-1 flex items-center justify-center px-4 py-10">
-        <div className="w-full max-w-md rounded-3xl glass-strong shadow-glow p-8 md:p-10">
+      <main className="relative z-10 flex-1 grid items-center gap-8 px-4 py-8 md:grid-cols-[1.05fr_0.95fr] md:px-8 lg:px-14">
+        <section className="hidden md:block max-w-2xl">
+          <div className="inline-flex rounded-full glass px-4 py-2 text-sm text-primary-glow shadow-soft">Ristop Management</div>
+          <h1 className="mt-6 text-5xl lg:text-6xl font-extrabold leading-tight text-gradient">
+            {lang === "bn" ? "আপনার ব্যবসা, একদম প্রিমিয়াম কন্ট্রোলে" : "Premium control for your whole business"}
+          </h1>
+          <p className="mt-5 max-w-xl text-base text-foreground/70">
+            {lang === "bn" ? "সেলস, স্টক, কাস্টমার, ইনভয়েস আর রিপোর্ট—সবকিছু এক জায়গায় সুন্দরভাবে ম্যানেজ করুন।" : "Manage sales, stock, customers, invoices and reports from one polished workspace."}
+          </p>
+          <div className="mt-8 grid max-w-xl grid-cols-3 gap-3">
+            {["Sales", "Stock", "Invoice"].map((item, index) => <div key={item} className="glass rounded-2xl p-4 animate-float" style={{ animationDelay: `${index * 0.4}s` }}><div className="text-xs text-muted-foreground">{item}</div><div className="mt-2 text-2xl font-bold text-gradient">{index === 0 ? "৳0" : index === 1 ? "24" : "PDF"}</div></div>)}
+          </div>
+        </section>
+        <div className="w-full max-w-md justify-self-center rounded-3xl glass-strong shadow-glow p-7 md:p-10">
           <div className="flex justify-center mb-4"><Logo className="h-16 w-auto" /></div>
           <h1 className="text-3xl font-bold text-center">
             {isSignup ? (lang === "bn" ? "একাউন্ট তৈরি করুন" : "Create account") : (lang === "bn" ? "স্বাগতম" : "Welcome Back")}

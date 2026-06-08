@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, FileText, Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/sales")({ component: Sales });
@@ -124,13 +126,72 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   const date = new Date(s.sold_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const tax = 0;
   const grand = Number(s.total) + tax;
+  const token = crypto.randomUUID();
+  const invoiceMarkup = `<div class="invoice" id="invoice-card">
+    <div class="top">
+      <div class="top-row">
+        <div class="brand">
+          ${logo ? `<img src="${escapeHtml(logo)}" alt="logo" crossorigin="anonymous"/>` : ""}
+          <div>
+            <div class="brand-name">${escapeHtml(companyName)}</div>
+            <div class="brand-tag">${escapeHtml(tagline)}</div>
+          </div>
+        </div>
+        <div class="inv-meta">
+          <span class="tag">Invoice</span>
+          <h2>${invNo}</h2>
+          <p>${date}</p>
+        </div>
+      </div>
+    </div>
 
-  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${invNo}</title>
+    <div class="parties">
+      <div class="party">
+        <h4>From</h4>
+        <div class="name">${escapeHtml(companyName)}</div>
+        ${addr ? `<p>${escapeHtml(addr)}</p>` : ""}
+        ${cphone ? `<p>📞 ${escapeHtml(cphone)}</p>` : ""}
+        ${cemail ? `<p>✉ ${escapeHtml(cemail)}</p>` : ""}
+      </div>
+      <div class="party">
+        <h4>Billed To</h4>
+        <div class="name">${escapeHtml(customer?.name || "Walk-in Customer")}</div>
+        ${customer?.address ? `<p>${escapeHtml(customer.address)}</p>` : ""}
+        ${customer?.phone ? `<p>📞 ${escapeHtml(customer.phone)}</p>` : ""}
+        ${customer?.email ? `<p>✉ ${escapeHtml(customer.email)}</p>` : ""}
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit Price</th><th class="r">Amount</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="prod">${escapeHtml(s.product_name)}</td>
+          <td class="r">${s.quantity}</td>
+          <td class="r">৳ ${Number(s.unit_price).toLocaleString()}</td>
+          <td class="r"><strong>৳ ${Number(s.total).toLocaleString()}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="row"><span>Subtotal</span><span>৳ ${Number(s.total).toLocaleString()}</span></div>
+      <div class="row"><span>Tax</span><span>৳ ${tax}</span></div>
+      <div class="grand"><span>Total Due</span><span>৳ ${grand.toLocaleString()}</span></div>
+    </div>
+
+    <div class="footer">
+      Thank you for your business! Powered by <strong>Ristop Management</strong>
+    </div>
+  </div>`;
+
+  const styles = `
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Outfit','Hind Siliguri',system-ui,sans-serif;background:#0e0820;color:#1a1a1a;padding:32px}
+  html,body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{font-family:'Outfit','Hind Siliguri',system-ui,sans-serif;background:#0e0820;color:#1a1a1a;padding:32px;min-height:100vh}
   .invoice{max-width:820px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
   .top{background:linear-gradient(135deg,#5b21b6 0%,#8b5cf6 60%,#c084fc 100%);color:#fff;padding:36px 44px;position:relative;overflow:hidden}
   .top::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.25),transparent)}
@@ -163,71 +224,54 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   .actions{position:fixed;top:20px;right:20px;display:flex;gap:8px;z-index:10}
   .actions button{background:#7c3aed;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(124,58,237,.4)}
   .actions button.alt{background:#fff;color:#1a1030}
-  @media print{.actions{display:none}body{background:#fff;padding:0}.invoice{box-shadow:none;border-radius:0}}
-</style></head><body>
+  @page{size:A4;margin:10mm;background:#0e0820}
+  @media print{.actions{display:none}body{background:#0e0820!important;padding:14px}.invoice{box-shadow:0 30px 80px rgba(0,0,0,.4);border-radius:24px}.top,.parties,.totals,.footer,thead th{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+</style>`;
+
+  const handler = async (event: MessageEvent) => {
+    if (event.source !== w || event.data?.type !== "ristop-download-invoice" || event.data?.token !== token) return;
+    window.removeEventListener("message", handler);
+    await downloadInvoicePdf(invoiceMarkup, styles, invNo);
+  };
+  window.addEventListener("message", handler);
+
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${invNo}</title>${styles}</head><body>
 <div class="actions">
-  <button onclick="window.print()">⬇ Download PDF</button>
+  <button onclick="window.opener.postMessage({type:'ristop-download-invoice',token:'${token}'}, '*')">⬇ Download PDF</button>
   <button class="alt" onclick="window.close()">Close</button>
 </div>
-<div class="invoice">
-  <div class="top">
-    <div class="top-row">
-      <div class="brand">
-        ${logo ? `<img src="${escapeHtml(logo)}" alt="logo"/>` : ""}
-        <div>
-          <div class="brand-name">${escapeHtml(companyName)}</div>
-          <div class="brand-tag">${escapeHtml(tagline)}</div>
-        </div>
-      </div>
-      <div class="inv-meta">
-        <span class="tag">Invoice</span>
-        <h2>${invNo}</h2>
-        <p>${date}</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="parties">
-    <div class="party">
-      <h4>From</h4>
-      <div class="name">${escapeHtml(companyName)}</div>
-      ${addr ? `<p>${escapeHtml(addr)}</p>` : ""}
-      ${cphone ? `<p>📞 ${escapeHtml(cphone)}</p>` : ""}
-      ${cemail ? `<p>✉ ${escapeHtml(cemail)}</p>` : ""}
-    </div>
-    <div class="party">
-      <h4>Billed To</h4>
-      <div class="name">${escapeHtml(customer?.name || "Walk-in Customer")}</div>
-      ${customer?.address ? `<p>${escapeHtml(customer.address)}</p>` : ""}
-      ${customer?.phone ? `<p>📞 ${escapeHtml(customer.phone)}</p>` : ""}
-      ${customer?.email ? `<p>✉ ${escapeHtml(customer.email)}</p>` : ""}
-    </div>
-  </div>
-
-  <table>
-    <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit Price</th><th class="r">Amount</th></tr></thead>
-    <tbody>
-      <tr>
-        <td class="prod">${escapeHtml(s.product_name)}</td>
-        <td class="r">${s.quantity}</td>
-        <td class="r">৳ ${Number(s.unit_price).toLocaleString()}</td>
-        <td class="r"><strong>৳ ${Number(s.total).toLocaleString()}</strong></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="totals">
-    <div class="row"><span>Subtotal</span><span>৳ ${Number(s.total).toLocaleString()}</span></div>
-    <div class="row"><span>Tax</span><span>৳ ${tax}</span></div>
-    <div class="grand"><span>Total Due</span><span>৳ ${grand.toLocaleString()}</span></div>
-  </div>
-
-  <div class="footer">
-    Thank you for your business! Powered by <strong>Ristop Management</strong>
-  </div>
-</div>
+${invoiceMarkup}
 </body></html>`);
   w.document.close();
+}
+
+async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: string) {
+  const host = document.createElement("div");
+  host.style.position = "fixed";
+  host.style.left = "-10000px";
+  host.style.top = "0";
+  host.style.width = "900px";
+  host.style.background = "#0e0820";
+  host.style.padding = "32px";
+  host.innerHTML = `${styles}${invoiceMarkup}`;
+  document.body.appendChild(host);
+  try {
+    await document.fonts?.ready;
+    const card = host.querySelector(".invoice") as HTMLElement;
+    const canvas = await html2canvas(card, { scale: 2.5, backgroundColor: "#0e0820", useCORS: true, logging: false });
+    const pdf = new jsPDF("p", "mm", "a4");
+    pdf.setFillColor(14, 8, 32);
+    pdf.rect(0, 0, 210, 297, "F");
+    const imgData = canvas.toDataURL("image/png", 1);
+    const width = 190;
+    const height = (canvas.height * width) / canvas.width;
+    pdf.addImage(imgData, "PNG", 10, 12, width, Math.min(height, 273));
+    pdf.save(`${invNo}.pdf`);
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : "PDF download failed");
+  } finally {
+    host.remove();
+  }
 }
 
 function escapeHtml(s: string) {
@@ -247,15 +291,16 @@ function SaleForm({ products, customers, onDone }: { products: { id: string; nam
     if (!p) { toast.error("Pick a product"); return; }
     setLoading(true);
     const { data: u } = await supabase.auth.getUser();
+    if (!u.user) { toast.error(lang === "bn" ? "আবার লগইন করুন" : "Please sign in again"); setLoading(false); return; }
     const total = p.price * qty;
     const profit = (p.price - p.cost_price) * qty;
     const { error } = await supabase.from("sales").insert({
-      user_id: u.user!.id, product_id: p.id, customer_id: customerId || null,
+      user_id: u.user.id, product_id: p.id, customer_id: customerId || null,
       product_name: p.name, quantity: qty, unit_price: p.price, unit_cost: p.cost_price, total, profit,
     });
     if (!error) {
       await supabase.from("products").update({ stock: Math.max(0, p.stock - qty) }).eq("id", p.id);
-      await supabase.from("activity_log").insert({ user_id: u.user!.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
+      await supabase.from("activity_log").insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
     }
     setLoading(false);
     if (error) toast.error(error.message); else { toast.success(lang === "bn" ? "সেল রেকর্ড হয়েছে" : "Sale recorded"); onDone(); }
