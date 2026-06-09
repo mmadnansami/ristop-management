@@ -51,15 +51,18 @@ function AuthPage() {
     setLoading(true);
     try {
       if (isSignup) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email, password,
           options: { emailRedirectTo: `${window.location.origin}/dashboard`, data: { full_name: name } },
         });
         if (error) throw error;
+        if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, name);
         toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে!" : "Account created!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        const { data } = await supabase.auth.getUser();
+        if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, data.user.user_metadata?.full_name as string | undefined);
         toast.success(lang === "bn" ? "স্বাগতম!" : "Welcome back!");
       }
       navigate({ to: "/dashboard", replace: true });
@@ -73,6 +76,8 @@ function AuthPage() {
     const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
+    const { data } = await supabase.auth.getUser();
+    if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? "", data.user.user_metadata?.full_name as string | undefined);
     navigate({ to: "/dashboard", replace: true });
   };
 
@@ -140,4 +145,13 @@ function AuthPage() {
       </main>
     </div>
   );
+}
+
+async function ensureUserProfile(userId: string, email: string, fullName?: string) {
+  await supabase.from("profiles").upsert({
+    id: userId,
+    email,
+    full_name: fullName || email.split("@")[0] || "User",
+  }, { onConflict: "id" });
+  await supabase.from("user_roles").upsert({ user_id: userId, role: "user" }, { onConflict: "user_id,role" });
 }

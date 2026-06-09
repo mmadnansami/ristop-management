@@ -113,8 +113,6 @@ type CompanyProfile = Record<string, string | null> | null | undefined;
 type Customer = { name: string; phone: string | null; address: string | null; email: string | null } | null;
 
 function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
-  const w = window.open("", "_blank");
-  if (!w) return;
   const c = company ?? {};
   const companyName = (c.company_name as string) || "Ristop Management";
   const tagline = (c.company_tagline as string) || "Smart Business Management";
@@ -126,7 +124,6 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   const date = new Date(s.sold_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const tax = 0;
   const grand = Number(s.total) + tax;
-  const token = crypto.randomUUID();
   const invoiceMarkup = `<div class="invoice" id="invoice-card">
     <div class="top">
       <div class="top-row">
@@ -228,21 +225,7 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   @media print{.actions{display:none}body{background:#0e0820!important;padding:14px}.invoice{box-shadow:0 30px 80px rgba(0,0,0,.4);border-radius:24px}.top,.parties,.totals,.footer,thead th{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
 </style>`;
 
-  const handler = async (event: MessageEvent) => {
-    if (event.source !== w || event.data?.type !== "ristop-download-invoice" || event.data?.token !== token) return;
-    window.removeEventListener("message", handler);
-    await downloadInvoicePdf(invoiceMarkup, styles, invNo);
-  };
-  window.addEventListener("message", handler);
-
-  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${invNo}</title>${styles}</head><body>
-<div class="actions">
-  <button onclick="window.opener.postMessage({type:'ristop-download-invoice',token:'${token}'}, '*')">⬇ Download PDF</button>
-  <button class="alt" onclick="window.close()">Close</button>
-</div>
-${invoiceMarkup}
-</body></html>`);
-  w.document.close();
+  void downloadInvoicePdf(invoiceMarkup, styles, invNo);
 }
 
 async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: string) {
@@ -318,7 +301,7 @@ function SaleForm({ products, customers, onDone }: { products: { id: string; nam
           <SelectContent>{customers.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
         </Select>
       </div>
-      <div><Label>{lang === "bn" ? "পরিমাণ" : "Quantity"}</Label><Input type="number" min={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} className="h-11 bg-white/5 border-white/15 rounded-xl" /></div>
+      <div><Label>{lang === "bn" ? "পরিমাণ" : "Quantity"}</Label><Input inputMode="numeric" value={String(qty)} onChange={(e) => setQty(Math.max(1, Math.floor(Number(e.target.value || 1))))} className="h-11 bg-white/5 border-white/15 rounded-xl" /></div>
       {p && <div className="rounded-xl glass p-3 text-sm flex justify-between"><span>{lang === "bn" ? "মোট" : "Total"}</span><span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span></div>}
       <Button type="submit" disabled={loading || !p} className="w-full bg-gradient-primary shadow-glow rounded-xl h-11"><FileText className="h-4 w-4 mr-1" /> {loading ? "..." : (lang === "bn" ? "সেল রেকর্ড" : "Record Sale")}</Button>
     </form>

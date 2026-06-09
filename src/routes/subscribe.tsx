@@ -30,6 +30,7 @@ function SubscribePage() {
   const [selectedPlan, setSelectedPlan] = useState<keyof typeof PLANS>(plan);
   const [form, setForm] = useState({ name: "", email: "", phone: "", method: "bkash", txn: "" });
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,9 +53,10 @@ function SubscribePage() {
     if (error) { toast.error(error.message); return; }
     // Notify admin on WhatsApp
     const msg = `New Ristop Subscription Request\nName: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\nPlan: ${selectedPlan} (৳${PLANS[selectedPlan].price})\nMethod: ${form.method}\nTxnID: ${form.txn}`;
-    window.open(`https://wa.me/8801317680620?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/8801317680620?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
     toast.success(lang === "bn" ? "রিকোয়েস্ট সাবমিট হয়েছে! ভেরিফিকেশন শেষে এক্সেস পাবেন।" : "Request submitted! Access will be activated after verification.");
-    setTimeout(() => nav({ to: "/" }), 1500);
+    setSubmitted(true);
+    setForm({ name: "", email: "", phone: "", method: "bkash", txn: "" });
   };
 
   const payNumber = form.method === "bkash" ? "01888616396" : "01317680620";
@@ -71,7 +73,13 @@ function SubscribePage() {
           <h1 className="text-2xl font-bold text-gradient">{lang === "bn" ? "সাবসক্রিপশন কিনুন" : "Buy Subscription"}</h1>
           <p className="text-sm text-muted-foreground mt-1">{lang === "bn" ? "পেমেন্ট করার পর তথ্য সাবমিট করুন। আমরা ভেরিফাই করে আপনার ইমেইলে এক্সেস একটিভ করে দিবো।" : "Pay first, then submit your details. We'll verify and activate access on your email."}</p>
 
-          <form onSubmit={submit} className="mt-6 space-y-4">
+          {submitted ? (
+            <div className="mt-6 rounded-2xl glass-strong border border-success/30 p-6 text-center">
+              <h2 className="text-2xl font-bold text-gradient">{lang === "bn" ? "Thank you!" : "Thank you!"}</h2>
+              <p className="mt-2 text-sm text-muted-foreground">{lang === "bn" ? "আপনার সাবসক্রিপশন রিকোয়েস্ট কনফার্ম হয়েছে। ভেরিফিকেশন শেষে এক্সেস একটিভ হবে।" : "Your subscription request is confirmed. Access will be activated after verification."}</p>
+              <Button onClick={() => nav({ to: "/" })} className="mt-5 bg-gradient-primary shadow-glow">{lang === "bn" ? "হোমে যান" : "Go Home"}</Button>
+            </div>
+          ) : <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
               <Label>{lang === "bn" ? "প্ল্যান সিলেক্ট" : "Select plan"}</Label>
               <Select value={selectedPlan} onValueChange={(v) => setSelectedPlan(v as keyof typeof PLANS)}>
@@ -115,7 +123,7 @@ function SubscribePage() {
             <Button type="submit" disabled={loading} className="w-full bg-gradient-primary shadow-glow h-11">
               {loading ? "..." : (lang === "bn" ? "সাবমিট করুন" : "Submit")}
             </Button>
-          </form>
+          </form>}
         </div>
       </main>
     </div>
