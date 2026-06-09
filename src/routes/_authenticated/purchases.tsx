@@ -73,8 +73,8 @@ function PurchaseForm({ products, suppliers, onDone }: { products: { id: string;
   const { lang } = useI18n();
   const [productId, setProductId] = useState("");
   const [supplierId, setSupplierId] = useState("");
-  const [qty, setQty] = useState(1);
-  const [cost, setCost] = useState(0);
+  const [qty, setQty] = useState("1");
+  const [cost, setCost] = useState("");
   const [loading, setLoading] = useState(false);
   const p = products.find((x) => x.id === productId);
 
@@ -83,14 +83,15 @@ function PurchaseForm({ products, suppliers, onDone }: { products: { id: string;
     if (!p) return;
     setLoading(true);
     const { data: u } = await supabase.auth.getUser();
-    const unitCost = cost || p.cost_price;
+    const quantity = Math.max(1, Math.floor(Number(qty || 1)));
+    const unitCost = Number(cost || p.cost_price || 0);
     const { error } = await supabase.from("purchases").insert({
       user_id: u.user!.id, product_id: p.id, supplier_id: supplierId || null,
-      product_name: p.name, quantity: qty, unit_cost: unitCost, total: unitCost * qty,
+      product_name: p.name, quantity, unit_cost: unitCost, total: unitCost * quantity,
     });
     if (!error) {
-      await supabase.from("products").update({ stock: p.stock + qty, cost_price: unitCost }).eq("id", p.id);
-      await supabase.from("activity_log").insert({ user_id: u.user!.id, action: `Purchase: ${p.name} x${qty}`, detail: `৳${unitCost * qty}` });
+      await supabase.from("products").update({ stock: p.stock + quantity, cost_price: unitCost }).eq("id", p.id);
+      await supabase.from("activity_log").insert({ user_id: u.user!.id, action: `Purchase: ${p.name} x${quantity}`, detail: `৳${unitCost * quantity}` });
     }
     setLoading(false);
     if (error) toast.error(error.message); else { toast.success("Recorded"); onDone(); }
@@ -103,8 +104,8 @@ function PurchaseForm({ products, suppliers, onDone }: { products: { id: string;
       <div><Label>Supplier ({lang === "bn" ? "অপশনাল" : "optional"})</Label><Select value={supplierId} onValueChange={setSupplierId}><SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
         <SelectContent>{suppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent></Select></div>
       <div className="grid grid-cols-2 gap-3">
-        <div><Label>Quantity</Label><Input type="number" min={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} /></div>
-        <div><Label>Unit Cost</Label><Input type="number" step="0.01" value={cost} onChange={(e) => setCost(Number(e.target.value))} placeholder={p?.cost_price.toString()} /></div>
+        <div><Label>Quantity</Label><Input inputMode="numeric" value={qty} onChange={(e) => setQty(e.target.value)} /></div>
+        <div><Label>Unit Cost</Label><Input inputMode="decimal" value={cost} onChange={(e) => setCost(e.target.value)} placeholder={p?.cost_price.toString()} /></div>
       </div>
       <Button type="submit" disabled={loading || !p} className="w-full bg-gradient-primary shadow-glow">{loading ? "..." : "Record"}</Button>
     </form>

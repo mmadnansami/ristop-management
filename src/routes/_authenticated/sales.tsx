@@ -318,7 +318,7 @@ function SaleForm({ products, customers, onDone }: { products: { id: string; nam
           <SelectContent>{customers.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
         </Select>
       </div>
-      <div><Label>{lang === "bn" ? "পরিমাণ" : "Quantity"}</Label><Input type="number" min={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} className="h-11 bg-white/5 border-white/15 rounded-xl" /></div>
+      <div><Label>{lang === "bn" ? "পরিমাণ" : "Quantity"}</Label><Input inputMode="numeric" value={String(qty)} onChange={(e) => setQty(Math.max(1, Math.floor(Number(e.target.value || 1))))} className="h-11 bg-white/5 border-white/15 rounded-xl" /></div>
       {p && <div className="rounded-xl glass p-3 text-sm flex justify-between"><span>{lang === "bn" ? "মোট" : "Total"}</span><span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span></div>}
       <Button type="submit" disabled={loading || !p} className="w-full bg-gradient-primary shadow-glow rounded-xl h-11"><FileText className="h-4 w-4 mr-1" /> {loading ? "..." : (lang === "bn" ? "সেল রেকর্ড" : "Record Sale")}</Button>
     </form>

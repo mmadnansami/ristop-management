@@ -97,8 +97,8 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
   const { lang } = useI18n();
   const [f, setF] = useState({
     name: initial?.name ?? "", image_url: initial?.image_url ?? "", category: initial?.category ?? "",
-    price: initial?.price ?? 0, cost_price: initial?.cost_price ?? 0,
-    stock: initial?.stock ?? 0, low_stock_threshold: initial?.low_stock_threshold ?? 5,
+    price: initial ? String(initial.price) : "", cost_price: initial ? String(initial.cost_price) : "",
+    stock: initial ? String(initial.stock) : "", low_stock_threshold: initial ? String(initial.low_stock_threshold) : "5",
     expiry_date: initial?.expiry_date ?? "", warranty: initial?.warranty ?? "", delivery_method: initial?.delivery_method ?? "",
   });
   const [loading, setLoading] = useState(false);
@@ -108,7 +108,13 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
     if (!f.name.trim()) { toast.error("Name required"); return; }
     setLoading(true);
     const { data: u } = await supabase.auth.getUser();
-    const payload = { ...f, user_id: u.user!.id, expiry_date: f.expiry_date || null };
+    if (!u.user) { toast.error(lang === "bn" ? "আবার লগইন করুন" : "Please sign in again"); setLoading(false); return; }
+    const price = Number(f.price);
+    const costPrice = Number(f.cost_price || 0);
+    const stock = Math.max(0, Math.floor(Number(f.stock || 0)));
+    const lowStock = Math.max(0, Math.floor(Number(f.low_stock_threshold || 0)));
+    if (!Number.isFinite(price) || price < 0) { toast.error(lang === "bn" ? "সঠিক প্রাইস দিন" : "Enter a valid price"); setLoading(false); return; }
+    const payload = { name: f.name.trim(), image_url: f.image_url || null, category: f.category || null, price, cost_price: Number.isFinite(costPrice) ? costPrice : 0, stock, low_stock_threshold: lowStock, expiry_date: f.expiry_date || null, warranty: f.warranty || null, delivery_method: f.delivery_method || null, user_id: u.user.id };
     const { error } = initial
       ? await supabase.from("products").update(payload).eq("id", initial.id)
       : await supabase.from("products").insert(payload);
@@ -123,14 +129,14 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
       <div><Label>{lang === "bn" ? "ছবির URL" : "Image URL"}</Label><Input value={f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })} placeholder="https://..." /></div>
       <div className="grid grid-cols-2 gap-3">
         <div><Label>Category</Label><Input value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} /></div>
-        <div><Label>{lang === "bn" ? "প্রাইস" : "Price"} *</Label><Input type="number" step="0.01" value={f.price} onChange={(e) => setF({ ...f, price: Number(e.target.value) })} required /></div>
+        <div><Label>{lang === "bn" ? "প্রাইস" : "Price"} *</Label><Input inputMode="decimal" value={f.price} onChange={(e) => setF({ ...f, price: e.target.value })} required /></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div><Label>{lang === "bn" ? "কস্ট প্রাইস" : "Cost Price"}</Label><Input type="number" step="0.01" value={f.cost_price} onChange={(e) => setF({ ...f, cost_price: Number(e.target.value) })} /></div>
-        <div><Label>Stock</Label><Input type="number" value={f.stock} onChange={(e) => setF({ ...f, stock: Number(e.target.value) })} /></div>
+        <div><Label>{lang === "bn" ? "কস্ট প্রাইস" : "Cost Price"}</Label><Input inputMode="decimal" value={f.cost_price} onChange={(e) => setF({ ...f, cost_price: e.target.value })} /></div>
+        <div><Label>Stock</Label><Input inputMode="numeric" value={f.stock} onChange={(e) => setF({ ...f, stock: e.target.value })} /></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div><Label>Low Stock Alert</Label><Input type="number" value={f.low_stock_threshold} onChange={(e) => setF({ ...f, low_stock_threshold: Number(e.target.value) })} /></div>
+        <div><Label>Low Stock Alert</Label><Input inputMode="numeric" value={f.low_stock_threshold} onChange={(e) => setF({ ...f, low_stock_threshold: e.target.value })} /></div>
         <div><Label>{lang === "bn" ? "মেয়াদ (optional)" : "Expiry (optional)"}</Label><Input type="date" value={f.expiry_date} onChange={(e) => setF({ ...f, expiry_date: e.target.value })} /></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
