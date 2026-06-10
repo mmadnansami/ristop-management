@@ -8,8 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Cloud, Crown, Sparkles, Building2, User as UserIcon, Lock } from "lucide-react";
+import { Cloud, Crown, Sparkles, Building2, User as UserIcon, Lock, RotateCcw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({ component: Profile });
 
@@ -45,6 +56,7 @@ function Profile() {
     company_email: "", company_logo_url: "", company_tagline: "",
   });
   const [saving, setSaving] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     if (data?.profile) {
@@ -79,6 +91,26 @@ function Profile() {
   const backupNow = async () => {
     if (!isPremium) { toast.error(lang === "bn" ? "প্রিমিয়াম প্ল্যান প্রয়োজন" : "Premium plan required"); return; }
     toast.success(lang === "bn" ? "ক্লাউডে ব্যাকআপ সম্পন্ন" : "Cloud backup complete");
+  };
+
+  const resetSalesData = async () => {
+    if (!data?.user) return;
+    setResetting(true);
+    const { error } = await supabase.from("sales").delete().eq("user_id", data.user.id);
+    if (!error) {
+      await supabase.from("activity_log").delete().eq("user_id", data.user.id).ilike("action", "Sale:%");
+    }
+    setResetting(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["sales"] }),
+      qc.invalidateQueries({ queryKey: ["dashboard"] }),
+      qc.invalidateQueries({ queryKey: ["reports"] }),
+    ]);
+    toast.success(lang === "bn" ? "সেলস ডেটা রিসেট হয়েছে — গ্রাফ এখন শূন্য" : "Sales data reset — graphs are now zero");
   };
 
   return (
@@ -131,6 +163,45 @@ function Profile() {
         <Button onClick={save} disabled={saving} className="bg-gradient-primary shadow-glow rounded-xl h-11 px-6">
           {saving ? "..." : (lang === "bn" ? "সেভ করুন" : "Save changes")}
         </Button>
+      </div>
+
+      <div className="rounded-3xl p-6 glass-strong border-destructive/30">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-destructive/15 flex items-center justify-center text-destructive">
+              <RotateCcw className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">{lang === "bn" ? "Reset" : "Reset"}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {lang === "bn" ? "সব সেলস রেকর্ড মুছে গ্রাফ ও সেলস রিপোর্ট শূন্য করুন।" : "Clear all sales records and bring sales graphs back to zero."}
+              </p>
+            </div>
+          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" disabled={resetting} className="rounded-xl border-destructive/40 text-destructive hover:bg-destructive/10">
+                <RotateCcw className="h-4 w-4 mr-1" /> {resetting ? "..." : "Reset"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="glass-strong rounded-3xl border-destructive/30">
+              <AlertDialogHeader>
+                <AlertDialogTitle>{lang === "bn" ? "সেলস ডেটা রিসেট করবেন?" : "Reset sales data?"}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {lang === "bn"
+                    ? "এটি আপনার সব সেলস রেকর্ড মুছে দেবে এবং ড্যাশবোর্ড/রিপোর্টের সেলস গ্রাফ শূন্য দেখাবে। এই কাজটি ফিরিয়ে আনা যাবে না।"
+                    : "This will delete all your sales records and make dashboard/report sales graphs show zero. This cannot be undone."}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="rounded-xl">{lang === "bn" ? "বাতিল" : "Cancel"}</AlertDialogCancel>
+                <AlertDialogAction onClick={resetSalesData} className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  {lang === "bn" ? "হ্যাঁ, Reset" : "Yes, reset"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
 
       {/* Premium-gated cloud backup */}
