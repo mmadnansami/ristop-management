@@ -9,8 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, FileText, Download } from "lucide-react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/sales")({ component: Sales });
@@ -229,32 +227,66 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
 }
 
 async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: string) {
+  const toastId = toast.loading("Preparing invoice PDF...");
   const host = document.createElement("div");
-  host.style.position = "fixed";
-  host.style.left = "-10000px";
+  host.setAttribute("aria-hidden", "true");
+  host.style.position = "absolute";
+  host.style.left = "0";
   host.style.top = "0";
   host.style.width = "900px";
   host.style.background = "#0e0820";
   host.style.padding = "32px";
+  host.style.pointerEvents = "none";
+  host.style.zIndex = "-1";
   host.innerHTML = `${styles}${invoiceMarkup}`;
   document.body.appendChild(host);
   try {
+    const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import("html2canvas"), import("jspdf")]);
     await document.fonts?.ready;
     const card = host.querySelector(".invoice") as HTMLElement;
-    const canvas = await html2canvas(card, { scale: 2.5, backgroundColor: "#0e0820", useCORS: true, logging: false });
+    if (!card) throw new Error("Invoice design was not ready");
+    await waitForInvoiceAssets(card);
+    let canvas: HTMLCanvasElement;
+    try {
+      canvas = await html2canvas(card, { scale: 2.5, backgroundColor: "#0e0820", useCORS: true, allowTaint: false, logging: false });
+    } catch (firstError) {
+      card.querySelectorAll("img").forEach((img) => img.remove());
+      await new Promise((resolve) => window.setTimeout(resolve, 80));
+      try {
+        canvas = await html2canvas(card, { scale: 2.5, backgroundColor: "#0e0820", useCORS: true, allowTaint: false, logging: false });
+      } catch {
+        throw firstError;
+      }
+    }
     const pdf = new jsPDF("p", "mm", "a4");
     pdf.setFillColor(14, 8, 32);
     pdf.rect(0, 0, 210, 297, "F");
     const imgData = canvas.toDataURL("image/png", 1);
-    const width = 190;
-    const height = (canvas.height * width) / canvas.width;
-    pdf.addImage(imgData, "PNG", 10, 12, width, Math.min(height, 273));
+    const maxWidth = 190;
+    const maxHeight = 273;
+    let width = maxWidth;
+    let height = (canvas.height * width) / canvas.width;
+    if (height > maxHeight) {
+      height = maxHeight;
+      width = (canvas.width * height) / canvas.height;
+    }
+    pdf.addImage(imgData, "PNG", (210 - width) / 2, 12, width, height);
     pdf.save(`${invNo}.pdf`);
+    toast.success("Invoice PDF downloaded", { id: toastId });
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : "PDF download failed");
+    toast.error(error instanceof Error ? error.message : "PDF download failed", { id: toastId });
   } finally {
     host.remove();
   }
+}
+
+async function waitForInvoiceAssets(root: HTMLElement) {
+  const images = Array.from(root.querySelectorAll("img"));
+  await Promise.all(images.map((img) => img.complete ? Promise.resolve() : new Promise<void>((resolve) => {
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+  })));
+  await new Promise((resolve) => window.setTimeout(resolve, 120));
 }
 
 function escapeHtml(s: string) {
