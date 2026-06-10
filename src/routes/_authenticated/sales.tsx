@@ -300,7 +300,8 @@ async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: 
   host.style.background = "#0e0820";
   host.style.padding = "32px";
   host.style.pointerEvents = "none";
-  host.style.zIndex = "-1";
+  host.style.opacity = "0.01";
+  host.style.zIndex = "0";
   host.innerHTML = `${styles}${invoiceMarkup}`;
   document.body.appendChild(host);
   try {
@@ -316,7 +317,7 @@ async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: 
     try {
       canvas = await html2canvas(card, {
         scale: 2.5,
-        backgroundColor: "#0e0820",
+        backgroundColor: null,
         useCORS: true,
         allowTaint: false,
         logging: false,
@@ -327,7 +328,7 @@ async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: 
       try {
         canvas = await html2canvas(card, {
           scale: 2.5,
-          backgroundColor: "#0e0820",
+          backgroundColor: null,
           useCORS: true,
           allowTaint: false,
           logging: false,
