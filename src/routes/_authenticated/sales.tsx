@@ -291,26 +291,28 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
 
 async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: string) {
   const toastId = toast.loading("Preparing invoice PDF...");
-  const host = document.createElement("div");
-  host.setAttribute("aria-hidden", "true");
-  host.style.position = "absolute";
-  host.style.left = "0";
-  host.style.top = "0";
-  host.style.width = "900px";
-  host.style.background = "#0e0820";
-  host.style.padding = "32px";
-  host.style.pointerEvents = "none";
-  host.style.opacity = "0.01";
-  host.style.zIndex = "0";
-  host.innerHTML = `${styles}${invoiceMarkup}`;
-  document.body.appendChild(host);
+  const iframe = document.createElement("iframe");
+  iframe.setAttribute("aria-hidden", "true");
+  iframe.style.position = "absolute";
+  iframe.style.left = "0";
+  iframe.style.top = "0";
+  iframe.style.width = "900px";
+  iframe.style.height = "1200px";
+  iframe.style.border = "0";
+  iframe.style.pointerEvents = "none";
+  iframe.style.opacity = "0.01";
+  iframe.style.zIndex = "0";
+  document.body.appendChild(iframe);
   try {
     const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
       import("html2canvas"),
       import("jspdf"),
     ]);
-    await document.fonts?.ready;
-    const card = host.querySelector(".invoice") as HTMLElement;
+    await renderInvoiceFrame(iframe, styles, invoiceMarkup);
+    const doc = iframe.contentDocument;
+    if (!doc) throw new Error("Invoice renderer was not ready");
+    await doc.fonts?.ready;
+    const card = doc.querySelector(".invoice") as HTMLElement;
     if (!card) throw new Error("Invoice design was not ready");
     await waitForInvoiceAssets(card);
     let canvas: HTMLCanvasElement;
@@ -355,8 +357,16 @@ async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: 
   } catch (error) {
     toast.error(error instanceof Error ? error.message : "PDF download failed", { id: toastId });
   } finally {
-    host.remove();
+    iframe.remove();
   }
+}
+
+async function renderInvoiceFrame(iframe: HTMLIFrameElement, styles: string, invoiceMarkup: string) {
+  await new Promise<void>((resolve) => {
+    iframe.onload = () => resolve();
+    iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8">${styles}</head><body>${invoiceMarkup}</body></html>`;
+    window.setTimeout(resolve, 600);
+  });
 }
 
 async function waitForInvoiceAssets(root: HTMLElement) {
