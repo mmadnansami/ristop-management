@@ -6,11 +6,21 @@ import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Plus, FileText, Download } from "lucide-react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/sales")({ component: Sales });
@@ -33,22 +43,29 @@ function Sales() {
 
   const { data: sales = [] } = useQuery({
     queryKey: ["sales"],
-    queryFn: async () => (await supabase.from("sales").select("*").order("sold_at", { ascending: false })).data ?? [],
+    queryFn: async () =>
+      (await supabase.from("sales").select("*").order("sold_at", { ascending: false })).data ?? [],
   });
   const { data: products = [] } = useQuery({
     queryKey: ["products-min"],
-    queryFn: async () => (await supabase.from("products").select("id,name,price,cost_price,stock")).data ?? [],
+    queryFn: async () =>
+      (await supabase.from("products").select("id,name,price,cost_price,stock")).data ?? [],
   });
   const { data: customers = [] } = useQuery({
     queryKey: ["customers-min"],
-    queryFn: async () => (await supabase.from("customers").select("id,name,phone,address,email")).data ?? [],
+    queryFn: async () =>
+      (await supabase.from("customers").select("id,name,phone,address,email")).data ?? [],
   });
   const { data: me } = useQuery({
     queryKey: ["me-company"],
     queryFn: async () => {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return null;
-      const { data: p } = await supabase.from("profiles").select("*").eq("id", u.user.id).maybeSingle();
+      const { data: p } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", u.user.id)
+        .maybeSingle();
       return { user: u.user, profile: p };
     },
   });
@@ -58,13 +75,30 @@ function Sales() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-gradient">{t("sales")}</h1>
-          <p className="text-sm text-muted-foreground mt-1">{lang === "bn" ? "নতুন সেল রেকর্ড করুন এবং সুন্দর ইনভয়েস ডাউনলোড করুন" : "Record sales and download beautiful invoices"}</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {lang === "bn"
+              ? "নতুন সেল রেকর্ড করুন এবং সুন্দর ইনভয়েস ডাউনলোড করুন"
+              : "Record sales and download beautiful invoices"}
+          </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button className="bg-gradient-primary shadow-glow rounded-xl h-11"><Plus className="h-4 w-4 mr-1" /> {lang === "bn" ? "নতুন সেল" : "New Sale"}</Button></DialogTrigger>
+          <DialogTrigger asChild>
+            <Button className="bg-gradient-primary shadow-glow rounded-xl h-11">
+              <Plus className="h-4 w-4 mr-1" /> {lang === "bn" ? "নতুন সেল" : "New Sale"}
+            </Button>
+          </DialogTrigger>
           <DialogContent className="glass-strong border-white/10">
-            <DialogHeader><DialogTitle>{lang === "bn" ? "নতুন সেল" : "New Sale"}</DialogTitle></DialogHeader>
-            <SaleForm products={products} customers={customers.map((c) => ({ id: c.id, name: c.name }))} onDone={() => { setOpen(false); qc.invalidateQueries(); }} />
+            <DialogHeader>
+              <DialogTitle>{lang === "bn" ? "নতুন সেল" : "New Sale"}</DialogTitle>
+            </DialogHeader>
+            <SaleForm
+              products={products}
+              customers={customers.map((c) => ({ id: c.id, name: c.name }))}
+              onDone={() => {
+                setOpen(false);
+                qc.invalidateQueries();
+              }}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -72,17 +106,25 @@ function Sales() {
       <div className="rounded-3xl glass-strong overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-white/5 text-muted-foreground border-b border-white/10"><tr>
-              <th className="text-left p-4">{lang === "bn" ? "তারিখ" : "Date"}</th>
-              <th className="text-left p-4">{lang === "bn" ? "প্রডাক্ট" : "Product"}</th>
-              <th className="text-right p-4">Qty</th>
-              <th className="text-right p-4">{lang === "bn" ? "মূল্য" : "Price"}</th>
-              <th className="text-right p-4">{lang === "bn" ? "মোট" : "Total"}</th>
-              <th className="text-right p-4">{lang === "bn" ? "লাভ" : "Profit"}</th>
-              <th className="p-4 text-right">{lang === "bn" ? "ইনভয়েস" : "Invoice"}</th>
-            </tr></thead>
+            <thead className="bg-white/5 text-muted-foreground border-b border-white/10">
+              <tr>
+                <th className="text-left p-4">{lang === "bn" ? "তারিখ" : "Date"}</th>
+                <th className="text-left p-4">{lang === "bn" ? "প্রডাক্ট" : "Product"}</th>
+                <th className="text-right p-4">Qty</th>
+                <th className="text-right p-4">{lang === "bn" ? "মূল্য" : "Price"}</th>
+                <th className="text-right p-4">{lang === "bn" ? "মোট" : "Total"}</th>
+                <th className="text-right p-4">{lang === "bn" ? "লাভ" : "Profit"}</th>
+                <th className="p-4 text-right">{lang === "bn" ? "ইনভয়েস" : "Invoice"}</th>
+              </tr>
+            </thead>
             <tbody>
-              {sales.length === 0 ? <tr><td colSpan={7} className="text-center py-16 text-muted-foreground">{lang === "bn" ? "কোনো সেল নেই" : "No sales yet"}</td></tr> :
+              {sales.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-16 text-muted-foreground">
+                    {lang === "bn" ? "কোনো সেল নেই" : "No sales yet"}
+                  </td>
+                </tr>
+              ) : (
                 sales.map((s: Sale) => {
                   const customer = customers.find((c) => c.id === s.customer_id) ?? null;
                   return (
@@ -91,16 +133,26 @@ function Sales() {
                       <td className="p-4 font-medium">{s.product_name}</td>
                       <td className="p-4 text-right">{s.quantity}</td>
                       <td className="p-4 text-right">৳{Number(s.unit_price).toLocaleString()}</td>
-                      <td className="p-4 text-right font-semibold">৳{Number(s.total).toLocaleString()}</td>
-                      <td className="p-4 text-right text-success">৳{Number(s.profit).toLocaleString()}</td>
+                      <td className="p-4 text-right font-semibold">
+                        ৳{Number(s.total).toLocaleString()}
+                      </td>
+                      <td className="p-4 text-right text-success">
+                        ৳{Number(s.profit).toLocaleString()}
+                      </td>
                       <td className="p-4 text-right">
-                        <Button size="sm" variant="ghost" onClick={() => openInvoice(s, customer, me?.profile)} className="hover:bg-primary/10">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => openInvoice(s, customer, me?.profile)}
+                          className="hover:bg-primary/10"
+                        >
                           <Download className="h-4 w-4 mr-1" /> PDF
                         </Button>
                       </td>
                     </tr>
                   );
-                })}
+                })
+              )}
             </tbody>
           </table>
         </div>
@@ -110,7 +162,12 @@ function Sales() {
 }
 
 type CompanyProfile = Record<string, string | null> | null | undefined;
-type Customer = { name: string; phone: string | null; address: string | null; email: string | null } | null;
+type Customer = {
+  name: string;
+  phone: string | null;
+  address: string | null;
+  email: string | null;
+} | null;
 
 function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   const c = company ?? {};
@@ -121,7 +178,11 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   const cemail = (c.company_email as string) || "";
   const logo = (c.company_logo_url as string) || "";
   const invNo = "INV-" + s.id.slice(0, 8).toUpperCase();
-  const date = new Date(s.sold_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const date = new Date(s.sold_at).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
   const tax = 0;
   const grand = Number(s.total) + tax;
   const invoiceMarkup = `<div class="invoice" id="invoice-card">
@@ -229,39 +290,120 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
 }
 
 async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: string) {
-  const host = document.createElement("div");
-  host.style.position = "fixed";
-  host.style.left = "-10000px";
-  host.style.top = "0";
-  host.style.width = "900px";
-  host.style.background = "#0e0820";
-  host.style.padding = "32px";
-  host.innerHTML = `${styles}${invoiceMarkup}`;
-  document.body.appendChild(host);
+  const toastId = toast.loading("Preparing invoice PDF...");
+  const iframe = document.createElement("iframe");
+  iframe.setAttribute("aria-hidden", "true");
+  iframe.style.position = "absolute";
+  iframe.style.left = "0";
+  iframe.style.top = "0";
+  iframe.style.width = "900px";
+  iframe.style.height = "1200px";
+  iframe.style.border = "0";
+  iframe.style.pointerEvents = "none";
+  iframe.style.opacity = "0.01";
+  iframe.style.zIndex = "0";
+  document.body.appendChild(iframe);
   try {
-    await document.fonts?.ready;
-    const card = host.querySelector(".invoice") as HTMLElement;
-    const canvas = await html2canvas(card, { scale: 2.5, backgroundColor: "#0e0820", useCORS: true, logging: false });
+    const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+      import("html2canvas"),
+      import("jspdf"),
+    ]);
+    await renderInvoiceFrame(iframe, styles, invoiceMarkup);
+    const doc = iframe.contentDocument;
+    if (!doc) throw new Error("Invoice renderer was not ready");
+    await doc.fonts?.ready;
+    const card = doc.querySelector(".invoice") as HTMLElement;
+    if (!card) throw new Error("Invoice design was not ready");
+    await waitForInvoiceAssets(card);
+    let canvas: HTMLCanvasElement;
+    try {
+      canvas = await html2canvas(card, {
+        scale: 2.5,
+        backgroundColor: null,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+      });
+    } catch (firstError) {
+      card.querySelectorAll("img").forEach((img) => img.remove());
+      await new Promise((resolve) => window.setTimeout(resolve, 80));
+      try {
+        canvas = await html2canvas(card, {
+          scale: 2.5,
+          backgroundColor: null,
+          useCORS: true,
+          allowTaint: false,
+          logging: false,
+        });
+      } catch {
+        throw firstError;
+      }
+    }
     const pdf = new jsPDF("p", "mm", "a4");
     pdf.setFillColor(14, 8, 32);
     pdf.rect(0, 0, 210, 297, "F");
     const imgData = canvas.toDataURL("image/png", 1);
-    const width = 190;
-    const height = (canvas.height * width) / canvas.width;
-    pdf.addImage(imgData, "PNG", 10, 12, width, Math.min(height, 273));
+    const maxWidth = 190;
+    const maxHeight = 273;
+    let width = maxWidth;
+    let height = (canvas.height * width) / canvas.width;
+    if (height > maxHeight) {
+      height = maxHeight;
+      width = (canvas.width * height) / canvas.height;
+    }
+    pdf.addImage(imgData, "PNG", (210 - width) / 2, 12, width, height);
     pdf.save(`${invNo}.pdf`);
+    toast.success("Invoice PDF downloaded", { id: toastId });
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : "PDF download failed");
+    toast.error(error instanceof Error ? error.message : "PDF download failed", { id: toastId });
   } finally {
-    host.remove();
+    iframe.remove();
   }
 }
 
-function escapeHtml(s: string) {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+async function renderInvoiceFrame(
+  iframe: HTMLIFrameElement,
+  styles: string,
+  invoiceMarkup: string,
+) {
+  await new Promise<void>((resolve) => {
+    iframe.onload = () => resolve();
+    iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8">${styles}</head><body>${invoiceMarkup}</body></html>`;
+    window.setTimeout(resolve, 600);
+  });
 }
 
-function SaleForm({ products, customers, onDone }: { products: { id: string; name: string; price: number; cost_price: number; stock: number }[]; customers: { id: string; name: string }[]; onDone: () => void }) {
+async function waitForInvoiceAssets(root: HTMLElement) {
+  const images = Array.from(root.querySelectorAll("img"));
+  await Promise.all(
+    images.map((img) =>
+      img.complete
+        ? Promise.resolve()
+        : new Promise<void>((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          }),
+    ),
+  );
+  await new Promise((resolve) => window.setTimeout(resolve, 120));
+}
+
+function escapeHtml(s: string) {
+  return s.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,
+  );
+}
+
+function SaleForm({
+  products,
+  customers,
+  onDone,
+}: {
+  products: { id: string; name: string; price: number; cost_price: number; stock: number }[];
+  customers: { id: string; name: string }[];
+  onDone: () => void;
+}) {
   const { lang } = useI18n();
   const [productId, setProductId] = useState("");
   const [customerId, setCustomerId] = useState("");
@@ -271,39 +413,102 @@ function SaleForm({ products, customers, onDone }: { products: { id: string; nam
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!p) { toast.error("Pick a product"); return; }
+    if (!p) {
+      toast.error("Pick a product");
+      return;
+    }
     setLoading(true);
     const { data: u } = await supabase.auth.getUser();
-    if (!u.user) { toast.error(lang === "bn" ? "আবার লগইন করুন" : "Please sign in again"); setLoading(false); return; }
+    if (!u.user) {
+      toast.error(lang === "bn" ? "আবার লগইন করুন" : "Please sign in again");
+      setLoading(false);
+      return;
+    }
     const total = p.price * qty;
     const profit = (p.price - p.cost_price) * qty;
     const { error } = await supabase.from("sales").insert({
-      user_id: u.user.id, product_id: p.id, customer_id: customerId || null,
-      product_name: p.name, quantity: qty, unit_price: p.price, unit_cost: p.cost_price, total, profit,
+      user_id: u.user.id,
+      product_id: p.id,
+      customer_id: customerId || null,
+      product_name: p.name,
+      quantity: qty,
+      unit_price: p.price,
+      unit_cost: p.cost_price,
+      total,
+      profit,
     });
     if (!error) {
-      await supabase.from("products").update({ stock: Math.max(0, p.stock - qty) }).eq("id", p.id);
-      await supabase.from("activity_log").insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
+      await supabase
+        .from("products")
+        .update({ stock: Math.max(0, p.stock - qty) })
+        .eq("id", p.id);
+      await supabase
+        .from("activity_log")
+        .insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
     }
     setLoading(false);
-    if (error) toast.error(error.message); else { toast.success(lang === "bn" ? "সেল রেকর্ড হয়েছে" : "Sale recorded"); onDone(); }
+    if (error) toast.error(error.message);
+    else {
+      toast.success(lang === "bn" ? "সেল রেকর্ড হয়েছে" : "Sale recorded");
+      onDone();
+    }
   };
 
   return (
     <form onSubmit={submit} className="space-y-3">
-      <div><Label>{lang === "bn" ? "প্রডাক্ট" : "Product"}</Label>
-        <Select value={productId} onValueChange={setProductId}><SelectTrigger className="h-11 bg-white/5 border-white/15 rounded-xl"><SelectValue placeholder={lang === "bn" ? "প্রডাক্ট নির্বাচন করুন" : "Pick product"} /></SelectTrigger>
-          <SelectContent>{products.map((p) => <SelectItem key={p.id} value={p.id}>{p.name} — ৳{p.price} (stock: {p.stock})</SelectItem>)}</SelectContent>
+      <div>
+        <Label>{lang === "bn" ? "প্রডাক্ট" : "Product"}</Label>
+        <Select value={productId} onValueChange={setProductId}>
+          <SelectTrigger className="h-11 bg-white/5 border-white/15 rounded-xl">
+            <SelectValue placeholder={lang === "bn" ? "প্রডাক্ট নির্বাচন করুন" : "Pick product"} />
+          </SelectTrigger>
+          <SelectContent>
+            {products.map((p) => (
+              <SelectItem key={p.id} value={p.id}>
+                {p.name} — ৳{p.price} (stock: {p.stock})
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       </div>
-      <div><Label>{lang === "bn" ? "কাস্টমার (অপশনাল)" : "Customer (optional)"}</Label>
-        <Select value={customerId} onValueChange={setCustomerId}><SelectTrigger className="h-11 bg-white/5 border-white/15 rounded-xl"><SelectValue placeholder={lang === "bn" ? "Walk-in" : "Walk-in"} /></SelectTrigger>
-          <SelectContent>{customers.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+      <div>
+        <Label>{lang === "bn" ? "কাস্টমার (অপশনাল)" : "Customer (optional)"}</Label>
+        <Select value={customerId} onValueChange={setCustomerId}>
+          <SelectTrigger className="h-11 bg-white/5 border-white/15 rounded-xl">
+            <SelectValue placeholder={lang === "bn" ? "Walk-in" : "Walk-in"} />
+          </SelectTrigger>
+          <SelectContent>
+            {customers.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       </div>
-      <div><Label>{lang === "bn" ? "পরিমাণ" : "Quantity"}</Label><Input inputMode="numeric" value={String(qty)} onChange={(e) => setQty(Math.max(1, Math.floor(Number(e.target.value || 1))))} className="h-11 bg-white/5 border-white/15 rounded-xl" /></div>
-      {p && <div className="rounded-xl glass p-3 text-sm flex justify-between"><span>{lang === "bn" ? "মোট" : "Total"}</span><span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span></div>}
-      <Button type="submit" disabled={loading || !p} className="w-full bg-gradient-primary shadow-glow rounded-xl h-11"><FileText className="h-4 w-4 mr-1" /> {loading ? "..." : (lang === "bn" ? "সেল রেকর্ড" : "Record Sale")}</Button>
+      <div>
+        <Label>{lang === "bn" ? "পরিমাণ" : "Quantity"}</Label>
+        <Input
+          inputMode="numeric"
+          value={String(qty)}
+          onChange={(e) => setQty(Math.max(1, Math.floor(Number(e.target.value || 1))))}
+          className="h-11 bg-white/5 border-white/15 rounded-xl"
+        />
+      </div>
+      {p && (
+        <div className="rounded-xl glass p-3 text-sm flex justify-between">
+          <span>{lang === "bn" ? "মোট" : "Total"}</span>
+          <span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span>
+        </div>
+      )}
+      <Button
+        type="submit"
+        disabled={loading || !p}
+        className="w-full bg-gradient-primary shadow-glow rounded-xl h-11"
+      >
+        <FileText className="h-4 w-4 mr-1" />{" "}
+        {loading ? "..." : lang === "bn" ? "সেল রেকর্ড" : "Record Sale"}
+      </Button>
     </form>
   );
 }
