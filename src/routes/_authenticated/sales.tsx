@@ -361,7 +361,11 @@ async function downloadInvoicePdf(invoiceMarkup: string, styles: string, invNo: 
   }
 }
 
-async function renderInvoiceFrame(iframe: HTMLIFrameElement, styles: string, invoiceMarkup: string) {
+async function renderInvoiceFrame(
+  iframe: HTMLIFrameElement,
+  styles: string,
+  invoiceMarkup: string,
+) {
   await new Promise<void>((resolve) => {
     iframe.onload = () => resolve();
     iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8">${styles}</head><body>${invoiceMarkup}</body></html>`;
