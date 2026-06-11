@@ -136,8 +136,8 @@ function Sales() {
                 sales.map((s: Sale) => {
                   const customer = customers.find((c) => c.id === s.customer_id) ?? null;
                   return (
-                    <tr key={s.id} className="border-t border-white/5 hover:bg-white/[0.03]">
-                      <td className="p-4">{new Date(s.sold_at).toLocaleDateString()}</td>
+                    <tr key={s.id} className="border-t border-white/5 hover:bg-white/[0.03] transition-colors">
+                      <td className="p-4">{fmtDate(s.sold_at)}</td>
                       <td className="p-4 font-medium">{s.product_name}</td>
                       <td className="p-4 text-right">{s.quantity}</td>
                       <td className="p-4 text-right">৳{Number(s.unit_price).toLocaleString()}</td>
