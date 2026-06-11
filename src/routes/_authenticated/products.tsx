@@ -154,6 +154,22 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
         <div><Label>{lang === "bn" ? "গ্যারান্টি (optional)" : "Warranty (optional)"}</Label><Input value={f.warranty} onChange={(e) => setF({ ...f, warranty: e.target.value })} placeholder="e.g. 1 year" /></div>
         <div><Label>{lang === "bn" ? "ডেলিভারির মাধ্যম" : "Delivery Method"}</Label><Input value={f.delivery_method} onChange={(e) => setF({ ...f, delivery_method: e.target.value })} placeholder="e.g. Courier" /></div>
       </div>
+      <div className="rounded-xl glass p-3 space-y-2">
+        <Label className="text-foreground/80">{lang === "bn" ? "মেয়াদকাল (subscription/validity)" : "Validity duration (subscription)"}</Label>
+        <div className="flex flex-wrap gap-2">
+          {DURATION_PRESETS.map((d) => (
+            <button type="button" key={d.days} onClick={() => setF({ ...f, duration_days: String(d.days) })}
+              className={`text-xs px-3 py-1.5 rounded-full border transition ${f.duration_days === String(d.days) ? "bg-gradient-primary text-primary-foreground border-transparent shadow-glow" : "border-white/15 hover:border-primary/50"}`}>
+              {lang === "bn" ? d.label_bn : d.label_en}
+            </button>
+          ))}
+          <button type="button" onClick={() => setF({ ...f, duration_days: "" })}
+            className={`text-xs px-3 py-1.5 rounded-full border transition ${!f.duration_days ? "bg-white/10 border-white/30" : "border-white/15 hover:border-primary/50"}`}>
+            {lang === "bn" ? "নেই" : "None"}
+          </button>
+        </div>
+        <Input inputMode="numeric" value={f.duration_days} onChange={(e) => setF({ ...f, duration_days: e.target.value })} placeholder={lang === "bn" ? "অথবা দিন সংখ্যা লিখুন" : "or enter custom days"} />
+      </div>
       <Button type="submit" disabled={loading} className="w-full bg-gradient-primary shadow-glow">{loading ? "..." : initial ? "Update" : "Create"}</Button>
     </form>
   );
