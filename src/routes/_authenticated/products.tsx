@@ -16,7 +16,16 @@ type Product = {
   id: string; name: string; image_url: string | null; category: string | null;
   price: number; cost_price: number; stock: number; low_stock_threshold: number;
   expiry_date: string | null; warranty: string | null; delivery_method: string | null;
+  duration_days: number | null;
 };
+
+const DURATION_PRESETS: { label_bn: string; label_en: string; days: number }[] = [
+  { label_bn: "১ মাস", label_en: "1 Month", days: 30 },
+  { label_bn: "৩ মাস", label_en: "3 Months", days: 90 },
+  { label_bn: "৬ মাস", label_en: "6 Months", days: 180 },
+  { label_bn: "১ বছর", label_en: "1 Year", days: 365 },
+  { label_bn: "৩ বছর", label_en: "3 Years", days: 1095 },
+];
 
 function Products() {
   const { t, lang } = useI18n();
