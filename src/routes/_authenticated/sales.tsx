@@ -147,6 +147,11 @@ function Sales() {
                       <td className="p-4 text-right text-success">
                         ৳{Number(s.profit).toLocaleString()}
                       </td>
+                      <td className="p-4 text-xs">
+                        {s.validity_start && s.validity_end ? (
+                          <span className="inline-block rounded-full bg-primary/15 text-primary-glow px-2.5 py-1 border border-primary/30">{fmtDate(s.validity_start)} → {fmtDate(s.validity_end)}</span>
+                        ) : <span className="text-muted-foreground">—</span>}
+                      </td>
                       <td className="p-4 text-right">
                         <Button
                           size="sm"
