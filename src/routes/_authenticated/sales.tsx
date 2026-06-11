@@ -237,7 +237,10 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
       <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit Price</th><th class="r">Amount</th></tr></thead>
       <tbody>
         <tr>
-          <td class="prod">${escapeHtml(s.product_name)}</td>
+          <td class="prod">
+            ${escapeHtml(s.product_name)}
+            ${s.validity_start && s.validity_end ? `<div class="validity">Validity: ${fmtDate(s.validity_start)} → ${fmtDate(s.validity_end)}</div>` : ""}
+          </td>
           <td class="r">${s.quantity}</td>
           <td class="r">৳ ${Number(s.unit_price).toLocaleString()}</td>
           <td class="r"><strong>৳ ${Number(s.total).toLocaleString()}</strong></td>
