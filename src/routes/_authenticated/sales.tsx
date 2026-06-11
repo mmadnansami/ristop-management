@@ -56,7 +56,7 @@ function Sales() {
   const { data: products = [] } = useQuery({
     queryKey: ["products-min"],
     queryFn: async () =>
-      (await supabase.from("products").select("id,name,price,cost_price,stock")).data ?? [],
+      (await supabase.from("products").select("id,name,price,cost_price,stock,duration_days")).data ?? [],
   });
   const { data: customers = [] } = useQuery({
     queryKey: ["customers-min"],
