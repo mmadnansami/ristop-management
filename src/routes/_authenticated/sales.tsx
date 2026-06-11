@@ -288,6 +288,7 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   tbody td{padding:18px 44px;border-bottom:1px solid #eee;font-size:14px}
   tbody td.r{text-align:right}
   tbody td.prod{font-weight:600;color:#1a1a1a}
+  tbody td.prod .validity{margin-top:6px;font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.04em;background:#f3ecff;display:inline-block;padding:4px 10px;border-radius:999px}
   .totals{padding:24px 44px;background:#faf7ff}
   .totals .row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:#555}
   .totals .grand{margin-top:14px;padding-top:18px;border-top:2px dashed #c4b5fd;display:flex;justify-content:space-between;align-items:center}
