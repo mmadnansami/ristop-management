@@ -417,7 +417,7 @@ function SaleForm({
   customers,
   onDone,
 }: {
-  products: { id: string; name: string; price: number; cost_price: number; stock: number }[];
+  products: { id: string; name: string; price: number; cost_price: number; stock: number; duration_days: number | null }[];
   customers: { id: string; name: string }[];
   onDone: () => void;
 }) {
