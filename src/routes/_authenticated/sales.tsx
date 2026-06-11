@@ -447,6 +447,7 @@ function SaleForm({
     }
     const total = p.price * qty;
     const profit = (p.price - p.cost_price) * qty;
+    const isoDate = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const { error } = await supabase.from("sales").insert({
       user_id: u.user.id,
       product_id: p.id,
@@ -457,6 +458,9 @@ function SaleForm({
       unit_cost: p.cost_price,
       total,
       profit,
+      sold_at: today.toISOString(),
+      validity_start: endDate ? isoDate(today) : null,
+      validity_end: endDate ? isoDate(endDate) : null,
     });
     if (!error) {
       await supabase
