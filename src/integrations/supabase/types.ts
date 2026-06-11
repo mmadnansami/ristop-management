@@ -77,6 +77,7 @@ export type Database = {
           cost_price: number
           created_at: string
           delivery_method: string | null
+          duration_days: number | null
           expiry_date: string | null
           id: string
           image_url: string | null
@@ -93,6 +94,7 @@ export type Database = {
           cost_price?: number
           created_at?: string
           delivery_method?: string | null
+          duration_days?: number | null
           expiry_date?: string | null
           id?: string
           image_url?: string | null
@@ -109,6 +111,7 @@ export type Database = {
           cost_price?: number
           created_at?: string
           delivery_method?: string | null
+          duration_days?: number | null
           expiry_date?: string | null
           id?: string
           image_url?: string | null
@@ -241,6 +244,8 @@ export type Database = {
           unit_cost: number
           unit_price: number
           user_id: string
+          validity_end: string | null
+          validity_start: string | null
         }
         Insert: {
           created_at?: string
@@ -255,6 +260,8 @@ export type Database = {
           unit_cost?: number
           unit_price?: number
           user_id: string
+          validity_end?: string | null
+          validity_start?: string | null
         }
         Update: {
           created_at?: string
@@ -269,6 +276,8 @@ export type Database = {
           unit_cost?: number
           unit_price?: number
           user_id?: string
+          validity_end?: string | null
+          validity_start?: string | null
         }
         Relationships: [
           {

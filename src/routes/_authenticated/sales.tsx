@@ -34,7 +34,14 @@ type Sale = {
   profit: number;
   sold_at: string;
   customer_id: string | null;
+  validity_start: string | null;
+  validity_end: string | null;
 };
+
+function fmtDate(d: string | null | undefined) {
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
 
 function Sales() {
   const { t, lang } = useI18n();
@@ -49,7 +56,7 @@ function Sales() {
   const { data: products = [] } = useQuery({
     queryKey: ["products-min"],
     queryFn: async () =>
-      (await supabase.from("products").select("id,name,price,cost_price,stock")).data ?? [],
+      (await supabase.from("products").select("id,name,price,cost_price,stock,duration_days")).data ?? [],
   });
   const { data: customers = [] } = useQuery({
     queryKey: ["customers-min"],
@@ -114,13 +121,14 @@ function Sales() {
                 <th className="text-right p-4">{lang === "bn" ? "মূল্য" : "Price"}</th>
                 <th className="text-right p-4">{lang === "bn" ? "মোট" : "Total"}</th>
                 <th className="text-right p-4">{lang === "bn" ? "লাভ" : "Profit"}</th>
+                <th className="text-left p-4">{lang === "bn" ? "মেয়াদ" : "Validity"}</th>
                 <th className="p-4 text-right">{lang === "bn" ? "ইনভয়েস" : "Invoice"}</th>
               </tr>
             </thead>
             <tbody>
               {sales.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-16 text-muted-foreground">
+                  <td colSpan={8} className="text-center py-16 text-muted-foreground">
                     {lang === "bn" ? "কোনো সেল নেই" : "No sales yet"}
                   </td>
                 </tr>
@@ -128,8 +136,8 @@ function Sales() {
                 sales.map((s: Sale) => {
                   const customer = customers.find((c) => c.id === s.customer_id) ?? null;
                   return (
-                    <tr key={s.id} className="border-t border-white/5 hover:bg-white/[0.03]">
-                      <td className="p-4">{new Date(s.sold_at).toLocaleDateString()}</td>
+                    <tr key={s.id} className="border-t border-white/5 hover:bg-white/[0.03] transition-colors">
+                      <td className="p-4">{fmtDate(s.sold_at)}</td>
                       <td className="p-4 font-medium">{s.product_name}</td>
                       <td className="p-4 text-right">{s.quantity}</td>
                       <td className="p-4 text-right">৳{Number(s.unit_price).toLocaleString()}</td>
@@ -138,6 +146,11 @@ function Sales() {
                       </td>
                       <td className="p-4 text-right text-success">
                         ৳{Number(s.profit).toLocaleString()}
+                      </td>
+                      <td className="p-4 text-xs">
+                        {s.validity_start && s.validity_end ? (
+                          <span className="inline-block rounded-full bg-primary/15 text-primary-glow px-2.5 py-1 border border-primary/30">{fmtDate(s.validity_start)} → {fmtDate(s.validity_end)}</span>
+                        ) : <span className="text-muted-foreground">—</span>}
                       </td>
                       <td className="p-4 text-right">
                         <Button
@@ -224,7 +237,10 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
       <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit Price</th><th class="r">Amount</th></tr></thead>
       <tbody>
         <tr>
-          <td class="prod">${escapeHtml(s.product_name)}</td>
+          <td class="prod">
+            ${escapeHtml(s.product_name)}
+            ${s.validity_start && s.validity_end ? `<div class="validity">Validity: ${fmtDate(s.validity_start)} → ${fmtDate(s.validity_end)}</div>` : ""}
+          </td>
           <td class="r">${s.quantity}</td>
           <td class="r">৳ ${Number(s.unit_price).toLocaleString()}</td>
           <td class="r"><strong>৳ ${Number(s.total).toLocaleString()}</strong></td>
@@ -272,6 +288,7 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
   tbody td{padding:18px 44px;border-bottom:1px solid #eee;font-size:14px}
   tbody td.r{text-align:right}
   tbody td.prod{font-weight:600;color:#1a1a1a}
+  tbody td.prod .validity{margin-top:6px;font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.04em;background:#f3ecff;display:inline-block;padding:4px 10px;border-radius:999px}
   .totals{padding:24px 44px;background:#faf7ff}
   .totals .row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:#555}
   .totals .grand{margin-top:14px;padding-top:18px;border-top:2px dashed #c4b5fd;display:flex;justify-content:space-between;align-items:center}
@@ -400,7 +417,7 @@ function SaleForm({
   customers,
   onDone,
 }: {
-  products: { id: string; name: string; price: number; cost_price: number; stock: number }[];
+  products: { id: string; name: string; price: number; cost_price: number; stock: number; duration_days: number | null }[];
   customers: { id: string; name: string }[];
   onDone: () => void;
 }) {
@@ -408,8 +425,12 @@ function SaleForm({
   const [productId, setProductId] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [qty, setQty] = useState(1);
+  const [overrideDays, setOverrideDays] = useState("");
   const [loading, setLoading] = useState(false);
   const p = products.find((x) => x.id === productId);
+  const effectiveDays = overrideDays ? Math.max(0, Math.floor(Number(overrideDays))) : (p?.duration_days ?? 0);
+  const today = new Date();
+  const endDate = effectiveDays > 0 ? new Date(today.getTime() + effectiveDays * 86400000) : null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -426,6 +447,7 @@ function SaleForm({
     }
     const total = p.price * qty;
     const profit = (p.price - p.cost_price) * qty;
+    const isoDate = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const { error } = await supabase.from("sales").insert({
       user_id: u.user.id,
       product_id: p.id,
@@ -436,6 +458,9 @@ function SaleForm({
       unit_cost: p.cost_price,
       total,
       profit,
+      sold_at: today.toISOString(),
+      validity_start: endDate ? isoDate(today) : null,
+      validity_end: endDate ? isoDate(endDate) : null,
     });
     if (!error) {
       await supabase
@@ -495,6 +520,34 @@ function SaleForm({
           className="h-11 bg-white/5 border-white/15 rounded-xl"
         />
       </div>
+      {p && (
+        <div className="rounded-xl glass p-3 space-y-2">
+          <div className="text-xs text-muted-foreground">{lang === "bn" ? "মেয়াদ (override করতে পারেন)" : "Validity (override if needed)"}</div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label_bn: "১ মাস", label_en: "1M", days: 30 },
+              { label_bn: "৩ মাস", label_en: "3M", days: 90 },
+              { label_bn: "৬ মাস", label_en: "6M", days: 180 },
+              { label_bn: "১ বছর", label_en: "1Y", days: 365 },
+              { label_bn: "৩ বছর", label_en: "3Y", days: 1095 },
+            ].map((d) => (
+              <button type="button" key={d.days} onClick={() => setOverrideDays(String(d.days))}
+                className={`text-xs px-3 py-1 rounded-full border transition ${overrideDays === String(d.days) ? "bg-gradient-primary text-primary-foreground border-transparent" : "border-white/15 hover:border-primary/50"}`}>
+                {lang === "bn" ? d.label_bn : d.label_en}
+              </button>
+            ))}
+            <button type="button" onClick={() => setOverrideDays("")}
+              className="text-xs px-3 py-1 rounded-full border border-white/15 hover:border-primary/50">
+              {lang === "bn" ? "ডিফল্ট" : "Default"}
+            </button>
+          </div>
+          {endDate && (
+            <div className="text-xs text-primary-glow font-medium">
+              {fmtDate(today.toISOString())} → {fmtDate(endDate.toISOString())} ({effectiveDays} {lang === "bn" ? "দিন" : "days"})
+            </div>
+          )}
+        </div>
+      )}
       {p && (
         <div className="rounded-xl glass p-3 text-sm flex justify-between">
           <span>{lang === "bn" ? "মোট" : "Total"}</span>

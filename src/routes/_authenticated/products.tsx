@@ -16,7 +16,16 @@ type Product = {
   id: string; name: string; image_url: string | null; category: string | null;
   price: number; cost_price: number; stock: number; low_stock_threshold: number;
   expiry_date: string | null; warranty: string | null; delivery_method: string | null;
+  duration_days: number | null;
 };
+
+const DURATION_PRESETS: { label_bn: string; label_en: string; days: number }[] = [
+  { label_bn: "১ মাস", label_en: "1 Month", days: 30 },
+  { label_bn: "৩ মাস", label_en: "3 Months", days: 90 },
+  { label_bn: "৬ মাস", label_en: "6 Months", days: 180 },
+  { label_bn: "১ বছর", label_en: "1 Year", days: 365 },
+  { label_bn: "৩ বছর", label_en: "3 Years", days: 1095 },
+];
 
 function Products() {
   const { t, lang } = useI18n();
@@ -100,6 +109,7 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
     price: initial ? String(initial.price) : "", cost_price: initial ? String(initial.cost_price) : "",
     stock: initial ? String(initial.stock) : "", low_stock_threshold: initial ? String(initial.low_stock_threshold) : "5",
     expiry_date: initial?.expiry_date ?? "", warranty: initial?.warranty ?? "", delivery_method: initial?.delivery_method ?? "",
+    duration_days: initial?.duration_days != null ? String(initial.duration_days) : "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -114,7 +124,8 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
     const stock = Math.max(0, Math.floor(Number(f.stock || 0)));
     const lowStock = Math.max(0, Math.floor(Number(f.low_stock_threshold || 0)));
     if (!Number.isFinite(price) || price < 0) { toast.error(lang === "bn" ? "সঠিক প্রাইস দিন" : "Enter a valid price"); setLoading(false); return; }
-    const payload = { name: f.name.trim(), image_url: f.image_url || null, category: f.category || null, price, cost_price: Number.isFinite(costPrice) ? costPrice : 0, stock, low_stock_threshold: lowStock, expiry_date: f.expiry_date || null, warranty: f.warranty || null, delivery_method: f.delivery_method || null, user_id: u.user.id };
+    const durationDays = f.duration_days ? Math.max(0, Math.floor(Number(f.duration_days))) : null;
+    const payload = { name: f.name.trim(), image_url: f.image_url || null, category: f.category || null, price, cost_price: Number.isFinite(costPrice) ? costPrice : 0, stock, low_stock_threshold: lowStock, expiry_date: f.expiry_date || null, warranty: f.warranty || null, delivery_method: f.delivery_method || null, duration_days: durationDays, user_id: u.user.id };
     const { error } = initial
       ? await supabase.from("products").update(payload).eq("id", initial.id)
       : await supabase.from("products").insert(payload);
@@ -142,6 +153,22 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
       <div className="grid grid-cols-2 gap-3">
         <div><Label>{lang === "bn" ? "গ্যারান্টি (optional)" : "Warranty (optional)"}</Label><Input value={f.warranty} onChange={(e) => setF({ ...f, warranty: e.target.value })} placeholder="e.g. 1 year" /></div>
         <div><Label>{lang === "bn" ? "ডেলিভারির মাধ্যম" : "Delivery Method"}</Label><Input value={f.delivery_method} onChange={(e) => setF({ ...f, delivery_method: e.target.value })} placeholder="e.g. Courier" /></div>
+      </div>
+      <div className="rounded-xl glass p-3 space-y-2">
+        <Label className="text-foreground/80">{lang === "bn" ? "মেয়াদকাল (subscription/validity)" : "Validity duration (subscription)"}</Label>
+        <div className="flex flex-wrap gap-2">
+          {DURATION_PRESETS.map((d) => (
+            <button type="button" key={d.days} onClick={() => setF({ ...f, duration_days: String(d.days) })}
+              className={`text-xs px-3 py-1.5 rounded-full border transition ${f.duration_days === String(d.days) ? "bg-gradient-primary text-primary-foreground border-transparent shadow-glow" : "border-white/15 hover:border-primary/50"}`}>
+              {lang === "bn" ? d.label_bn : d.label_en}
+            </button>
+          ))}
+          <button type="button" onClick={() => setF({ ...f, duration_days: "" })}
+            className={`text-xs px-3 py-1.5 rounded-full border transition ${!f.duration_days ? "bg-white/10 border-white/30" : "border-white/15 hover:border-primary/50"}`}>
+            {lang === "bn" ? "নেই" : "None"}
+          </button>
+        </div>
+        <Input inputMode="numeric" value={f.duration_days} onChange={(e) => setF({ ...f, duration_days: e.target.value })} placeholder={lang === "bn" ? "অথবা দিন সংখ্যা লিখুন" : "or enter custom days"} />
       </div>
       <Button type="submit" disabled={loading} className="w-full bg-gradient-primary shadow-glow">{loading ? "..." : initial ? "Update" : "Create"}</Button>
     </form>
