@@ -425,8 +425,12 @@ function SaleForm({
   const [productId, setProductId] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [qty, setQty] = useState(1);
+  const [overrideDays, setOverrideDays] = useState("");
   const [loading, setLoading] = useState(false);
   const p = products.find((x) => x.id === productId);
+  const effectiveDays = overrideDays ? Math.max(0, Math.floor(Number(overrideDays))) : (p?.duration_days ?? 0);
+  const today = new Date();
+  const endDate = effectiveDays > 0 ? new Date(today.getTime() + effectiveDays * 86400000) : null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
