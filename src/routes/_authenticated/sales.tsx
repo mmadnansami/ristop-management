@@ -121,6 +121,7 @@ function Sales() {
                 <th className="text-right p-4">{lang === "bn" ? "মূল্য" : "Price"}</th>
                 <th className="text-right p-4">{lang === "bn" ? "মোট" : "Total"}</th>
                 <th className="text-right p-4">{lang === "bn" ? "লাভ" : "Profit"}</th>
+                <th className="text-left p-4">{lang === "bn" ? "মেয়াদ" : "Validity"}</th>
                 <th className="p-4 text-right">{lang === "bn" ? "ইনভয়েস" : "Invoice"}</th>
               </tr>
             </thead>
