@@ -128,7 +128,7 @@ function Sales() {
             <tbody>
               {sales.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-16 text-muted-foreground">
+                  <td colSpan={8} className="text-center py-16 text-muted-foreground">
                     {lang === "bn" ? "কোনো সেল নেই" : "No sales yet"}
                   </td>
                 </tr>
