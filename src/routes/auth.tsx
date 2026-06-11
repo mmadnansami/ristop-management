@@ -53,19 +53,20 @@ function AuthPage() {
       if (isSignup) {
         const { data, error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard`, data: { full_name: name } },
+          options: { emailRedirectTo: `${window.location.origin}/subscribe`, data: { full_name: name } },
         });
         if (error) throw error;
         if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, name);
-        toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে!" : "Account created!");
+        toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে! এখন সাবস্ক্রিপশন বেছে নিন।" : "Account created! Now choose a subscription.");
+        navigate({ to: "/subscribe", replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         const { data } = await supabase.auth.getUser();
         if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, data.user.user_metadata?.full_name as string | undefined);
         toast.success(lang === "bn" ? "স্বাগতম!" : "Welcome back!");
+        navigate({ to: "/dashboard", replace: true });
       }
-      navigate({ to: "/dashboard", replace: true });
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "Error");
     } finally { setLoading(false); }
