@@ -34,7 +34,14 @@ type Sale = {
   profit: number;
   sold_at: string;
   customer_id: string | null;
+  validity_start: string | null;
+  validity_end: string | null;
 };
+
+function fmtDate(d: string | null | undefined) {
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
 
 function Sales() {
   const { t, lang } = useI18n();
