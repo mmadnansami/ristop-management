@@ -124,7 +124,8 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
     const stock = Math.max(0, Math.floor(Number(f.stock || 0)));
     const lowStock = Math.max(0, Math.floor(Number(f.low_stock_threshold || 0)));
     if (!Number.isFinite(price) || price < 0) { toast.error(lang === "bn" ? "সঠিক প্রাইস দিন" : "Enter a valid price"); setLoading(false); return; }
-    const payload = { name: f.name.trim(), image_url: f.image_url || null, category: f.category || null, price, cost_price: Number.isFinite(costPrice) ? costPrice : 0, stock, low_stock_threshold: lowStock, expiry_date: f.expiry_date || null, warranty: f.warranty || null, delivery_method: f.delivery_method || null, user_id: u.user.id };
+    const durationDays = f.duration_days ? Math.max(0, Math.floor(Number(f.duration_days))) : null;
+    const payload = { name: f.name.trim(), image_url: f.image_url || null, category: f.category || null, price, cost_price: Number.isFinite(costPrice) ? costPrice : 0, stock, low_stock_threshold: lowStock, expiry_date: f.expiry_date || null, warranty: f.warranty || null, delivery_method: f.delivery_method || null, duration_days: durationDays, user_id: u.user.id };
     const { error } = initial
       ? await supabase.from("products").update(payload).eq("id", initial.id)
       : await supabase.from("products").insert(payload);
