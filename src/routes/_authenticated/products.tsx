@@ -109,6 +109,7 @@ function ProductForm({ initial, onDone }: { initial: Product | null; onDone: () 
     price: initial ? String(initial.price) : "", cost_price: initial ? String(initial.cost_price) : "",
     stock: initial ? String(initial.stock) : "", low_stock_threshold: initial ? String(initial.low_stock_threshold) : "5",
     expiry_date: initial?.expiry_date ?? "", warranty: initial?.warranty ?? "", delivery_method: initial?.delivery_method ?? "",
+    duration_days: initial?.duration_days != null ? String(initial.duration_days) : "",
   });
   const [loading, setLoading] = useState(false);
 
