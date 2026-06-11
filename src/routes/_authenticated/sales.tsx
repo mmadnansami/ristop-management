@@ -521,6 +521,34 @@ function SaleForm({
         />
       </div>
       {p && (
+        <div className="rounded-xl glass p-3 space-y-2">
+          <div className="text-xs text-muted-foreground">{lang === "bn" ? "মেয়াদ (override করতে পারেন)" : "Validity (override if needed)"}</div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label_bn: "১ মাস", label_en: "1M", days: 30 },
+              { label_bn: "৩ মাস", label_en: "3M", days: 90 },
+              { label_bn: "৬ মাস", label_en: "6M", days: 180 },
+              { label_bn: "১ বছর", label_en: "1Y", days: 365 },
+              { label_bn: "৩ বছর", label_en: "3Y", days: 1095 },
+            ].map((d) => (
+              <button type="button" key={d.days} onClick={() => setOverrideDays(String(d.days))}
+                className={`text-xs px-3 py-1 rounded-full border transition ${overrideDays === String(d.days) ? "bg-gradient-primary text-primary-foreground border-transparent" : "border-white/15 hover:border-primary/50"}`}>
+                {lang === "bn" ? d.label_bn : d.label_en}
+              </button>
+            ))}
+            <button type="button" onClick={() => setOverrideDays("")}
+              className="text-xs px-3 py-1 rounded-full border border-white/15 hover:border-primary/50">
+              {lang === "bn" ? "ডিফল্ট" : "Default"}
+            </button>
+          </div>
+          {endDate && (
+            <div className="text-xs text-primary-glow font-medium">
+              {fmtDate(today.toISOString())} → {fmtDate(endDate.toISOString())} ({effectiveDays} {lang === "bn" ? "দিন" : "days"})
+            </div>
+          )}
+        </div>
+      )}
+      {p && (
         <div className="rounded-xl glass p-3 text-sm flex justify-between">
           <span>{lang === "bn" ? "মোট" : "Total"}</span>
           <span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span>
