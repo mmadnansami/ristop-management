@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, Package, ShoppingCart, ShoppingBag, Boxes,
   Users, Truck, BarChart3, User, ShieldCheck, Search, MoreVertical,
-  LogOut, Menu, X,
+  LogOut, Menu, X, TrendingUp, Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,6 +46,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     { to: "/dashboard", icon: LayoutDashboard, label: t("dashboard") },
     { to: "/products", icon: Package, label: t("products") },
     { to: "/sales", icon: ShoppingCart, label: t("sales") },
+    { to: "/market-analyst", icon: TrendingUp, label: lang === "bn" ? "মার্কেট অ্যানালিস্ট" : "Market Analyst" },
     { to: "/purchases", icon: ShoppingBag, label: t("purchases") },
     { to: "/stock", icon: Boxes, label: t("stock") },
     { to: "/customers", icon: Users, label: t("customers") },
@@ -82,6 +83,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               </Link>
             );
           })}
+          <Link to="/subscribe" search={{ plan: "quarterly" }} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition text-sidebar-foreground hover:bg-secondary border border-primary/30 mt-2`}>
+            <Crown className="h-4 w-4 text-primary-glow" /> {lang === "bn" ? "সাবস্ক্রিপশন" : "Subscription"}
+          </Link>
           {profile?.isAdmin && (
             <Link to="/admin" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${loc.pathname === "/admin" ? "bg-gradient-primary text-primary-foreground shadow-glow" : "text-sidebar-foreground hover:bg-secondary"}`}>
               <ShieldCheck className="h-4 w-4" /> {t("admin")}

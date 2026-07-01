@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, Send, X } from "lucide-react";
+import { Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
 import { chatWithRis } from "@/lib/ai.functions";
 import { useI18n } from "@/lib/i18n";
+import { RisMascot } from "@/components/Logo";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -41,17 +42,17 @@ export function RisAssistant() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-primary shadow-glow animate-pulse-glow flex items-center justify-center text-primary-foreground hover:scale-110 transition"
+          className="fixed bottom-6 right-6 z-50 hover:scale-110 transition-transform"
           aria-label="Ris AI"
         >
-          <Sparkles className="h-6 w-6" />
+          <RisMascot className="h-20 w-20 animate-pulse-glow" />
         </button>
       )}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-[min(380px,calc(100vw-2rem))] h-[min(560px,calc(100vh-3rem))] rounded-2xl glass shadow-glow flex flex-col overflow-hidden">
+        <div className="fixed bottom-6 right-6 z-50 w-[min(380px,calc(100vw-2rem))] h-[min(560px,calc(100vh-3rem))] rounded-2xl glass-strong shadow-glow flex flex-col overflow-hidden border border-primary/30">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-primary">
             <div className="flex items-center gap-2 text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
+              <RisMascot className="h-9 w-9" />
               <span className="font-semibold">Ris {lang === "bn" ? "এসিস্ট্যান্ট" : "Assistant"}</span>
             </div>
             <button onClick={() => setOpen(false)} className="text-primary-foreground/80 hover:text-primary-foreground"><X className="h-5 w-5" /></button>
