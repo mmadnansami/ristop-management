@@ -12,7 +12,7 @@ export function RisAssistant() {
   const { lang } = useI18n();
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "assistant", content: lang === "bn" ? "হ্যালো! আমি Ris — আপনার স্মার্ট অ্যাসিস্ট্যান্ট। কীভাবে সাহায্য করতে পারি?" : "Hi! I'm Ris, your smart assistant. How can I help?" },
+    { role: "assistant", content: lang === "bn" ? "হ্যালো! আমি Restock AI — আপনার স্মার্ট অ্যাসিস্ট্যান্ট। কীভাবে সাহায্য করতে পারি?" : "Hi! I'm Restock AI, your smart assistant. How can I help?" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,9 +43,9 @@ export function RisAssistant() {
         <button
           onClick={() => setOpen(true)}
           className="fixed bottom-6 right-6 z-50 hover:scale-110 transition-transform"
-          aria-label="Ris AI"
+          aria-label="Restock AI"
         >
-          <RisMascot className="h-20 w-20 animate-pulse-glow" />
+          <RisMascot className="h-16 w-16 animate-pulse-glow" />
         </button>
       )}
       {open && (
@@ -53,7 +53,7 @@ export function RisAssistant() {
           <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-primary">
             <div className="flex items-center gap-2 text-primary-foreground">
               <RisMascot className="h-9 w-9" />
-              <span className="font-semibold">Ris {lang === "bn" ? "এসিস্ট্যান্ট" : "Assistant"}</span>
+              <span className="font-semibold">Restock AI {lang === "bn" ? "এসিস্ট্যান্ট" : "Assistant"}</span>
             </div>
             <button onClick={() => setOpen(false)} className="text-primary-foreground/80 hover:text-primary-foreground"><X className="h-5 w-5" /></button>
           </div>
@@ -65,7 +65,7 @@ export function RisAssistant() {
                 </div>
               </div>
             ))}
-            {loading && <div className="text-xs text-muted-foreground">Ris {lang === "bn" ? "লিখছে..." : "is typing..."}</div>}
+            {loading && <div className="text-xs text-muted-foreground">Restock AI {lang === "bn" ? "লিখছে..." : "is typing..."}</div>}
           </div>
           <div className="p-3 border-t border-border flex gap-2">
             <input
