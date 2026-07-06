@@ -11,8 +11,8 @@ const dict = {
   pricing: { bn: "প্ল্যান", en: "Pricing" },
   features: { bn: "ফিচার", en: "Features" },
   // Hero
-  heroTitle: { bn: "আপনার ব্যবসার পূর্ণ ম্যানেজমেন্ট, এক জায়গায়", en: "Run your entire business from one beautiful place" },
-  heroSub: { bn: "Ristop Management — স্মার্ট স্টক, সেলস, প্রফিট ও কাস্টমার ম্যানেজমেন্ট সাথে AI অ্যাসিস্ট্যান্ট Ris।", en: "Smart stock, sales, profit & customer management — supercharged by Ris, your AI assistant." },
+ heroTitle: { bn: "বাংলাদেশের সেরা বিজনেস ম্যানেজমেন্ট সফটওয়্যার", en: "Best Business Management Software in Bangladesh" },
+ heroSub: { bn: "Ristop Management — স্মার্ট স্টক, সেলস, প্রফিট, কাস্টমার ম্যানেজমেন্ট এবং Ris AI অ্যাসিস্ট্যান্ট। ঢাকা সহ পুরো বাংলাদেশের ছোট-বড় ব্যবসার জন্য।", en: "Top AI-powered POS & business management system in Dhaka. Smart stock, sales, profit & customer tools powered by Ris AI." },
   getStarted: { bn: "ফ্রি শুরু করুন", en: "Get Started Free" },
   watchDemo: { bn: "ফিচার দেখুন", en: "Explore Features" },
   // Sidebar items
