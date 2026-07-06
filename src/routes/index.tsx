@@ -99,6 +99,8 @@ function Landing() {
             { i: Sparkles, t: lang === "bn" ? "Ris — AI অ্যাসিস্ট্যান্ট" : "Ris — AI Assistant", d: lang === "bn" ? "সবসময় আপনার পাশে।" : "Always by your side." },
             { i: Cloud, t: lang === "bn" ? "ক্লাউড ব্যাকাপ" : "Cloud Backup", d: lang === "bn" ? "সেরা ক্লাউড সুবিধা।" : "Best-in-class cloud." },
             { i: ShieldCheck, t: lang === "bn" ? "ভাষা ট্রান্সলেটর" : "Language Translator", d: lang === "bn" ? "বাংলা / English টগল।" : "Bangla / English toggle." },
+            { i: LineChart, t: lang === "bn" ? "স্মার্ট মার্কেট অ্যানালাইসিস" : "Smart Market Analysis", d: lang === "bn" ? "রিয়েল-টাইম মার্কেট ট্রেন্ড ও ইনসাইট।" : "Real-time market trends & insights." },
+            { i: Wallet, t: lang === "bn" ? "স্মার্ট বকেয়া" : "Smart Bakeya (Dues)", d: lang === "bn" ? "কাস্টমার ও সাপ্লায়ার বকেয়া ট্র্যাক করুন।" : "Track customer & supplier dues easily." },
           ].map((f) => (
             <div key={f.t} className="group rounded-2xl glass border border-border p-6 hover:border-primary/50 hover:shadow-glow transition-all">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary shadow-glow mb-4">
