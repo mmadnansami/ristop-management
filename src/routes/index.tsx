@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Boxes, TrendingUp, PieChart, Bell, Users, FileText,
   Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
+  LineChart, Wallet,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
