@@ -47,6 +47,10 @@ function Admin() {
 
   const subOf = (uid: string) => (data?.subs ?? []).find((s) => s.user_id === uid && s.status === "active");
 
+  const totalUsers = (data?.profiles ?? []).length;
+  const activeSubs = (data?.subs ?? []).filter((s) => s.status === "active").length;
+  const pendingReq = (data?.requests ?? []).filter((r) => r.status === "pending").length;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -59,6 +63,22 @@ function Admin() {
           <DialogContent><DialogHeader><DialogTitle>Activate Subscription</DialogTitle></DialogHeader>
             <ActivateForm defaultEmail={activateEmail} onDone={() => { setActivateOpen(false); qc.invalidateQueries(); }} /></DialogContent>
         </Dialog>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="rounded-2xl glass border border-primary/30 p-5">
+          <div className="text-xs text-muted-foreground">{lang === "bn" ? "মোট ব্যবহারকারী" : "Total Users"}</div>
+          <div className="text-3xl font-black text-gradient mt-1">{totalUsers}</div>
+        </div>
+        <div className="rounded-2xl glass border border-success/30 p-5">
+          <div className="text-xs text-muted-foreground">{lang === "bn" ? "একটিভ সাবস্ক্রিপশন" : "Active Subscriptions"}</div>
+          <div className="text-3xl font-black text-success mt-1">{activeSubs}</div>
+        </div>
+        <div className="rounded-2xl glass border border-warning/30 p-5">
+          <div className="text-xs text-muted-foreground">{lang === "bn" ? "পেন্ডিং রিকোয়েস্ট" : "Pending Requests"}</div>
+          <div className="text-3xl font-black text-warning mt-1">{pendingReq}</div>
+        </div>
       </div>
 
       {/* Pending requests */}
