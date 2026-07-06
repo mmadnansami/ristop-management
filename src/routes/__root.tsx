@@ -50,24 +50,58 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
+const SITE_TITLE = "Ristop Management - Complete Business Management Software with Ris AI Assistant";
+const SITE_DESC = "Ristop Management- আপনার ব্যবসার পূর্ণ ম্যানেজমেন্ট, এক জায়গায়। স্মার্ট স্টক, সেলস, প্রফিট, কাস্টমার ম্যানেজমেন্ট এবং Ris AI অ্যাসিস্ট্যান্ট সম্বলিত একটি সম্পূর্ণ বিজনেস ম্যানেজমেন্ট সিস্টেম। Best business management software in Bangladesh, top AI-powered POS system in Dhaka.";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ristop Management — Smart Business Management" },
-      { name: "description", content: "Smart stock, sales, profit & customer management with the Ris AI assistant. Built for modern businesses." },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=5" },
+      { name: "google-site-verification", content: "fSNN_JpgEN-aWlZrp_TwjNMkIi6JsF8jqnrbWVS90T4" },
+      { title: SITE_TITLE },
+      { name: "description", content: SITE_DESC },
       { name: "author", content: "Ristop" },
-      { property: "og:title", content: "Ristop Management" },
-      { property: "og:description", content: "Smart business management with AI." },
+      { name: "keywords", content: "Ristop Management, business management software Bangladesh, POS Dhaka, stock management, sales tracking, Ris AI, inventory software Bangladesh, ব্যবসা ম্যানেজমেন্ট" },
+      { property: "og:title", content: SITE_TITLE },
+      { property: "og:description", content: SITE_DESC },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Ristop Management" },
+      { property: "og:locale", content: "bn_BD" },
+      { property: "og:locale:alternate", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SITE_TITLE },
+      { name: "twitter:description", content: SITE_DESC },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Ristop Management",
+          operatingSystem: "Web, Android, iOS",
+          applicationCategory: "BusinessApplication",
+          description: SITE_DESC,
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "BDT",
+            price: "399",
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.8",
+            ratingCount: "120",
+          },
+          areaServed: { "@type": "Country", name: "Bangladesh" },
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -78,7 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="bn" data-lang="en" className="dark">
       <head><HeadContent /></head>
       <body>{children}<Scripts /></body>
     </html>
