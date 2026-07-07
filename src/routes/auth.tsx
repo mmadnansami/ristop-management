@@ -74,7 +74,7 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
+    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
     const { data } = await supabase.auth.getUser();
