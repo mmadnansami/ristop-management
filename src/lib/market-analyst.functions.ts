@@ -186,7 +186,8 @@ export const getMarketOverview = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .handler(async ({ data, context }: { data: { region: Region; category?: string; lang: Lang }; context: any }) => {
     await ensurePremium(context.supabase, context.userId);
-    const { articles, note } = await fetchMarketSources(data.region, data.category, undefined, 1);
+    const windowDays = data.region === "bangladesh" ? 7 : 10;
+    const { articles, note } = await fetchMarketSources(data.region, data.category, undefined, windowDays);
     if (articles.length === 0) return emptyOverview(data.lang, sourceNote(data.lang, 0, note));
 
     const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
@@ -227,7 +228,7 @@ export const chatMarketAnalyst = createServerFn({ method: "POST" })
   .handler(async ({ data, context }: { data: { messages: { role: "user" | "assistant" | "system"; content: string }[]; lang: Lang }; context: any }) => {
     await ensurePremium(context.supabase, context.userId);
     const lastUserMessage = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "market prices demand";
-    const { articles, note } = await fetchMarketSources("bangladesh", undefined, lastUserMessage, 1);
+    const { articles, note } = await fetchMarketSources("bangladesh", undefined, lastUserMessage, 7);
     if (articles.length === 0) {
       return {
         reply: data.lang === "bn"
