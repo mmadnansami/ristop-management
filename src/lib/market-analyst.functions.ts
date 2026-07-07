@@ -192,7 +192,7 @@ export const getMarketOverview = createServerFn({ method: "POST" })
 
     const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
     const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the source list supplied by the app. If a claim is not clearly supported by the sources, omit it or mark trend as unknown.`;
-    const prompt = `Today is ${todayLabel(data.lang)} in Bangladesh time. Analyze only these current public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}.
+    const prompt = `Today is ${todayLabel(data.lang)} in Bangladesh time. Analyze the past ${windowDays} days of public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}. Aggregate trends across the window; do NOT invent daily numbers.
 
 SOURCES:
 ${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}
