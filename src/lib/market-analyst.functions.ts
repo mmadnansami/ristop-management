@@ -186,12 +186,13 @@ export const getMarketOverview = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .handler(async ({ data, context }: { data: { region: Region; category?: string; lang: Lang }; context: any }) => {
     await ensurePremium(context.supabase, context.userId);
-    const { articles, note } = await fetchMarketSources(data.region, data.category, undefined, 1);
+    const windowDays = data.region === "bangladesh" ? 7 : 10;
+    const { articles, note } = await fetchMarketSources(data.region, data.category, undefined, windowDays);
     if (articles.length === 0) return emptyOverview(data.lang, sourceNote(data.lang, 0, note));
 
     const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
     const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the source list supplied by the app. If a claim is not clearly supported by the sources, omit it or mark trend as unknown.`;
-    const prompt = `Today is ${todayLabel(data.lang)} in Bangladesh time. Analyze only these current public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}.
+    const prompt = `Today is ${todayLabel(data.lang)} in Bangladesh time. Analyze the past ${windowDays} days of public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}. Aggregate trends across the window; do NOT invent daily numbers.
 
 SOURCES:
 ${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}
@@ -227,7 +228,7 @@ export const chatMarketAnalyst = createServerFn({ method: "POST" })
   .handler(async ({ data, context }: { data: { messages: { role: "user" | "assistant" | "system"; content: string }[]; lang: Lang }; context: any }) => {
     await ensurePremium(context.supabase, context.userId);
     const lastUserMessage = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "market prices demand";
-    const { articles, note } = await fetchMarketSources("bangladesh", undefined, lastUserMessage, 1);
+    const { articles, note } = await fetchMarketSources("bangladesh", undefined, lastUserMessage, 7);
     if (articles.length === 0) {
       return {
         reply: data.lang === "bn"
