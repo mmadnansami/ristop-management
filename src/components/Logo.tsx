@@ -1,4 +1,4 @@
-import officialLogo from "@/assets/ristop-official-logo.jpg.asset.json";
+import officialLogo from "@/assets/ristop-official-logo-transparent.png.asset.json";
 import mascotAsset from "@/assets/ristop-mascot.png.asset.json";
 
 /**

@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, Package, ShoppingCart, ShoppingBag, Boxes,
   Users, Truck, BarChart3, User, ShieldCheck, Search, MoreVertical,
-  LogOut, Menu, X, TrendingUp, Crown,
+  LogOut, Menu, X, TrendingUp, Crown, Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,6 +51,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     { to: "/stock", icon: Boxes, label: t("stock") },
     { to: "/customers", icon: Users, label: t("customers") },
     { to: "/suppliers", icon: Truck, label: t("suppliers") },
+    { to: "/dues", icon: Wallet, label: lang === "bn" ? "বকেয়া" : "Dues" },
     { to: "/reports", icon: BarChart3, label: t("reports") },
     { to: "/profile", icon: User, label: t("profile") },
   ] as const;

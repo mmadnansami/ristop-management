@@ -71,6 +71,42 @@ export type Database = {
         }
         Relationships: []
       }
+      dues_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["due_kind"]
+          note: string | null
+          occurred_at: string
+          party_id: string
+          party_type: Database["public"]["Enums"]["due_party"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["due_kind"]
+          note?: string | null
+          occurred_at?: string
+          party_id: string
+          party_type: Database["public"]["Enums"]["due_party"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["due_kind"]
+          note?: string | null
+          occurred_at?: string
+          party_id?: string
+          party_type?: Database["public"]["Enums"]["due_party"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null
@@ -371,6 +407,7 @@ export type Database = {
       suppliers: {
         Row: {
           address: string | null
+          balance: number
           created_at: string
           email: string | null
           id: string
@@ -380,6 +417,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          balance?: number
           created_at?: string
           email?: string | null
           id?: string
@@ -389,6 +427,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          balance?: number
           created_at?: string
           email?: string | null
           id?: string
@@ -434,6 +473,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      due_kind: "charge" | "payment"
+      due_party: "customer" | "supplier"
       plan_type: "monthly" | "quarterly" | "biannual" | "lifetime"
       req_status: "pending" | "approved" | "rejected"
       sub_status: "active" | "expired" | "cancelled" | "pending"
@@ -565,6 +606,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      due_kind: ["charge", "payment"],
+      due_party: ["customer", "supplier"],
       plan_type: ["monthly", "quarterly", "biannual", "lifetime"],
       req_status: ["pending", "approved", "rejected"],
       sub_status: ["active", "expired", "cancelled", "pending"],
