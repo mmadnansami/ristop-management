@@ -58,7 +58,7 @@ function AuthPage() {
         if (error) throw error;
         if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, name);
         toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে! এখন সাবস্ক্রিপশন বেছে নিন।" : "Account created! Now choose a subscription.");
-        navigate({ to: "/subscribe", replace: true });
+        navigate({ to: "/subscribe", search: { plan: "quarterly" }, replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

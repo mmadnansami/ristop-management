@@ -60,7 +60,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    nav({ to: "/auth", replace: true });
+    nav({ to: "/auth", search: { mode: "signin" }, replace: true });
   };
 
   useEffect(() => { setOpen(false); }, [loc.pathname]);
