@@ -58,7 +58,7 @@ function AuthPage() {
         if (error) throw error;
         if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, name);
         toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে! এখন সাবস্ক্রিপশন বেছে নিন।" : "Account created! Now choose a subscription.");
-        navigate({ to: "/subscribe", replace: true });
+        navigate({ to: "/subscribe", search: { plan: "quarterly" }, replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -74,7 +74,26 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    const origin = window.location.origin;
+    const host = window.location.hostname;
+    const isLovableHosted = host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com");
+
+    if (!isLovableHosted) {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${origin}/auth`,
+          queryParams: { prompt: "select_account" },
+        },
+      });
+      if (error) { toast.error(error.message); setLoading(false); }
+      return;
+    }
+
+    const res = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: origin,
+      extraParams: { prompt: "select_account" },
+    });
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
     const { data } = await supabase.auth.getUser();

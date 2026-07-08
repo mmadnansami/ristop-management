@@ -36,7 +36,7 @@ function Landing() {
           </nav>
           <div className="flex items-center gap-2">
             <LanguageToggle />
-            <Link to="/auth"><Button variant="outline" size="sm" className="border-primary/40">{t("signIn")}</Button></Link>
+            <Link to="/auth" search={{ mode: "signin" }}><Button variant="outline" size="sm" className="border-primary/40">{t("signIn")}</Button></Link>
             <Link to="/auth" search={{ mode: "signup" }}><Button size="sm" className="bg-gradient-primary shadow-glow hidden sm:inline-flex">{t("signUp")}</Button></Link>
           </div>
         </div>
@@ -155,7 +155,7 @@ function Landing() {
       </section>
 
       <footer className="border-t border-border mt-20 py-8 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Ristop Management — {lang === "bn" ? "সব অধিকার সংরক্ষিত" : "All rights reserved"}
+        © 2026 Ristop Management — {lang === "bn" ? "সব অধিকার সংরক্ষিত" : "All rights reserved"}
       </footer>
 
       <RisAssistant />
