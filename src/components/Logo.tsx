@@ -1,15 +1,13 @@
-import officialLogo from "@/assets/ristop-official-logo-transparent.png.asset.json";
-import mascotAsset from "@/assets/ristop-mascot.png.asset.json";
+import officialLogoUrl from "@/assets/ristop-logo-selfhost.png";
+import mascotUrl from "@/assets/ristop-mascot-selfhost.webp";
 
 /**
- * Official Ristop Management wordmark — used as-is, no extra text.
- * Wrapped in an anchor + itemScope so Google associates the image
- * with the "Ristop Management" brand for image search.
+ * Official Ristop Management wordmark — bundled locally so it works on
+ * Vercel/GitHub deployments as well as Lovable preview.
  */
 export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
   return (
-    <a
-      href="/"
+    <span
       aria-label="Ristop Management — Official Logo"
       title="Ristop Management"
       className={`inline-flex items-center ${className}`}
@@ -18,7 +16,7 @@ export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
     >
       <meta itemProp="name" content="Ristop Management" />
       <img
-        src={officialLogo.url}
+        src={officialLogoUrl}
         alt="Ristop Management official logo"
         title="Ristop Management"
         itemProp="logo"
@@ -26,7 +24,7 @@ export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
         loading="eager"
         decoding="async"
       />
-    </a>
+    </span>
   );
 }
 
@@ -36,7 +34,7 @@ export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
 export function RisMascot({ className = "h-12 w-12" }: { className?: string }) {
   return (
     <img
-      src={mascotAsset.url}
+      src={mascotUrl}
       alt="Ristop AI Assistant mascot"
       title="Ristop AI"
       className={`${className} rounded-full object-cover shadow-[0_0_22px_rgba(168,85,247,0.55)]`}

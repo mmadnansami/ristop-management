@@ -74,7 +74,26 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    const origin = window.location.origin;
+    const host = window.location.hostname;
+    const isLovableHosted = host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com");
+
+    if (!isLovableHosted) {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${origin}/auth`,
+          queryParams: { prompt: "select_account" },
+        },
+      });
+      if (error) { toast.error(error.message); setLoading(false); }
+      return;
+    }
+
+    const res = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: origin,
+      extraParams: { prompt: "select_account" },
+    });
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
     const { data } = await supabase.auth.getUser();
