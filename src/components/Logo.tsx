@@ -1,5 +1,5 @@
-import officialLogoUrl from "@/assets/ristop-logo-selfhost.png";
-import mascotUrl from "@/assets/ristop-mascot-selfhost.webp";
+const officialLogoUrl = "/ristop-logo.png";
+const mascotUrl = "/ristop-mascot.webp";
 
 /**
  * Official Ristop Management wordmark — bundled locally so it works on
