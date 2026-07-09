@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireDeploymentAuth } from "@/lib/deployment-auth-middleware";
 
 type Region = "bangladesh" | "global";
 type Lang = "bn" | "en";
@@ -39,6 +39,23 @@ async function ensurePremium(supabase: { from: (t: string) => { select: (c: stri
 }
 
 const safeText = (value: unknown) => String(value ?? "").replace(/\s+/g, " ").trim();
+
+const PRODUCT_KEYWORDS = [
+  { name: "Rice", bn: "চাল", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["rice", "paddy", "beras", "চাল", "ধান"] },
+  { name: "Onion", bn: "পেঁয়াজ", category: "Vegetables", bnCategory: "সবজি", terms: ["onion", "onions", "পেঁয়াজ"] },
+  { name: "Potato", bn: "আলু", category: "Vegetables", bnCategory: "সবজি", terms: ["potato", "potatoes", "আলু"] },
+  { name: "Egg", bn: "ডিম", category: "Protein", bnCategory: "প্রোটিন", terms: ["egg", "eggs", "ডিম"] },
+  { name: "Chicken", bn: "মুরগি", category: "Protein", bnCategory: "প্রোটিন", terms: ["chicken", "broiler", "poultry", "মুরগি", "ব্রয়লার"] },
+  { name: "Beef", bn: "গরুর মাংস", category: "Protein", bnCategory: "প্রোটিন", terms: ["beef", "cattle", "গরুর মাংস"] },
+  { name: "Fish", bn: "মাছ", category: "Protein", bnCategory: "প্রোটিন", terms: ["fish", "hilsa", "seafood", "মাছ", "ইলিশ"] },
+  { name: "Soybean Oil", bn: "সয়াবিন তেল", category: "Edible oil", bnCategory: "ভোজ্যতেল", terms: ["soybean oil", "edible oil", "cooking oil", "সয়াবিন", "ভোজ্যতেল"] },
+  { name: "Sugar", bn: "চিনি", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["sugar", "চিনি"] },
+  { name: "Wheat", bn: "গম", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["wheat", "flour", "atta", "গম", "আটা", "ময়দা"] },
+  { name: "Lentil", bn: "ডাল", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["lentil", "pulse", "pulses", "dal", "ডাল"] },
+  { name: "Cotton", bn: "তুলা", category: "Textile", bnCategory: "টেক্সটাইল", terms: ["cotton", "yarn", "তুলা", "সুতা"] },
+  { name: "Garments", bn: "গার্মেন্টস", category: "Textile", bnCategory: "টেক্সটাইল", terms: ["garment", "apparel", "rmg", "গার্মেন্টস", "পোশাক"] },
+  { name: "Fuel", bn: "জ্বালানি", category: "Energy", bnCategory: "জ্বালানি", terms: ["fuel", "diesel", "petrol", "gas", "oil price", "জ্বালানি", "ডিজেল", "গ্যাস"] },
+];
 
 function todayLabel(lang: Lang) {
   return new Intl.DateTimeFormat(lang === "bn" ? "bn-BD" : "en-GB", {
@@ -132,21 +149,78 @@ function dailyTrendFromSources(articles: SourceArticle[]) {
 
 const callAI = async (system: string, user: string, jsonMode = false) => {
   const apiKey = process.env.LOVABLE_API_KEY;
-  if (!apiKey) throw new Error("AI not configured");
+  if (!apiKey) return "";
   const body: Record<string, unknown> = {
-    model: "google/gemini-3-flash-preview",
+    model: "google/gemini-2.5-flash",
     messages: [{ role: "system", content: system }, { role: "user", content: user }],
   };
   if (jsonMode) body.response_format = { type: "json_object" };
   const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`AI ${res.status}: ${(await res.text()).slice(0, 200)}`);
   const j = await res.json();
   return j?.choices?.[0]?.message?.content ?? "";
 };
+
+function fallbackOverview(articles: SourceArticle[], lang: Lang, note?: string): MarketOverview {
+  const matched = new Map<string, { category: string; titles: Set<string>; sources: Set<string> }>();
+  for (const article of articles) {
+    const haystack = `${article.title} ${article.source}`.toLowerCase();
+    for (const item of PRODUCT_KEYWORDS) {
+      if (!item.terms.some((term) => haystack.includes(term.toLowerCase()))) continue;
+      const key = lang === "bn" ? item.bn : item.name;
+      const current = matched.get(key) ?? {
+        category: lang === "bn" ? item.bnCategory : item.category,
+        titles: new Set<string>(),
+        sources: new Set<string>(),
+      };
+      current.titles.add(article.title);
+      current.sources.add(article.source);
+      matched.set(key, current);
+    }
+  }
+
+  const products = Array.from(matched.entries())
+    .map(([name, item]) => ({ name, item }))
+    .sort((a, b) => b.item.titles.size - a.item.titles.size)
+    .slice(0, 10);
+
+  const categories = new Map<string, { mentions: number; sources: Set<string> }>();
+  for (const { item } of products) {
+    const current = categories.get(item.category) ?? { mentions: 0, sources: new Set<string>() };
+    current.mentions += item.titles.size;
+    item.sources.forEach((source) => current.sources.add(source));
+    categories.set(item.category, current);
+  }
+
+  const maxMentions = Math.max(1, ...Array.from(categories.values()).map((item) => item.mentions));
+
+  return normalizeOverview({
+    top_products: products.map(({ name, item }) => ({
+      name,
+      category: item.category,
+      mentions: item.titles.size,
+      source_count: item.sources.size,
+      trend: "unknown" as const,
+      confidence: item.sources.size > 2 ? "medium" as const : "low" as const,
+      summary: lang === "bn"
+        ? `যাচাই করা সোর্সে ${name} নিয়ে ${item.titles.size}টি রিপোর্ট/উল্লেখ পাওয়া গেছে; স্পষ্ট দাম/দিক না থাকলে ট্রেন্ড unknown রাখা হয়েছে।`
+        : `${name} appears in ${item.titles.size} verified source mention(s); trend is kept unknown unless the source states a clear direction.`,
+      citations: Array.from(item.titles).slice(0, 3),
+    })),
+    category_demand: Array.from(categories.entries()).map(([category, item]) => ({
+      category,
+      demand_score: Math.round((item.mentions / maxMentions) * 100),
+      source_count: item.sources.size,
+    })),
+    insights: articles.slice(0, 3).map((article) => lang === "bn"
+      ? `সোর্স রিপোর্ট: ${article.title} — ${article.source}`
+      : `Source report: ${article.title} — ${article.source}`),
+  }, articles, lang, note);
+}
 
 function normalizeOverview(value: Partial<MarketOverview>, articles: SourceArticle[], lang: Lang, note?: string): MarketOverview {
   return {
@@ -177,7 +251,7 @@ function normalizeOverview(value: Partial<MarketOverview>, articles: SourceArtic
 
 export const getMarketOverview = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .middleware([requireSupabaseAuth as any])
+  .middleware([requireDeploymentAuth as any])
   .inputValidator((d: unknown) => z.object({
     region: z.enum(["bangladesh", "global"]).default("bangladesh"),
     category: z.string().max(60).optional(),
@@ -205,18 +279,19 @@ Return JSON exactly in this shape:
 }
 Rules: mention counts and source_count must be based on the source list only. No estimated price/revenue unless a source explicitly states it; prefer summaries over numbers.`;
     const raw = await callAI(sys, prompt, true);
+    if (!raw) return fallbackOverview(articles, data.lang, note);
     try {
       return normalizeOverview(JSON.parse(raw), articles, data.lang, note);
     } catch {
       const m = raw.match(/\{[\s\S]*\}/);
       if (m) return normalizeOverview(JSON.parse(m[0]), articles, data.lang, note);
-      return normalizeOverview({}, articles, data.lang, note);
+      return fallbackOverview(articles, data.lang, note);
     }
   });
 
 export const chatMarketAnalyst = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .middleware([requireSupabaseAuth as any])
+  .middleware([requireDeploymentAuth as any])
   .inputValidator((d: unknown) => z.object({
     messages: z.array(z.object({
       role: z.enum(["user", "assistant", "system"]),
@@ -240,11 +315,18 @@ export const chatMarketAnalyst = createServerFn({ method: "POST" })
       ? `তুমি একজন সোর্স-ভিত্তিক মার্কেট অ্যানালিস্ট। শুধুমাত্র নিচের আজকের পাবলিক সোর্স থেকে উত্তর দাও। কোনো তথ্য বানাবে না, ঈদ/সিজন/দাম/ডিমান্ড উল্লেখ করবে না যদি সোর্সে স্পষ্ট না থাকে। প্রতিটি গুরুত্বপূর্ণ দাবিতে সোর্সের নাম দাও। Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`
       : `You are a source-grounded market analyst. Answer only from today's public sources below. Do not invent prices, demand, seasonal/festival claims, or facts. Cite source names for important claims. Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`;
     const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("AI not configured");
+    if (!apiKey) {
+      const sourceLines = articles.slice(0, 5).map((article, index) => `${index + 1}. ${article.title} — ${article.source}`).join("\n");
+      return {
+        reply: data.lang === "bn"
+          ? `ভেরিফাইড লাইভ সোর্স পেয়েছি, কিন্তু Vercel সার্ভারে AI key নেই—তাই কোনো অনুমান করছি না। সোর্স-ভিত্তিক সারাংশ:\n${sourceLines}`
+          : `Verified live sources were found, but the Vercel server has no AI key, so I will not infer beyond sources. Source-backed summary:\n${sourceLines}`,
+      };
+    }
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
-      body: JSON.stringify({ model: "google/gemini-3-flash-preview", messages: [{ role: "system", content: sys }, ...data.messages] }),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ model: "google/gemini-2.5-flash", messages: [{ role: "system", content: sys }, ...data.messages] }),
     });
     if (!res.ok) throw new Error(`AI ${res.status}: ${(await res.text()).slice(0, 200)}`);
     const j = await res.json();
