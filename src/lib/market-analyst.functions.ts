@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireDeploymentAuth } from "@/lib/deployment-auth-middleware";
+import * as marketCore from "@/lib/market-analyst-core";
 
 type Region = "bangladesh" | "global";
 type Lang = "bn" | "en";
@@ -259,14 +260,14 @@ export const getMarketOverview = createServerFn({ method: "POST" })
   }).parse(d))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .handler(async ({ data, context }: { data: { region: Region; category?: string; lang: Lang }; context: any }) => {
-    await ensurePremium(context.supabase, context.userId);
+    await marketCore.ensurePremium(context.supabase, context.userId);
     const windowDays = data.region === "bangladesh" ? 7 : 10;
-    const { articles, note } = await fetchMarketSources(data.region, data.category, undefined, windowDays);
-    if (articles.length === 0) return emptyOverview(data.lang, sourceNote(data.lang, 0, note));
+    const { articles, note } = await marketCore.fetchMarketSources(data.region, data.category, undefined, windowDays);
+    if (articles.length === 0) return marketCore.emptyOverview(data.lang, marketCore.sourceNote(data.lang, 0, note));
 
     const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
     const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the source list supplied by the app. If a claim is not clearly supported by the sources, omit it or mark trend as unknown.`;
-    const prompt = `Today is ${todayLabel(data.lang)} in Bangladesh time. Analyze the past ${windowDays} days of public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}. Aggregate trends across the window; do NOT invent daily numbers.
+    const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Analyze the past ${windowDays} days of public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}. Aggregate trends across the window; do NOT invent daily numbers.
 
 SOURCES:
 ${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}
@@ -278,14 +279,14 @@ Return JSON exactly in this shape:
   "insights": [ string, string, string ]
 }
 Rules: mention counts and source_count must be based on the source list only. No estimated price/revenue unless a source explicitly states it; prefer summaries over numbers.`;
-    const raw = await callAI(sys, prompt, true);
-    if (!raw) return fallbackOverview(articles, data.lang, note);
+    const raw = await marketCore.callAI(sys, prompt, true);
+    if (!raw) return marketCore.fallbackOverview(articles, data.lang, note);
     try {
-      return normalizeOverview(JSON.parse(raw), articles, data.lang, note);
+      return marketCore.normalizeOverview(JSON.parse(raw), articles, data.lang, note);
     } catch {
       const m = raw.match(/\{[\s\S]*\}/);
-      if (m) return normalizeOverview(JSON.parse(m[0]), articles, data.lang, note);
-      return fallbackOverview(articles, data.lang, note);
+      if (m) return marketCore.normalizeOverview(JSON.parse(m[0]), articles, data.lang, note);
+      return marketCore.fallbackOverview(articles, data.lang, note);
     }
   });
 
@@ -301,9 +302,9 @@ export const chatMarketAnalyst = createServerFn({ method: "POST" })
   }).parse(d))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .handler(async ({ data, context }: { data: { messages: { role: "user" | "assistant" | "system"; content: string }[]; lang: Lang }; context: any }) => {
-    await ensurePremium(context.supabase, context.userId);
+    await marketCore.ensurePremium(context.supabase, context.userId);
     const lastUserMessage = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "market prices demand";
-    const { articles, note } = await fetchMarketSources("bangladesh", undefined, lastUserMessage, 7);
+    const { articles, note } = await marketCore.fetchMarketSources("bangladesh", undefined, lastUserMessage, 7);
     if (articles.length === 0) {
       return {
         reply: data.lang === "bn"
@@ -316,12 +317,7 @@ export const chatMarketAnalyst = createServerFn({ method: "POST" })
       : `You are a source-grounded market analyst. Answer only from today's public sources below. Do not invent prices, demand, seasonal/festival claims, or facts. Cite source names for important claims. Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`;
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
-      const sourceLines = articles.slice(0, 5).map((article, index) => `${index + 1}. ${article.title} — ${article.source}`).join("\n");
-      return {
-        reply: data.lang === "bn"
-          ? `ভেরিফাইড লাইভ সোর্স পেয়েছি, কিন্তু Vercel সার্ভারে AI key নেই—তাই কোনো অনুমান করছি না। সোর্স-ভিত্তিক সারাংশ:\n${sourceLines}`
-          : `Verified live sources were found, but the Vercel server has no AI key, so I will not infer beyond sources. Source-backed summary:\n${sourceLines}`,
-      };
+      return { reply: marketCore.aiMissingReply(articles, data.lang) };
     }
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
