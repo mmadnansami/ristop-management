@@ -30,6 +30,30 @@ function AuthPage() {
   useEffect(() => { setIsSignup(mode === "signup"); }, [mode]);
 
   useEffect(() => {
+    const finishOAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session?.user) return;
+      await ensureUserProfile(
+        data.session.user.id,
+        data.session.user.email ?? "",
+        data.session.user.user_metadata?.full_name as string | undefined,
+      );
+      navigate({ to: "/dashboard", replace: true });
+    };
+    finishOAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event !== "SIGNED_IN" || !session?.user) return;
+      await ensureUserProfile(
+        session.user.id,
+        session.user.email ?? "",
+        session.user.user_metadata?.full_name as string | undefined,
+      );
+      navigate({ to: "/dashboard", replace: true });
+    });
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) navigate({ to: "/dashboard", replace: true });
@@ -79,14 +103,19 @@ function AuthPage() {
     const isLovableHosted = host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com");
 
     if (!isLovableHosted) {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${origin}/auth`,
-          queryParams: { prompt: "select_account" },
-        },
-      });
-      if (error) { toast.error(error.message); setLoading(false); }
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${origin}/auth`,
+            queryParams: { prompt: "select_account" },
+          },
+        });
+        if (error) throw error;
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Google sign-in failed");
+        setLoading(false);
+      }
       return;
     }
 
