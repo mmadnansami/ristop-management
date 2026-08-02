@@ -7,16 +7,18 @@ import { Button } from "@/components/ui/button";
 import {
   Boxes, TrendingUp, PieChart, Bell, Users, FileText,
   Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
-  LineChart, Wallet,
+  LineChart, Wallet, MessageCircle,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ristop Management — Smart Business Management System" },
-      { name: "description", content: "All-in-one stock, sales, profit & customer management with Ris AI. Built for modern Bangladeshi businesses." },
-      { property: "og:title", content: "Ristop Management" },
-      { property: "og:description", content: "Smart business management — supercharged by AI." },
+      { title: "Best Business Management Software | Ristop" },
+      { name: "description", content: "Ristop is a complete business management software for Bangladesh with sales, stock, customer, supplier, dues, reports and AI tools." },
+      { property: "og:title", content: "Best Business Management Software | Ristop" },
+      { property: "og:description", content: "Manage sales, inventory, customers, suppliers, dues and reports from one secure workspace." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,
@@ -154,8 +156,42 @@ function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-border mt-20 py-8 text-center text-sm text-muted-foreground">
-        © 2026 Ristop Management — {lang === "bn" ? "সব অধিকার সংরক্ষিত" : "All rights reserved"}
+      <footer className="border-t border-border mt-20 bg-card/35">
+        <div className="container mx-auto grid gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Logo className="h-14 w-auto" />
+            <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">
+              {lang === "bn" ? "বাংলাদেশের ব্যবসার জন্য সেলস, স্টক, কাস্টমার, সাপ্লায়ার ও বকেয়া ব্যবস্থাপনার পূর্ণাঙ্গ সফটওয়্যার।" : "Complete sales, stock, customer, supplier and dues management for businesses in Bangladesh."}
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold text-foreground">{lang === "bn" ? "ক্যারিয়ার" : "Careers"}</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী</p>
+            <a href="https://wa.me/8801317680620?text=Hello%20Ristop%20Software%2C%20I%20would%20like%20to%20send%20my%20CV." target="_blank" rel="noreferrer" className="mt-4 inline-block">
+              <Button variant="outline" className="gap-2 border-success/50">
+                <MessageCircle className="h-4 w-4 text-success" /> WhatsApp-এ CV পাঠান
+              </Button>
+            </a>
+          </div>
+          <div>
+            <h2 className="font-semibold text-foreground">{lang === "bn" ? "রিসোর্স" : "Resources"}</h2>
+            <ul className="mt-3 space-y-3 text-sm text-muted-foreground">
+              <li><a href="#features" className="hover:text-foreground transition-colors">{lang === "bn" ? "ফিচারসমূহ" : "Features"}</a></li>
+              <li><a href="#pricing" className="hover:text-foreground transition-colors">{lang === "bn" ? "মূল্য ও প্ল্যান" : "Pricing"}</a></li>
+              <li><Link to="/auth" search={{ mode: "signin" }} className="hover:text-foreground transition-colors">{lang === "bn" ? "সাহায্য কেন্দ্র" : "Help center"}</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="font-semibold text-foreground">{lang === "bn" ? "ব্যবসা ব্যবস্থাপনা" : "Business management"}</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              {lang === "bn" ? "Ristop Management — বাংলাদেশের সেরা বিজনেস ম্যানেজমেন্ট সফটওয়্যার হওয়ার লক্ষ্যে তৈরি একটি আধুনিক ক্লাউড প্ল্যাটফর্ম।" : "Ristop Management is a modern cloud platform built to be the best business management software for Bangladesh."}
+            </p>
+          </div>
+        </div>
+        <div className="border-t border-border px-4 py-5 text-center text-sm text-muted-foreground">
+          <p>© 2026 Ristop Management — {lang === "bn" ? "সব অধিকার সংরক্ষিত" : "All rights reserved"}</p>
+          <p className="mt-1 font-medium text-foreground/80">Managed by Ristop Software</p>
+        </div>
       </footer>
 
       <RisAssistant />

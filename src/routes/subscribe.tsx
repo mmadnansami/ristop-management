@@ -19,6 +19,16 @@ const PLANS = {
 } as const;
 
 export const Route = createFileRoute("/subscribe")({
+  head: () => ({
+    meta: [
+      { title: "Ristop Management Pricing & Subscription" },
+      { name: "description", content: "Choose a Ristop Management subscription plan for sales, stock, customers, suppliers, dues, reports and Ris AI." },
+      { property: "og:title", content: "Ristop Management Pricing & Subscription" },
+      { property: "og:description", content: "Choose the right Ristop Management plan for your business." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   validateSearch: (s: Record<string, unknown>) => ({ plan: (["monthly", "quarterly", "biannual"].includes(s.plan as string) ? s.plan : "quarterly") as keyof typeof PLANS }),
   component: SubscribePage,
 });
