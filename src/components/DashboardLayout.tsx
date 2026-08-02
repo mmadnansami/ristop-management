@@ -29,13 +29,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     queryFn: async () => {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return null;
-      await supabase.from("profiles").upsert({
-        id: u.user.id,
-        email: u.user.email ?? "",
-        full_name: (u.user.user_metadata?.full_name as string | undefined) ?? (u.user.user_metadata?.name as string | undefined) ?? u.user.email?.split("@")[0] ?? "User",
-        avatar_url: (u.user.user_metadata?.avatar_url as string | undefined) ?? null,
-      }, { onConflict: "id" });
-      await supabase.from("user_roles").upsert({ user_id: u.user.id, role: "user" }, { onConflict: "user_id,role" });
       const { data: p } = await supabase.from("profiles").select("*").eq("id", u.user.id).maybeSingle();
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", u.user.id);
       return { user: u.user, profile: p, isAdmin: (roles ?? []).some((r) => r.role === "admin") };
@@ -124,6 +117,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </header>
 
         <main className="flex-1 p-4 md:p-6 overflow-x-hidden">{children}</main>
+        <footer className="border-t border-border px-4 py-4 text-center text-xs text-muted-foreground">
+          Managed by Ristop Software
+        </footer>
       </div>
 
       <RisAssistant />

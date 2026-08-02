@@ -13,6 +13,16 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Sign in | Ristop Management" },
+      { name: "description", content: "Sign in to Ristop Management or create an account with your name, email address and password." },
+      { property: "og:title", content: "Sign in | Ristop Management" },
+      { property: "og:description", content: "Access your secure Ristop Management business workspace." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   validateSearch: (s: Record<string, unknown>) => ({ mode: (s.mode === "signup" ? "signup" : "signin") as "signin" | "signup" }),
   component: AuthPage,
 });
@@ -31,23 +41,13 @@ function AuthPage() {
 
   useEffect(() => {
     const finishOAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session?.user) return;
-      await ensureUserProfile(
-        data.session.user.id,
-        data.session.user.email ?? "",
-        data.session.user.user_metadata?.full_name as string | undefined,
-      );
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
       navigate({ to: "/dashboard", replace: true });
     };
     finishOAuth();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event !== "SIGNED_IN" || !session?.user) return;
-      await ensureUserProfile(
-        session.user.id,
-        session.user.email ?? "",
-        session.user.user_metadata?.full_name as string | undefined,
-      );
       navigate({ to: "/dashboard", replace: true });
     });
     return () => subscription.unsubscribe();
@@ -80,14 +80,16 @@ function AuthPage() {
           options: { emailRedirectTo: `${window.location.origin}/subscribe`, data: { full_name: name } },
         });
         if (error) throw error;
-        if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, name);
-        toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে! এখন সাবস্ক্রিপশন বেছে নিন।" : "Account created! Now choose a subscription.");
+        if (!data.session) {
+          toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে। ইমেইল যাচাই করে তারপর লগইন করুন।" : "Account created. Check your email to confirm, then sign in.");
+          setIsSignup(false);
+          return;
+        }
+        toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে!" : "Account created!");
         navigate({ to: "/subscribe", search: { plan: "quarterly" }, replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        const { data } = await supabase.auth.getUser();
-        if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? email, data.user.user_metadata?.full_name as string | undefined);
         toast.success(lang === "bn" ? "স্বাগতম!" : "Welcome back!");
         navigate({ to: "/dashboard", replace: true });
       }
@@ -98,35 +100,12 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const origin = window.location.origin;
-    const host = window.location.hostname;
-    const isLovableHosted = host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com");
-
-    if (!isLovableHosted) {
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${origin}/auth`,
-            queryParams: { prompt: "select_account" },
-          },
-        });
-        if (error) throw error;
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Google sign-in failed");
-        setLoading(false);
-      }
-      return;
-    }
-
     const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: origin,
+      redirect_uri: window.location.origin,
       extraParams: { prompt: "select_account" },
     });
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
-    const { data } = await supabase.auth.getUser();
-    if (data.user) await ensureUserProfile(data.user.id, data.user.email ?? "", data.user.user_metadata?.full_name as string | undefined);
     navigate({ to: "/dashboard", replace: true });
   };
 
@@ -163,12 +142,15 @@ function AuthPage() {
             {isSignup ? (lang === "bn" ? "মাত্র কয়েক সেকেন্ডে শুরু করুন" : "Get started in seconds") : (lang === "bn" ? "আপনার একাউন্টে লগইন করুন" : "Sign in to continue")}
           </p>
 
-          <Button onClick={google} variant="outline" className="w-full mt-6 h-12 gap-2 rounded-full glass border-white/20" disabled={loading}>
-            <svg className="h-5 w-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC04" d="M5.84 14.1A6.6 6.6 0 0 1 5.48 12c0-.73.13-1.44.36-2.1V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.93l3.66-2.83z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>
-            {lang === "bn" ? "Google দিয়ে চালিয়ে যান" : "Continue with Google"}
-          </Button>
-
-          <div className="flex items-center gap-3 my-5"><div className="flex-1 h-px bg-white/10" /><span className="text-xs text-foreground/50">{lang === "bn" ? "অথবা" : "or"}</span><div className="flex-1 h-px bg-white/10" /></div>
+          {!isSignup && (
+            <>
+              <Button onClick={google} variant="outline" className="w-full mt-6 h-12 gap-2 rounded-full glass border-white/20" disabled={loading}>
+                <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC04" d="M5.84 14.1A6.6 6.6 0 0 1 5.48 12c0-.73.13-1.44.36-2.1V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.93l3.66-2.83z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>
+                {lang === "bn" ? "Google দিয়ে লগইন" : "Sign in with Google"}
+              </Button>
+              <div className="flex items-center gap-3 my-5"><div className="flex-1 h-px bg-white/10" /><span className="text-xs text-foreground/50">{lang === "bn" ? "অথবা" : "or"}</span><div className="flex-1 h-px bg-white/10" /></div>
+            </>
+          )}
 
           <form onSubmit={submit} className="space-y-4">
             {isSignup && (
@@ -186,9 +168,9 @@ function AuthPage() {
 
           <p className="text-sm text-center text-foreground/60 mt-6">
             {isSignup ? (lang === "bn" ? "ইতিমধ্যে একাউন্ট আছে?" : "Already a member?") : (lang === "bn" ? "নতুন এখানে?" : "Are You New Member?")}{" "}
-            <button onClick={() => setIsSignup(!isSignup)} className="text-primary-glow font-semibold hover:underline">
+            <Button type="button" variant="link" onClick={() => setIsSignup(!isSignup)} className="h-auto p-0 text-primary-glow font-semibold">
               {isSignup ? (lang === "bn" ? "লগইন করুন" : "Sign In") : (lang === "bn" ? "সাইন-আপ করুন" : "Sign UP")}
-            </button>
+            </Button>
           </p>
         </div>
       </main>
@@ -196,11 +178,3 @@ function AuthPage() {
   );
 }
 
-async function ensureUserProfile(userId: string, email: string, fullName?: string) {
-  await supabase.from("profiles").upsert({
-    id: userId,
-    email,
-    full_name: fullName || email.split("@")[0] || "User",
-  }, { onConflict: "id" });
-  await supabase.from("user_roles").upsert({ user_id: userId, role: "user" }, { onConflict: "user_id,role" });
-}
