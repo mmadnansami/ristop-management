@@ -3,7 +3,9 @@ import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { RisAssistant } from "@/components/RisAssistant";
 import { SiteFooter, CareersCta } from "@/components/SiteFooter";
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { PLAN_LIST, formatPrice, priceOf, originalPriceOf, discountPercent, type Currency } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
 import demoVideo1 from "@/assets/ristop-demo-1.mp4";
 import demoVideo2 from "@/assets/ristop-demo-2.mp4";
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const { t, lang } = useI18n();
+  const [currency, setCurrency] = useState<Currency>("BDT");
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Nav */}
