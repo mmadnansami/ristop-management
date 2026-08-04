@@ -1,25 +1,28 @@
-const officialLogoUrl = "/ristop-logo.png";
+const officialLogoUrl = "/ristop-official-logo.png";
 const mascotUrl = "/ristop-mascot.webp";
 
 /**
- * Official Ristop Management wordmark — bundled locally so it works on
- * Vercel/GitHub deployments as well as Lovable preview.
+ * Official RISTOP MANAGEMENT wordmark (the customer-approved logo).
+ * Served from /public so it renders identically on Lovable, Vercel and GitHub.
  */
-export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
+export function Logo({ className = "h-10 w-auto" }: { className?: string }) {
   return (
     <span
       aria-label="Ristop Management — Official Logo"
-      title="Ristop Management"
+      title="Ristop Management — Best Business Management Software"
       className={`inline-flex items-center ${className}`}
       itemScope
       itemType="https://schema.org/Organization"
     >
       <meta itemProp="name" content="Ristop Management" />
+      <link itemProp="url" href="https://ristop-smart-hub.lovable.app/" />
       <img
         src={officialLogoUrl}
-        alt="Ristop Management official logo"
+        alt="Ristop Management official logo — business management software"
         title="Ristop Management"
         itemProp="logo"
+        width={320}
+        height={100}
         className="h-full w-auto object-contain"
         loading="eager"
         decoding="async"

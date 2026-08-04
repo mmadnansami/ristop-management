@@ -2,13 +2,19 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { RisAssistant } from "@/components/RisAssistant";
+import { SiteFooter, CareersCta } from "@/components/SiteFooter";
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { PLAN_LIST, formatPrice, priceOf, originalPriceOf, discountPercent, type Currency } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
+import demoVideo1 from "@/assets/ristop-demo-1.mp4";
+import demoVideo2 from "@/assets/ristop-demo-2.mp4";
 import {
   Boxes, TrendingUp, PieChart, Bell, Users, FileText,
   Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
-  LineChart, Wallet, MessageCircle,
+  LineChart, Wallet,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,6 +32,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const { t, lang } = useI18n();
+  const [currency, setCurrency] = useState<Currency>("BDT");
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Nav */}
@@ -86,7 +93,34 @@ function Landing() {
         </div>
       </section>
 
+      {/* Demo videos */}
+      <section id="demo" className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl md:text-5xl font-bold text-center">
+          <span className="text-gradient">{lang === "bn" ? "ডেমো ভিডিও" : "Demo videos"}</span>
+        </h2>
+        <p className="text-center text-muted-foreground mt-3 max-w-2xl mx-auto">
+          {lang === "bn" ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।" : "See how Ristop Management works, in under a minute."}
+        </p>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {[demoVideo1, demoVideo2].map((src, i) => (
+            <div key={src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
+              <video
+                src={src}
+                controls
+                playsInline
+                muted
+                loop
+                preload="metadata"
+                aria-label={`Ristop Management demo video ${i + 1}`}
+                className="w-full rounded-xl bg-black"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Features */}
+
       <section id="features" className="container mx-auto px-4 py-20">
         <h2 className="text-3xl md:text-5xl font-bold text-center"><span className="text-gradient">{lang === "bn" ? "যা যা পাবেন" : "Everything you need"}</span></h2>
         <p className="text-center text-muted-foreground mt-3 max-w-2xl mx-auto">{lang === "bn" ? "একটাই সফটওয়্যার, পুরো ব্যবসার কন্ট্রোল।" : "One software, complete control of your business."}</p>
@@ -119,23 +153,40 @@ function Landing() {
       <section id="pricing" className="container mx-auto px-4 py-20">
         <h2 className="text-3xl md:text-5xl font-bold text-center"><span className="text-gradient">{lang === "bn" ? "সাবসক্রিপশন প্ল্যান" : "Subscription Plans"}</span></h2>
         <p className="text-center text-muted-foreground mt-3">{lang === "bn" ? "AI ফ্রি, প্রিমিয়াম ফিচারের জন্য একটা প্ল্যান বাছাই করুন।" : "AI is free forever. Choose a plan to unlock premium features."}</p>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-          {[
-            { id: "monthly", name: t("planMonthly"), price: 399, period: lang === "bn" ? "/মাস" : "/month" },
-            { id: "quarterly", name: t("planQuarterly"), price: 799, period: lang === "bn" ? "/৩ মাস" : "/3 months", popular: true },
-            { id: "biannual", name: t("planBiannual"), price: 1199, period: lang === "bn" ? "/৬ মাস" : "/6 months" },
-          ].map((p) => (
+        <div className="mt-6 flex justify-center gap-2">
+          {(["BDT", "USD"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCurrency(c)}
+              className={`rounded-full px-4 py-1.5 text-sm border transition ${currency === c ? "bg-gradient-primary text-primary-foreground border-transparent shadow-glow" : "border-border text-muted-foreground hover:text-foreground"}`}
+            >
+              {c === "BDT" ? "৳ BDT" : "$ USD / USDT"}
+            </button>
+          ))}
+        </div>
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          {PLAN_LIST.map((p) => (
             <div key={p.id} className={`relative rounded-2xl glass p-7 border ${p.popular ? "border-primary shadow-glow glow-ring" : "border-border"}`}>
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1">
                   <Star className="h-3 w-3" /> {t("popular")}
                 </div>
               )}
-              <h3 className="font-semibold text-xl">{p.name}</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-gradient">৳{p.price}</span>
-                <span className="text-muted-foreground text-sm">{p.period}</span>
+              <h3 className="font-semibold text-xl">{lang === "bn" ? p.label_bn : p.label_en}</h3>
+              <div className="mt-4 flex items-baseline gap-2 flex-wrap">
+                <span className="text-4xl font-bold text-gradient">{formatPrice(priceOf(p, currency), currency)}</span>
+                {originalPriceOf(p, currency) && (
+                  <span className="text-sm text-muted-foreground line-through">{formatPrice(originalPriceOf(p, currency)!, currency)}</span>
+                )}
+                <span className="text-muted-foreground text-sm">{lang === "bn" ? p.period_bn : p.period_en}</span>
               </div>
+              {discountPercent(p, currency) > 0 && (
+                <div className="mt-2 inline-flex rounded-full bg-success/15 px-2.5 py-1 text-xs text-success">
+                  {lang === "bn" ? `লঞ্চিং ডিসকাউন্ট ${discountPercent(p, currency)}%` : `Launch discount ${discountPercent(p, currency)}%`}
+                </div>
+              )}
+
               <ul className="mt-6 space-y-2 text-sm">
                 {[
                   lang === "bn" ? "সব ফিচার আনলিমিটেড" : "All features unlimited",
@@ -156,43 +207,33 @@ function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-border mt-20 bg-card/35">
-        <div className="container mx-auto grid gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <Logo className="h-14 w-auto" />
-            <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">
-              {lang === "bn" ? "বাংলাদেশের ব্যবসার জন্য সেলস, স্টক, কাস্টমার, সাপ্লায়ার ও বকেয়া ব্যবস্থাপনার পূর্ণাঙ্গ সফটওয়্যার।" : "Complete sales, stock, customer, supplier and dues management for businesses in Bangladesh."}
-            </p>
-          </div>
-          <div>
-            <h2 className="font-semibold text-foreground">{lang === "bn" ? "ক্যারিয়ার" : "Careers"}</h2>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী</p>
-            <a href="https://wa.me/8801317680620?text=Hello%20Ristop%20Software%2C%20I%20would%20like%20to%20send%20my%20CV." target="_blank" rel="noreferrer" className="mt-4 inline-block">
-              <Button variant="outline" className="gap-2 border-success/50">
-                <MessageCircle className="h-4 w-4 text-success" /> WhatsApp-এ CV পাঠান
-              </Button>
-            </a>
-          </div>
-          <div>
-            <h2 className="font-semibold text-foreground">{lang === "bn" ? "রিসোর্স" : "Resources"}</h2>
-            <ul className="mt-3 space-y-3 text-sm text-muted-foreground">
-              <li><a href="#features" className="hover:text-foreground transition-colors">{lang === "bn" ? "ফিচারসমূহ" : "Features"}</a></li>
-              <li><a href="#pricing" className="hover:text-foreground transition-colors">{lang === "bn" ? "মূল্য ও প্ল্যান" : "Pricing"}</a></li>
-              <li><Link to="/auth" search={{ mode: "signin" }} className="hover:text-foreground transition-colors">{lang === "bn" ? "সাহায্য কেন্দ্র" : "Help center"}</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h2 className="font-semibold text-foreground">{lang === "bn" ? "ব্যবসা ব্যবস্থাপনা" : "Business management"}</h2>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              {lang === "bn" ? "Ristop Management — বাংলাদেশের সেরা বিজনেস ম্যানেজমেন্ট সফটওয়্যার হওয়ার লক্ষ্যে তৈরি একটি আধুনিক ক্লাউড প্ল্যাটফর্ম।" : "Ristop Management is a modern cloud platform built to be the best business management software for Bangladesh."}
-            </p>
-          </div>
+      {/* Reviews & case studies */}
+      <section className="container mx-auto px-4 pb-8">
+        <div className="grid gap-5 md:grid-cols-3">
+          {[
+            { t: lang === "bn" ? "কাস্টমার রিভিউ" : "Customer reviews", d: lang === "bn" ? "বাস্তব ব্যবসায়ীদের অভিজ্ঞতা পড়ুন।" : "Read what real business owners say.", slug: "reviews" },
+            { t: lang === "bn" ? "কেস স্টাডি" : "Case studies", d: lang === "bn" ? "কীভাবে দোকান ও ডিস্ট্রিবিউটররা লাভ বাড়িয়েছে।" : "How shops and distributors improved profit.", slug: "case-studies" },
+            { t: lang === "bn" ? "দ্রুত সাপোর্ট" : "Fast support", d: lang === "bn" ? "WhatsApp-এ ১৫ মিনিটের মধ্যে উত্তর।" : "WhatsApp replies within 15 minutes.", slug: "support" },
+          ].map((c) => (
+            <Link key={c.slug} to="/info/$slug" params={{ slug: c.slug }} className="rounded-2xl glass border border-border p-6 transition hover:border-primary/50 hover:shadow-glow">
+              <h3 className="font-semibold text-lg">{c.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary-glow">{lang === "bn" ? "দেখুন" : "Explore"} <ArrowRight className="h-4 w-4" /></span>
+            </Link>
+          ))}
         </div>
-        <div className="border-t border-border px-4 py-5 text-center text-sm text-muted-foreground">
-          <p>© 2026 Ristop Management — {lang === "bn" ? "সব অধিকার সংরক্ষিত" : "All rights reserved"}</p>
-          <p className="mt-1 font-medium text-foreground/80">Managed by Ristop Software</p>
+      </section>
+
+      <section className="container mx-auto px-4 pb-16">
+        <div className="rounded-2xl glass border border-primary/30 p-6 text-center">
+          <h2 className="text-xl font-semibold">{lang === "bn" ? "ক্যারিয়ার" : "Careers"}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী</p>
+          <div className="mt-4 flex justify-center"><CareersCta /></div>
         </div>
-      </footer>
+      </section>
+
+      <SiteFooter />
+
 
       <RisAssistant />
     </div>

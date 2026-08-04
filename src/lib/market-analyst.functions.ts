@@ -262,12 +262,25 @@ export const getMarketOverview = createServerFn({ method: "POST" })
   .handler(async ({ data, context }: { data: { region: Region; category?: string; lang: Lang }; context: any }) => {
     await marketCore.ensurePremium(context.supabase, context.userId);
     const windowDays = data.region === "bangladesh" ? 7 : 10;
-    const { articles, note } = await marketCore.fetchMarketSources(data.region, data.category, undefined, windowDays);
-    if (articles.length === 0) return marketCore.emptyOverview(data.lang, marketCore.sourceNote(data.lang, 0, note));
+    const regionLabel = data.region === "bangladesh" ? "Bangladesh" : "the global market";
+    const focus = data.category ? `focused on ${data.category}` : "across major retail products and commodities";
+
+    const gdelt = await marketCore.fetchMarketSources(data.region, data.category, undefined, windowDays);
+    const grounded = await marketCore.geminiGroundedSearch(
+      `Search the web right now and report the last ${windowDays} days of ${regionLabel} market movement ${focus}. Include current retail/wholesale prices, demand direction, supply issues, imports/exports and inflation. Use only what you find in search results, with dates and the outlet name for each fact. Today is ${marketCore.todayLabel("en")}.`,
+    );
+    const articles = marketCore.mergeSources(grounded.sources, gdelt.articles);
+    const note = grounded.text ? undefined : (grounded.note ?? gdelt.note);
+    if (articles.length === 0 && !grounded.text) {
+      return marketCore.emptyOverview(data.lang, marketCore.sourceNote(data.lang, 0, note));
+    }
 
     const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
-    const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the source list supplied by the app. If a claim is not clearly supported by the sources, omit it or mark trend as unknown.`;
-    const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Analyze the past ${windowDays} days of public sources for ${data.region === "bangladesh" ? "Bangladesh" : "global"} market movement ${data.category ? `focused on ${data.category}` : "across products"}. Aggregate trends across the window; do NOT invent daily numbers.
+    const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the research brief and source list supplied by the app.`;
+    const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Build a market overview for ${regionLabel} ${focus} covering the past ${windowDays} days.
+
+LIVE RESEARCH BRIEF (from Google Search):
+${grounded.text || "(none)"}
 
 SOURCES:
 ${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}
@@ -278,7 +291,7 @@ Return JSON exactly in this shape:
   "category_demand": [ { "category": string, "demand_score": number, "source_count": number } ],
   "insights": [ string, string, string ]
 }
-Rules: mention counts and source_count must be based on the source list only. No estimated price/revenue unless a source explicitly states it; prefer summaries over numbers.`;
+Rules: include concrete prices/percentages ONLY when the brief or a source states them. Give at least 5 products when the brief supports it.`;
     const raw = await marketCore.callAI(sys, prompt, true);
     if (!raw) return marketCore.fallbackOverview(articles, data.lang, note);
     try {
@@ -303,22 +316,37 @@ export const chatMarketAnalyst = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .handler(async ({ data, context }: { data: { messages: { role: "user" | "assistant" | "system"; content: string }[]; lang: Lang }; context: any }) => {
     await marketCore.ensurePremium(context.supabase, context.userId);
-    const lastUserMessage = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "market prices demand";
-    const { articles, note } = await marketCore.fetchMarketSources("bangladesh", undefined, lastUserMessage, 7);
+    const question = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "market prices demand";
+    const history = data.messages.slice(-6).map((m) => `${m.role}: ${m.content}`).join("\n");
+    const replyLang = data.lang === "bn" ? "Answer in Bengali (বাংলা)." : "Answer in English.";
+
+    const grounded = await marketCore.geminiGroundedSearch(
+      `You are Ristop's business & market analyst. Search the web now and answer the question with real, current data (prices, demand, supply, import/export, inflation) for Bangladesh and global markets where relevant. ${replyLang} Be concrete, use numbers and dates you actually found, and list the outlet names you used at the end. Today is ${marketCore.todayLabel("en")}.
+
+Conversation:
+${history}
+
+Question: ${question}`,
+    );
+
+    if (grounded.text) {
+      const cite = grounded.sources.slice(0, 5).map((s, i) => `${i + 1}. ${s.title}`).join("\n");
+      return { reply: cite ? `${grounded.text}\n\n${data.lang === "bn" ? "সোর্স:" : "Sources:"}\n${cite}` : grounded.text };
+    }
+
+    const { articles, note } = await marketCore.fetchMarketSources("bangladesh", undefined, question, 7);
     if (articles.length === 0) {
       return {
         reply: data.lang === "bn"
-          ? "আজকের লাইভ সোর্স এখন পাওয়া যাচ্ছে না/রেট-লিমিটেড, তাই আমি কোনো অনুমান বা fake insight দেব না। একটু পরে আবার চেষ্টা করুন।"
-          : "Live sources are unavailable/rate-limited right now, so I will not provide fake insights. Please try again shortly.",
+          ? "এই মুহূর্তে লাইভ সার্চ সোর্স পাওয়া যাচ্ছে না, তাই আমি অনুমান দেব না। কিছুক্ষণ পর আবার চেষ্টা করুন।"
+          : "Live search sources are unavailable right now, so I will not guess. Please try again shortly.",
       };
     }
     const sys = data.lang === "bn"
-      ? `তুমি একজন সোর্স-ভিত্তিক মার্কেট অ্যানালিস্ট। শুধুমাত্র নিচের আজকের পাবলিক সোর্স থেকে উত্তর দাও। কোনো তথ্য বানাবে না, ঈদ/সিজন/দাম/ডিমান্ড উল্লেখ করবে না যদি সোর্সে স্পষ্ট না থাকে। প্রতিটি গুরুত্বপূর্ণ দাবিতে সোর্সের নাম দাও। Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`
-      : `You are a source-grounded market analyst. Answer only from today's public sources below. Do not invent prices, demand, seasonal/festival claims, or facts. Cite source names for important claims. Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`;
+      ? `তুমি একজন সোর্স-ভিত্তিক মার্কেট অ্যানালিস্ট। শুধুমাত্র নিচের সোর্স থেকে উত্তর দাও। Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`
+      : `You are a source-grounded market analyst. Answer only from the sources below. Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`;
     const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) {
-      return { reply: marketCore.aiMissingReply(articles, data.lang) };
-    }
+    if (!apiKey) return { reply: marketCore.aiMissingReply(articles, data.lang) };
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
