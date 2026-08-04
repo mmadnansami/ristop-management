@@ -150,23 +150,40 @@ function Landing() {
       <section id="pricing" className="container mx-auto px-4 py-20">
         <h2 className="text-3xl md:text-5xl font-bold text-center"><span className="text-gradient">{lang === "bn" ? "সাবসক্রিপশন প্ল্যান" : "Subscription Plans"}</span></h2>
         <p className="text-center text-muted-foreground mt-3">{lang === "bn" ? "AI ফ্রি, প্রিমিয়াম ফিচারের জন্য একটা প্ল্যান বাছাই করুন।" : "AI is free forever. Choose a plan to unlock premium features."}</p>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-          {[
-            { id: "monthly", name: t("planMonthly"), price: 399, period: lang === "bn" ? "/মাস" : "/month" },
-            { id: "quarterly", name: t("planQuarterly"), price: 799, period: lang === "bn" ? "/৩ মাস" : "/3 months", popular: true },
-            { id: "biannual", name: t("planBiannual"), price: 1199, period: lang === "bn" ? "/৬ মাস" : "/6 months" },
-          ].map((p) => (
+        <div className="mt-6 flex justify-center gap-2">
+          {(["BDT", "USD"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCurrency(c)}
+              className={`rounded-full px-4 py-1.5 text-sm border transition ${currency === c ? "bg-gradient-primary text-primary-foreground border-transparent shadow-glow" : "border-border text-muted-foreground hover:text-foreground"}`}
+            >
+              {c === "BDT" ? "৳ BDT" : "$ USD / USDT"}
+            </button>
+          ))}
+        </div>
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          {PLAN_LIST.map((p) => (
             <div key={p.id} className={`relative rounded-2xl glass p-7 border ${p.popular ? "border-primary shadow-glow glow-ring" : "border-border"}`}>
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1">
                   <Star className="h-3 w-3" /> {t("popular")}
                 </div>
               )}
-              <h3 className="font-semibold text-xl">{p.name}</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-gradient">৳{p.price}</span>
-                <span className="text-muted-foreground text-sm">{p.period}</span>
+              <h3 className="font-semibold text-xl">{lang === "bn" ? p.label_bn : p.label_en}</h3>
+              <div className="mt-4 flex items-baseline gap-2 flex-wrap">
+                <span className="text-4xl font-bold text-gradient">{formatPrice(priceOf(p, currency), currency)}</span>
+                {originalPriceOf(p, currency) && (
+                  <span className="text-sm text-muted-foreground line-through">{formatPrice(originalPriceOf(p, currency)!, currency)}</span>
+                )}
+                <span className="text-muted-foreground text-sm">{lang === "bn" ? p.period_bn : p.period_en}</span>
               </div>
+              {discountPercent(p, currency) > 0 && (
+                <div className="mt-2 inline-flex rounded-full bg-success/15 px-2.5 py-1 text-xs text-success">
+                  {lang === "bn" ? `লঞ্চিং ডিসকাউন্ট ${discountPercent(p, currency)}%` : `Launch discount ${discountPercent(p, currency)}%`}
+                </div>
+              )}
+
               <ul className="mt-6 space-y-2 text-sm">
                 {[
                   lang === "bn" ? "সব ফিচার আনলিমিটেড" : "All features unlimited",
