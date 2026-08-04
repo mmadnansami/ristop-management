@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { RisAssistant } from "@/components/RisAssistant";
+import { SiteFooter } from "@/components/SiteFooter";
+
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -117,10 +119,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </header>
 
         <main className="flex-1 p-4 md:p-6 overflow-x-hidden">{children}</main>
-        <footer className="border-t border-border px-4 py-4 text-center text-xs text-muted-foreground">
-          Managed by Ristop Software
-        </footer>
+        <SiteFooter />
       </div>
+
 
       <RisAssistant />
     </div>

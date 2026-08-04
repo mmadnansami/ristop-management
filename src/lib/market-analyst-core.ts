@@ -90,3 +90,58 @@ export function aiMissingReply(articles: SourceArticle[], lang: Lang) {
   const sourceLines = articles.slice(0, 5).map((a, i) => `${i + 1}. ${a.title} — ${a.source}`).join("\n");
   return lang === "bn" ? `ভেরিফাইড লাইভ সোর্স পেয়েছি, কিন্তু Vercel সার্ভারে AI key নেই—তাই কোনো অনুমান করছি না। সোর্স-ভিত্তিক সারাংশ:\n${sourceLines}` : `Verified live sources were found, but the Vercel server has no AI key, so I will not infer beyond sources. Source-backed summary:\n${sourceLines}`;
 }
+/**
+ * Google Gemini with the built-in google_search tool. This returns REAL,
+ * freshly searched web data plus the grounded source list.
+ */
+export async function geminiGroundedSearch(prompt: string): Promise<{ text: string; sources: SourceArticle[]; note?: string }> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return { text: "", sources: [], note: "GEMINI_KEY_MISSING" };
+  try {
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          tools: [{ google_search: {} }],
+        }),
+      },
+    );
+    if (!res.ok) return { text: "", sources: [], note: `GEMINI_${res.status}` };
+    const j = await res.json() as {
+      candidates?: Array<{
+        content?: { parts?: Array<{ text?: string }> };
+        groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string; title?: string } }> };
+      }>;
+    };
+    const cand = j.candidates?.[0];
+    const text = (cand?.content?.parts ?? []).map((p) => p.text ?? "").join("\n").trim();
+    const nowIso = new Date().toISOString();
+    const seen = new Set<string>();
+    const sources: SourceArticle[] = [];
+    for (const chunk of cand?.groundingMetadata?.groundingChunks ?? []) {
+      const uri = safeText(chunk.web?.uri);
+      const title = safeText(chunk.web?.title);
+      if (!uri || !title || seen.has(title)) continue;
+      seen.add(title);
+      sources.push({ title, url: uri, source: title, published_at: nowIso });
+    }
+    return { text, sources };
+  } catch (error) {
+    return { text: "", sources: [], note: error instanceof Error ? error.message : "GEMINI_FAILED" };
+  }
+}
+
+export function mergeSources(a: SourceArticle[], b: SourceArticle[]): SourceArticle[] {
+  const out: SourceArticle[] = [];
+  const seen = new Set<string>();
+  for (const item of [...a, ...b]) {
+    const k = item.url || item.title;
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    out.push(item);
+  }
+  return out.slice(0, 35);
+}

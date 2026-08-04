@@ -75,6 +75,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/ristop-official-logo.png" },
+      { rel: "canonical", href: "/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" },
@@ -82,27 +85,40 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Ristop Management",
-          operatingSystem: "Web, Android, iOS",
-          applicationCategory: "BusinessApplication",
-          description: SITE_DESC,
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "BDT",
-            price: "399",
+        children: JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Ristop Management",
+            alternateName: "Ristop Software",
+            url: "https://ristop-smart-hub.lovable.app/",
+            logo: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
+            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
+            description: SITE_DESC,
+            telephone: "+8801317680620",
+            areaServed: { "@type": "Country", name: "Bangladesh" },
+            sameAs: ["https://wa.me/8801317680620"],
           },
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.8",
-            ratingCount: "120",
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Ristop Management",
+            operatingSystem: "Web, Android, iOS",
+            applicationCategory: "BusinessApplication",
+            description: SITE_DESC,
+            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
+            offers: [
+              { "@type": "Offer", priceCurrency: "BDT", price: "190", name: "Monthly plan (launch discount)" },
+              { "@type": "Offer", priceCurrency: "USD", price: "3", name: "Monthly plan (launch discount)" },
+              { "@type": "Offer", priceCurrency: "USD", price: "10", name: "3-month plan" },
+              { "@type": "Offer", priceCurrency: "USD", price: "16", name: "6-month plan" },
+            ],
+            areaServed: { "@type": "Country", name: "Bangladesh" },
           },
-          areaServed: { "@type": "Country", name: "Bangladesh" },
-        }),
+        ]),
       },
     ],
+
   }),
   shellComponent: RootShell,
   component: RootComponent,

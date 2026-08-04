@@ -50,7 +50,7 @@ interface I18nCtx { lang: Lang; setLang: (l: Lang) => void; t: (k: Key) => strin
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("bn");
+  const [lang, setLangState] = useState<Lang>("en");
   useEffect(() => {
     const saved = (typeof window !== "undefined" && localStorage.getItem("ristop_lang")) as Lang | null;
     if (saved === "bn" || saved === "en") setLangState(saved);
