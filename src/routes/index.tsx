@@ -7,8 +7,8 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { PLAN_LIST, formatPrice, priceOf, originalPriceOf, discountPercent, type Currency } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
-import demoVideo1 from "@/assets/ristop-demo-1.mp4";
-import demoVideo2 from "@/assets/ristop-demo-2.mp4";
+import demoVideo1Asset from "@/assets/ristop-demo-1.mp4.asset.json";
+import demoVideo2Asset from "@/assets/ristop-demo-2.mp4.asset.json";
 import {
   Boxes, TrendingUp, PieChart, Bell, Users, FileText,
   Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
