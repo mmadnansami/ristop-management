@@ -77,7 +77,7 @@ export function SiteFooter() {
           </p>
           <div className="mt-4 space-y-1.5 text-sm text-muted-foreground">
             <a href="tel:+8801317680620" className="flex items-center gap-2 hover:text-foreground"><Phone className="h-4 w-4" /> +880 1317 680620</a>
-            <a href="mailto:support@ristopsoftware.com" className="flex items-center gap-2 break-all hover:text-foreground"><Mail className="h-4 w-4 shrink-0" /> support@ristopsoftware.com</a>
+            <a href="mailto:ristopsoftware@gmail.com" className="flex items-center gap-2 break-all hover:text-foreground"><Mail className="h-4 w-4 shrink-0" /> ristopsoftware@gmail.com</a>
           </div>
           <div className="mt-4 flex items-center gap-3 text-muted-foreground">
             <a href={WHATSAPP} target="_blank" rel="noreferrer" aria-label="WhatsApp" className="hover:text-foreground"><MessageCircle className="h-5 w-5" /></a>

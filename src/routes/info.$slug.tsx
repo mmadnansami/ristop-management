@@ -43,8 +43,8 @@ const PAGES: Record<string, Page> = {
     title_en: "Contact Ristop",
     title_bn: "যোগাযোগ",
     desc: "Contact Ristop Management support by WhatsApp, phone or email.",
-    body_en: ["WhatsApp / Phone: +880 1317 680620", "Email: support@ristopsoftware.com", "Support hours: 9:00 AM – 10:00 PM (Asia/Dhaka), 7 days a week."],
-    body_bn: ["WhatsApp / ফোন: +880 1317 680620", "ইমেইল: support@ristopsoftware.com", "সাপোর্ট সময়: সকাল ৯টা – রাত ১০টা (ঢাকা), সপ্তাহে ৭ দিন।"],
+    body_en: ["WhatsApp / Phone: +880 1317 680620", "Email: ristopsoftware@gmail.com", "Support hours: 24 hours a day, 7 days a week."],
+    body_bn: ["WhatsApp / ফোন: +880 1317 680620", "ইমেইল: ristopsoftware@gmail.com", "সাপোর্ট সময়: ২৪ ঘণ্টা, সপ্তাহে ৭ দিন।"],
     careers: true,
   },
   blog: {
@@ -133,8 +133,8 @@ const PAGES: Record<string, Page> = {
     title_en: "Fast Support",
     title_bn: "দ্রুত সাপোর্ট",
     desc: "Get fast Ristop Management support on WhatsApp, phone and email.",
-    body_en: ["Average first response under 15 minutes during support hours.", "WhatsApp: +880 1317 680620", "Email: support@ristopsoftware.com"],
-    body_bn: ["সাপোর্ট সময়ে গড়ে ১৫ মিনিটের মধ্যে প্রথম উত্তর।", "WhatsApp: +880 1317 680620", "ইমেইল: support@ristopsoftware.com"],
+    body_en: ["Average first response under 15 minutes during support hours.", "WhatsApp: +880 1317 680620", "Email: ristopsoftware@gmail.com"],
+    body_bn: ["সাপোর্ট সময়ে গড়ে ১৫ মিনিটের মধ্যে প্রথম উত্তর।", "WhatsApp: +880 1317 680620", "ইমেইল: ristopsoftware@gmail.com"],
     careers: true,
   },
   security: {
@@ -159,12 +159,12 @@ const PAGES: Record<string, Page> = {
     body_en: [
       "We collect only the account data you provide (name, email, phone) and the business records you create.",
       "We never sell your data and never share business records with other customers.",
-      "You can request deletion of your account and data at any time via support@ristopsoftware.com.",
+      "You can request deletion of your account and data at any time via ristopsoftware@gmail.com.",
     ],
     body_bn: [
       "আমরা কেবল আপনার দেওয়া অ্যাকাউন্ট তথ্য (নাম, ইমেইল, ফোন) ও আপনার তৈরি ব্যবসায়িক রেকর্ড সংগ্রহ করি।",
       "আমরা কখনো আপনার ডেটা বিক্রি করি না বা অন্য কাস্টমারের সাথে শেয়ার করি না।",
-      "যেকোনো সময় support@ristopsoftware.com-এ অ্যাকাউন্ট ও ডেটা মুছে ফেলার অনুরোধ করতে পারেন।",
+      "যেকোনো সময় ristopsoftware@gmail.com-এ অ্যাকাউন্ট ও ডেটা মুছে ফেলার অনুরোধ করতে পারেন।",
     ],
   },
   terms: {
