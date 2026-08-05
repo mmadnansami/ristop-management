@@ -35,7 +35,7 @@ const PAGES: Record<string, Page> = {
     title_en: "Careers at Ristop",
     title_bn: "Ristop-এ ক্যারিয়ার",
     desc: "We love talking to creative people. Send your CV to Ristop Software on WhatsApp.",
-    body_en: ["আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী", "Send your CV on WhatsApp and our team will get back to you."],
+    body_en: ["We love talking to creative people — designers, developers, marketers and support stars.", "Send your CV on WhatsApp and our team will get back to you.", "Remote-friendly roles, flexible hours and a fast-moving product team."],
     body_bn: ["আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী", "WhatsApp-এ আপনার CV পাঠান, আমাদের টিম যোগাযোগ করবে।"],
     careers: true,
   },
