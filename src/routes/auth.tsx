@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { SiteFooter } from "@/components/SiteFooter";
 import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { Button } from "@/components/ui/button";
@@ -174,6 +175,7 @@ function AuthPage() {
           </p>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }
