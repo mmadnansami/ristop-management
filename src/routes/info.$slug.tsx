@@ -276,6 +276,7 @@ const PAGES: Record<string, Page> = {
   },
 };
 
+
 export const Route = createFileRoute("/info/$slug")({
   loader: ({ params }) => {
     const page = PAGES[params.slug];

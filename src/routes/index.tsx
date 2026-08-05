@@ -7,8 +7,8 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { PLAN_LIST, formatPrice, priceOf, originalPriceOf, discountPercent, type Currency } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
-import demoVideo1 from "@/assets/ristop-demo-1.mp4";
-import demoVideo2 from "@/assets/ristop-demo-2.mp4";
+import demoVideo1Asset from "@/assets/ristop-demo-1.mp4.asset.json";
+import demoVideo2Asset from "@/assets/ristop-demo-2.mp4.asset.json";
 import {
   Boxes, TrendingUp, PieChart, Bell, Users, FileText,
   Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
@@ -102,7 +102,7 @@ function Landing() {
           {lang === "bn" ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।" : "See how Ristop Management works, in under a minute."}
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {[demoVideo1, demoVideo2].map((src, i) => (
+          {[demoVideo1Asset.url, demoVideo2Asset.url].map((src, i) => (
             <div key={src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
               <video
                 src={src}
