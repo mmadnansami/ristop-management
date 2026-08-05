@@ -112,22 +112,23 @@ export function SiteFooter() {
           <div>
             <p className="font-semibold text-foreground">Ristop Management {bn ? "(পরিচালনায় Ristop Software)" : "(Managed by Ristop Software)"}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {bn ? "ট্রেড লাইসেন্স নং: " : "E-Trade License No: "}TRAD/RSTP/2026-0113
+              {bn ? "সফটওয়্যার সংস্করণ: " : "Software version: "}Ristop Management v1.0 (Cloud)
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {bn ? "সফটওয়্যার সংস্করণ: " : "Software version: "}Ristop Management v1.0 (Cloud)
+              {bn ? "সাপোর্ট: ২৪ ঘণ্টা খোলা, সপ্তাহে ৭ দিন" : "Support: Open 24 hours, 7 days a week"}
             </p>
           </div>
           <div className="md:text-right">
             <p className="font-semibold text-foreground">{bn ? "কর্পোরেট অফিস" : "Corporate Office"}</p>
             <p className="mt-1 flex items-start gap-2 text-sm text-muted-foreground md:justify-end">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>{bn ? "উত্তরা, ঢাকা, বাংলাদেশ" : "Uttara, Dhaka, Bangladesh"}</span>
+              <span>{bn ? "বনশ্রী, ঢাকা, বাংলাদেশ" : "Banasree, Dhaka, Bangladesh"}</span>
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {bn ? "সাপোর্ট: সকাল ৯টা – রাত ১০টা (ঢাকা)" : "Support: 9:00 AM – 10:00 PM (Dhaka)"}
+              {bn ? "সাপোর্ট লাইন সবসময় চালু (ঢাকা)" : "Support line always available (Dhaka)"}
             </p>
           </div>
+
         </div>
       </div>
 
