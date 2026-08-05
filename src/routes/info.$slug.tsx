@@ -35,16 +35,16 @@ const PAGES: Record<string, Page> = {
     title_en: "Careers at Ristop",
     title_bn: "Ristop-এ ক্যারিয়ার",
     desc: "We love talking to creative people. Send your CV to Ristop Software on WhatsApp.",
-    body_en: ["আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী", "Send your CV on WhatsApp and our team will get back to you."],
-    body_bn: ["আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী", "WhatsApp-এ আপনার CV পাঠান, আমাদের টিম যোগাযোগ করবে।"],
+    body_en: ["We love talking to creative people — designers, developers, marketers and support stars.", "Send your CV on WhatsApp and our team will get back to you.", "Remote-friendly roles, flexible hours and a fast-moving product team."],
+    body_bn: ["আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — ডিজাইনার, ডেভেলপার, মার্কেটার ও সাপোর্ট টিম।", "WhatsApp-এ আপনার CV পাঠান, আমাদের টিম যোগাযোগ করবে।", "রিমোট-ফ্রেন্ডলি রোল, ফ্লেক্সিবল সময় ও দ্রুতগতির প্রোডাক্ট টিম।"],
     careers: true,
   },
   contact: {
     title_en: "Contact Ristop",
     title_bn: "যোগাযোগ",
     desc: "Contact Ristop Management support by WhatsApp, phone or email.",
-    body_en: ["WhatsApp / Phone: +880 1317 680620", "Email: support@ristopsoftware.com", "Support hours: 9:00 AM – 10:00 PM (Asia/Dhaka), 7 days a week."],
-    body_bn: ["WhatsApp / ফোন: +880 1317 680620", "ইমেইল: support@ristopsoftware.com", "সাপোর্ট সময়: সকাল ৯টা – রাত ১০টা (ঢাকা), সপ্তাহে ৭ দিন।"],
+    body_en: ["WhatsApp / Phone: +880 1317 680620", "Email: ristopsoftware@gmail.com", "Support hours: 24 hours a day, 7 days a week."],
+    body_bn: ["WhatsApp / ফোন: +880 1317 680620", "ইমেইল: ristopsoftware@gmail.com", "সাপোর্ট সময়: ২৪ ঘণ্টা, সপ্তাহে ৭ দিন।"],
     careers: true,
   },
   blog: {
@@ -133,8 +133,8 @@ const PAGES: Record<string, Page> = {
     title_en: "Fast Support",
     title_bn: "দ্রুত সাপোর্ট",
     desc: "Get fast Ristop Management support on WhatsApp, phone and email.",
-    body_en: ["Average first response under 15 minutes during support hours.", "WhatsApp: +880 1317 680620", "Email: support@ristopsoftware.com"],
-    body_bn: ["সাপোর্ট সময়ে গড়ে ১৫ মিনিটের মধ্যে প্রথম উত্তর।", "WhatsApp: +880 1317 680620", "ইমেইল: support@ristopsoftware.com"],
+    body_en: ["Average first response under 15 minutes during support hours.", "WhatsApp: +880 1317 680620", "Email: ristopsoftware@gmail.com"],
+    body_bn: ["সাপোর্ট সময়ে গড়ে ১৫ মিনিটের মধ্যে প্রথম উত্তর।", "WhatsApp: +880 1317 680620", "ইমেইল: ristopsoftware@gmail.com"],
     careers: true,
   },
   security: {
@@ -159,12 +159,12 @@ const PAGES: Record<string, Page> = {
     body_en: [
       "We collect only the account data you provide (name, email, phone) and the business records you create.",
       "We never sell your data and never share business records with other customers.",
-      "You can request deletion of your account and data at any time via support@ristopsoftware.com.",
+      "You can request deletion of your account and data at any time via ristopsoftware@gmail.com.",
     ],
     body_bn: [
       "আমরা কেবল আপনার দেওয়া অ্যাকাউন্ট তথ্য (নাম, ইমেইল, ফোন) ও আপনার তৈরি ব্যবসায়িক রেকর্ড সংগ্রহ করি।",
       "আমরা কখনো আপনার ডেটা বিক্রি করি না বা অন্য কাস্টমারের সাথে শেয়ার করি না।",
-      "যেকোনো সময় support@ristopsoftware.com-এ অ্যাকাউন্ট ও ডেটা মুছে ফেলার অনুরোধ করতে পারেন।",
+      "যেকোনো সময় ristopsoftware@gmail.com-এ অ্যাকাউন্ট ও ডেটা মুছে ফেলার অনুরোধ করতে পারেন।",
     ],
   },
   terms: {
@@ -319,23 +319,79 @@ function InfoPage() {
         </div>
       </header>
 
-      <main className="container mx-auto flex-1 px-4 py-12 max-w-3xl">
-        <Link to="/" className="mb-5 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4" /> {bn ? "হোম" : "Home"}
-        </Link>
-        <h1 className="text-3xl md:text-4xl font-bold text-gradient">{bn ? page.title_bn : page.title_en}</h1>
-        <ul className="mt-7 space-y-4">
-          {body.map((line) => (
-            <li key={line} className="flex gap-3 rounded-xl glass border border-border p-4 text-sm leading-7 text-muted-foreground">
-              <Check className="mt-1 h-4 w-4 shrink-0 text-success" />
-              <span>{line}</span>
-            </li>
-          ))}
-        </ul>
-        {page.careers && <div className="mt-7"><CareersCta /></div>}
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-border/50">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-primary/25 blur-3xl"
+          />
+          <div className="container relative mx-auto max-w-4xl px-4 py-14 md:py-20">
+            <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <ArrowLeft className="h-4 w-4" /> {bn ? "হোম" : "Home"}
+            </Link>
+            <span className="inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary-glow">
+              Ristop Management
+            </span>
+            <h1 className="mt-4 text-4xl font-bold leading-tight text-gradient md:text-5xl">
+              {bn ? page.title_bn : page.title_en}
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">{page.desc}</p>
+          </div>
+        </section>
+
+        {/* Content cards */}
+        <section className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {body.map((line, i) => (
+              <article
+                key={line}
+                className="group relative overflow-hidden rounded-2xl glass border border-border p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-primary text-xs font-bold text-primary-foreground shadow-glow">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="text-sm leading-7 text-muted-foreground group-hover:text-foreground/90">{line}</p>
+                </div>
+                <Check className="absolute -bottom-3 -right-3 h-16 w-16 text-primary/5 transition-colors group-hover:text-primary/10" />
+              </article>
+            ))}
+          </div>
+
+          {page.careers && (
+            <div className="mt-8 rounded-2xl glass-strong border border-primary/30 p-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                {bn ? "আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — WhatsApp-এ যোগাযোগ করুন।" : "We love talking to creative people — reach us on WhatsApp."}
+              </p>
+              <div className="mt-4 flex justify-center"><CareersCta /></div>
+            </div>
+          )}
+
+          {/* Bottom CTA */}
+          <div className="mt-10 grid gap-4 rounded-2xl glass border border-border p-6 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">
+                {bn ? "আজই আপনার ব্যবসা ডিজিটাল করুন" : "Digitise your business today"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {bn ? "সেলস, স্টক, কাস্টমার ও বকেয়া — সব এক ড্যাশবোর্ডে। সাপোর্ট ২৪ ঘণ্টা।" : "Sales, stock, customers and dues in one dashboard. Support open 24 hours."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                <Button className="bg-gradient-primary shadow-glow">{bn ? "ফ্রি শুরু করুন" : "Start free"}</Button>
+              </Link>
+              <Link to="/subscribe" search={{ plan: "quarterly" }}>
+                <Button variant="outline">{bn ? "প্ল্যান দেখুন" : "See pricing"}</Button>
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
 
       <SiteFooter />
     </div>
   );
 }
+

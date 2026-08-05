@@ -161,12 +161,29 @@ function SubscribePage() {
                 <div className="text-base sm:text-xl font-bold text-gradient break-all">{payNumber}</div>
                 <button type="button" onClick={() => { navigator.clipboard.writeText(payNumber); toast.success("Copied!"); }} className="shrink-0 text-muted-foreground hover:text-foreground"><Copy className="h-4 w-4" /></button>
               </div>
+              {currency === "BDT" && (
+                <div className="mt-3 grid gap-2 border-t border-border/60 pt-3 sm:grid-cols-2">
+                  {[
+                    { label: "bKash", num: "01888616396" },
+                    { label: bn ? "নগদ" : "Nagad", num: "+8801317680620" },
+                  ].map((p) => (
+                    <div key={p.label} className="flex items-center justify-between gap-2 rounded-lg border border-border bg-background/40 px-3 py-2">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{p.label}</span>
+                      <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                        {p.num}
+                        <button type="button" aria-label={`Copy ${p.label} number`} onClick={() => { navigator.clipboard.writeText(p.num); toast.success("Copied!"); }} className="text-muted-foreground hover:text-foreground"><Copy className="h-3.5 w-3.5" /></button>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="text-sm mt-2 flex items-baseline gap-2">
                 <span>{bn ? "পরিমাণ" : "Amount"}:</span>
                 <span className="font-bold">{formatPrice(amount, currency)}</span>
                 {original && <span className="text-xs text-muted-foreground line-through">{formatPrice(original, currency)}</span>}
               </div>
             </div>
+
 
             <div><Label>{bn ? "ট্রানজেকশন আইডি" : "Transaction ID"}</Label><Input value={form.txn} onChange={(e) => setForm({ ...form, txn: e.target.value })} required className="mt-1" placeholder="e.g. 8N7A1BCD2X" /></div>
 
