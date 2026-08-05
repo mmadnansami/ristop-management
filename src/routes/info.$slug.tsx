@@ -274,21 +274,6 @@ const PAGES: Record<string, Page> = {
     ],
     careers: true,
   },
-  "case-studies": {
-    title_en: "Case Studies",
-    title_bn: "কেস স্টাডি",
-    desc: "How real businesses in Bangladesh run daily operations on Ristop Management.",
-    body_en: [
-      "Grocery retailer, Uttara: cut stock-out days by tracking reorder levels daily instead of monthly.",
-      "Electronics wholesaler, Chattogram: recovered long-pending dues after moving the bakeya ledger into Ristop.",
-      "Cosmetics shop, Sylhet: uses the margin report weekly to reprice slow-moving SKUs.",
-    ],
-    body_bn: [
-      "মুদি দোকান, উত্তরা: প্রতিদিন রিঅর্ডার লেভেল ট্র্যাক করে স্টক-আউট দিন কমেছে।",
-      "ইলেকট্রনিক্স হোলসেল, চট্টগ্রাম: বকেয়া লেজার Ristop-এ আনার পর পুরোনো বাকি আদায় হয়েছে।",
-      "কসমেটিক্স শপ, সিলেট: সাপ্তাহিক মার্জিন রিপোর্ট দেখে ধীরগতির পণ্যের দাম ঠিক করে।",
-    ],
-  },
 };
 
 
