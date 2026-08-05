@@ -102,7 +102,7 @@ function Landing() {
           {lang === "bn" ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।" : "See how Ristop Management works, in under a minute."}
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {[demoVideo1, demoVideo2].map((src, i) => (
+          {[demoVideo1Asset.url, demoVideo2Asset.url].map((src, i) => (
             <div key={src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
               <video
                 src={src}
