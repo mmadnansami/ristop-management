@@ -319,23 +319,79 @@ function InfoPage() {
         </div>
       </header>
 
-      <main className="container mx-auto flex-1 px-4 py-12 max-w-3xl">
-        <Link to="/" className="mb-5 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4" /> {bn ? "হোম" : "Home"}
-        </Link>
-        <h1 className="text-3xl md:text-4xl font-bold text-gradient">{bn ? page.title_bn : page.title_en}</h1>
-        <ul className="mt-7 space-y-4">
-          {body.map((line) => (
-            <li key={line} className="flex gap-3 rounded-xl glass border border-border p-4 text-sm leading-7 text-muted-foreground">
-              <Check className="mt-1 h-4 w-4 shrink-0 text-success" />
-              <span>{line}</span>
-            </li>
-          ))}
-        </ul>
-        {page.careers && <div className="mt-7"><CareersCta /></div>}
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-border/50">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-primary/25 blur-3xl"
+          />
+          <div className="container relative mx-auto max-w-4xl px-4 py-14 md:py-20">
+            <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <ArrowLeft className="h-4 w-4" /> {bn ? "হোম" : "Home"}
+            </Link>
+            <span className="inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary-glow">
+              Ristop Management
+            </span>
+            <h1 className="mt-4 text-4xl font-bold leading-tight text-gradient md:text-5xl">
+              {bn ? page.title_bn : page.title_en}
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">{page.desc}</p>
+          </div>
+        </section>
+
+        {/* Content cards */}
+        <section className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {body.map((line, i) => (
+              <article
+                key={line}
+                className="group relative overflow-hidden rounded-2xl glass border border-border p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-primary text-xs font-bold text-primary-foreground shadow-glow">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="text-sm leading-7 text-muted-foreground group-hover:text-foreground/90">{line}</p>
+                </div>
+                <Check className="absolute -bottom-3 -right-3 h-16 w-16 text-primary/5 transition-colors group-hover:text-primary/10" />
+              </article>
+            ))}
+          </div>
+
+          {page.careers && (
+            <div className="mt-8 rounded-2xl glass-strong border border-primary/30 p-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                {bn ? "আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — WhatsApp-এ যোগাযোগ করুন।" : "We love talking to creative people — reach us on WhatsApp."}
+              </p>
+              <div className="mt-4 flex justify-center"><CareersCta /></div>
+            </div>
+          )}
+
+          {/* Bottom CTA */}
+          <div className="mt-10 grid gap-4 rounded-2xl glass border border-border p-6 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">
+                {bn ? "আজই আপনার ব্যবসা ডিজিটাল করুন" : "Digitise your business today"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {bn ? "সেলস, স্টক, কাস্টমার ও বকেয়া — সব এক ড্যাশবোর্ডে। সাপোর্ট ২৪ ঘণ্টা।" : "Sales, stock, customers and dues in one dashboard. Support open 24 hours."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                <Button className="bg-gradient-primary shadow-glow">{bn ? "ফ্রি শুরু করুন" : "Start free"}</Button>
+              </Link>
+              <Link to="/subscribe" search={{ plan: "quarterly" }}>
+                <Button variant="outline">{bn ? "প্ল্যান দেখুন" : "See pricing"}</Button>
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
 
       <SiteFooter />
     </div>
   );
 }
+
