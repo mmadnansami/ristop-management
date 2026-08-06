@@ -75,7 +75,7 @@ function Profile() {
 
   useEffect(() => {
     if (data?.profile) {
-      const p = data.profile as Record<string, string | null>;
+      const p = data.profile as unknown as Record<string, string | null>;
       setF({
         full_name: p.full_name ?? "",
         avatar_url: p.avatar_url ?? "",

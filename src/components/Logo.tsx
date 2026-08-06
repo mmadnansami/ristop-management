@@ -1,9 +1,12 @@
-const officialLogoUrl = "/ristop-official-logo.png";
-const mascotUrl = "/ristop-mascot.webp";
+import officialLogoAsset from "@/assets/ristop-official-logo.png.asset.json";
+import mascotAsset from "@/assets/ristop-mascot.png.asset.json";
+
+const officialLogoUrl = officialLogoAsset.url;
+const mascotUrl = mascotAsset.url;
 
 /**
  * Official RISTOP MANAGEMENT wordmark (the customer-approved logo).
- * Served from /public so it renders identically on Lovable, Vercel and GitHub.
+ * Served from immutable project assets so it renders identically on every domain.
  */
 export function Logo({ className = "h-10 w-auto" }: { className?: string }) {
   return (

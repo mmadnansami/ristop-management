@@ -27,6 +27,7 @@ function Admin() {
   const qc = useQueryClient();
   const [activateOpen, setActivateOpen] = useState(false);
   const [activateEmail, setActivateEmail] = useState("");
+  const [activateRequestId, setActivateRequestId] = useState<string | null>(null);
 
   const { data } = useQuery({
     queryKey: ["admin-data"],
@@ -61,7 +62,7 @@ function Admin() {
         <Dialog open={activateOpen} onOpenChange={setActivateOpen}>
           <DialogTrigger asChild><Button className="bg-gradient-primary shadow-glow"><Sparkles className="h-4 w-4 mr-1" /> Active any Subscription</Button></DialogTrigger>
           <DialogContent><DialogHeader><DialogTitle>Activate Subscription</DialogTitle></DialogHeader>
-            <ActivateForm defaultEmail={activateEmail} onDone={() => { setActivateOpen(false); qc.invalidateQueries(); }} /></DialogContent>
+            <ActivateForm defaultEmail={activateEmail} requestId={activateRequestId} onDone={() => { setActivateOpen(false); setActivateRequestId(null); qc.invalidateQueries(); }} /></DialogContent>
         </Dialog>
       </div>
 
@@ -103,7 +104,7 @@ function Admin() {
                     <td className="p-3 text-right"><span className={`text-xs px-2 py-0.5 rounded ${r.status === "approved" ? "bg-success/20 text-success" : r.status === "rejected" ? "bg-destructive/20 text-destructive" : "bg-warning/20 text-warning"}`}>{r.status}</span></td>
                     <td className="p-3 text-right">
                       {r.status === "pending" && (
-                        <Button size="sm" onClick={() => { setActivateEmail(r.email); setActivateOpen(true); }} className="bg-gradient-primary"><Check className="h-3 w-3 mr-1" /> Activate</Button>
+                        <Button size="sm" onClick={() => { setActivateEmail(r.email); setActivateRequestId(r.id); setActivateOpen(true); }} className="bg-gradient-primary"><Check className="h-3 w-3 mr-1" /> Activate</Button>
                       )}
                     </td>
                   </tr>
@@ -135,7 +136,7 @@ function Admin() {
                 </div>
                 <div className="flex gap-2 mt-3">
                   <Button size="sm" variant="outline" className="flex-1" onClick={() => sendReset(p.email)}>Send Password Reset</Button>
-                  <Button size="sm" className="bg-gradient-primary" onClick={() => { setActivateEmail(p.email); setActivateOpen(true); }}>Activate Sub</Button>
+                  <Button size="sm" className="bg-gradient-primary" onClick={() => { setActivateEmail(p.email); setActivateRequestId(null); setActivateOpen(true); }}>Activate Sub</Button>
                 </div>
               </div>
             );
@@ -146,13 +147,19 @@ function Admin() {
   );
 }
 
-function ActivateForm({ defaultEmail, onDone }: { defaultEmail: string; onDone: () => void }) {
+function ActivateForm({ defaultEmail, requestId, onDone }: { defaultEmail: string; requestId: string | null; onDone: () => void }) {
   const [email, setEmail] = useState(defaultEmail);
   const [plan, setPlan] = useState<"monthly" | "quarterly" | "biannual" | "lifetime">("monthly");
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
     setLoading(true);
+    if (requestId) {
+      const { error } = await supabase.rpc("approve_subscription_request", { _request_id: requestId, _plan: plan });
+      setLoading(false);
+      if (error) toast.error(error.message); else { toast.success("Activated with referral and affiliate rewards"); onDone(); }
+      return;
+    }
     // Find user by email via profiles
     const { data: prof } = await supabase.from("profiles").select("id").eq("email", email).maybeSingle();
     if (!prof) { toast.error("User not found. Ask them to sign up first."); setLoading(false); return; }

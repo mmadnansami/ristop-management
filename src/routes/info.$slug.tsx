@@ -5,6 +5,7 @@ import { SiteFooter, CareersCta } from "@/components/SiteFooter";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check } from "lucide-react";
+import syllabusAsset from "@/assets/ristop-interview-syllabus.pdf.asset.json";
 
 type Page = {
   title_en: string;
@@ -358,6 +359,19 @@ function InfoPage() {
               </article>
             ))}
           </div>
+
+          {page.title_en === "Careers at Ristop" && (
+            <div className="mt-8 grid gap-5 border-y border-border py-8 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <p className="text-xs font-semibold uppercase text-primary-glow">Open position</p>
+                <h2 className="mt-2 text-2xl font-bold">Growth &amp; Customer Success Executive</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">Help businesses adopt Ristop Management, support customers, and turn feedback into sustainable growth. This syllabus applies only to this position.</p>
+              </div>
+              <a href={syllabusAsset.url} download="Ristop-Interview-Syllabus.pdf">
+                <Button variant="outline">{bn ? "ইন্টারভিউ সিলেবাস PDF" : "Download interview syllabus"}</Button>
+              </a>
+            </div>
+          )}
 
           {page.careers && (
             <div className="mt-8 rounded-2xl glass-strong border border-primary/30 p-6 text-center">

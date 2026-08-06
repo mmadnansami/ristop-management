@@ -265,9 +265,10 @@ export const getMarketOverview = createServerFn({ method: "POST" })
     const regionLabel = data.region === "bangladesh" ? "Bangladesh" : "the global market";
     const focus = data.category ? `focused on ${data.category}` : "across major retail products and commodities";
 
-    const gdelt = await marketCore.fetchMarketSources(data.region, data.category, undefined, windowDays);
+    const gdelt = await marketCore.fetchMarketSourcesWithFallback(data.region, data.category);
+    const researchedDays = gdelt.days;
     const grounded = await marketCore.geminiGroundedSearch(
-      `Search the web right now and report the last ${windowDays} days of ${regionLabel} market movement ${focus}. Include current retail/wholesale prices, demand direction, supply issues, imports/exports and inflation. Use only what you find in search results, with dates and the outlet name for each fact. Today is ${marketCore.todayLabel("en")}.`,
+      `Search the web right now and report market movement in ${regionLabel} ${focus}. Start with the last ${windowDays} days; if evidence is sparse, expand to 30 days and then one year. Include current retail/wholesale prices, demand direction, best-selling or trending products, supply issues, imports/exports and inflation. Use only what you find in search results, with dates and outlet names. Today is ${marketCore.todayLabel("en")}.`,
     );
     const articles = marketCore.mergeSources(grounded.sources, gdelt.articles);
     const note = grounded.text ? undefined : (grounded.note ?? gdelt.note);
@@ -277,7 +278,7 @@ export const getMarketOverview = createServerFn({ method: "POST" })
 
     const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
     const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the research brief and source list supplied by the app.`;
-    const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Build a market overview for ${regionLabel} ${focus} covering the past ${windowDays} days.
+    const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Build a market overview for ${regionLabel} ${focus} using the ${researchedDays}-day verified source window.
 
 LIVE RESEARCH BRIEF (from Google Search):
 ${grounded.text || "(none)"}
@@ -334,7 +335,7 @@ Question: ${question}`,
       return { reply: cite ? `${grounded.text}\n\n${data.lang === "bn" ? "সোর্স:" : "Sources:"}\n${cite}` : grounded.text };
     }
 
-    const { articles, note } = await marketCore.fetchMarketSources("bangladesh", undefined, question, 7);
+    const { articles, note } = await marketCore.fetchMarketSourcesWithFallback("bangladesh", undefined, question);
     if (articles.length === 0) {
       return {
         reply: data.lang === "bn"
