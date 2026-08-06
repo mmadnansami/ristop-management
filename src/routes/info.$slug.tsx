@@ -360,7 +360,7 @@ function InfoPage() {
             ))}
           </div>
 
-          {page.title_en === "Careers" && (
+          {page.title_en === "Careers at Ristop" && (
             <div className="mt-8 grid gap-5 border-y border-border py-8 md:grid-cols-[1fr_auto] md:items-center">
               <div>
                 <p className="text-xs font-semibold uppercase text-primary-glow">Open position</p>
