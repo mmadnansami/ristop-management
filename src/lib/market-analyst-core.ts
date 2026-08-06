@@ -58,6 +58,17 @@ export async function fetchMarketSources(region: Region, category?: string, user
   } catch (error) { return { articles: [], note: error instanceof Error ? error.message : "SOURCE_FETCH_FAILED" }; }
 }
 
+export async function fetchMarketSourcesWithFallback(region: Region, category?: string, userQuestion?: string) {
+  const windows = region === "bangladesh" ? [7, 30, 365] : [10, 30, 365];
+  let lastNote: string | undefined;
+  for (const days of windows) {
+    const result = await fetchMarketSources(region, category, userQuestion, days);
+    lastNote = result.note;
+    if (result.articles.length > 0) return { ...result, days };
+  }
+  return { articles: [] as SourceArticle[], days: windows[windows.length - 1], note: lastNote ?? "NO_VERIFIED_SOURCES" };
+}
+
 function dailyTrendFromSources(articles: SourceArticle[]) {
   const byDay = new Map<string, { mention_count: number; sources: Set<string> }>();
   const formatter = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Dhaka" });

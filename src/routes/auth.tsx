@@ -36,6 +36,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => { setIsSignup(mode === "signup"); }, [mode]);
@@ -67,8 +68,9 @@ function AuthPage() {
       email: z.string().email(),
       password: z.string().min(6).max(100),
       name: isSignup ? z.string().min(1).max(80) : z.string().optional(),
+      referralCode: z.string().trim().max(40).optional(),
     });
-    const parsed = schema.safeParse({ email, password, name });
+    const parsed = schema.safeParse({ email, password, name, referralCode });
     if (!parsed.success) {
       toast.error(lang === "bn" ? "সঠিক তথ্য দিন (পাসওয়ার্ড অন্তত ৬ অক্ষর)" : "Please check your inputs (password ≥ 6 chars)");
       return;
@@ -78,9 +80,19 @@ function AuthPage() {
       if (isSignup) {
         const { data, error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: `${window.location.origin}/subscribe`, data: { full_name: name } },
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth?mode=signin`,
+            data: { full_name: name, referral_code: referralCode.trim().toUpperCase() || undefined },
+          },
         });
         if (error) throw error;
+        if (referralCode.trim() && data.user && data.session) {
+          const { error: referralError } = await supabase.rpc("attach_referral", {
+            _code: referralCode.trim().toUpperCase(),
+            _user_id: data.user.id,
+          });
+          if (referralError) throw new Error(lang === "bn" ? "রেফারেল কোডটি সঠিক নয়" : "The referral code is not valid");
+        }
         if (!data.session) {
           toast.success(lang === "bn" ? "একাউন্ট তৈরি হয়েছে। ইমেইল যাচাই করে তারপর লগইন করুন।" : "Account created. Check your email to confirm, then sign in.");
           setIsSignup(false);
@@ -155,8 +167,12 @@ function AuthPage() {
 
           <form onSubmit={submit} className="space-y-4">
             {isSignup && (
-              <div><Label className="text-foreground/70">{lang === "bn" ? "পুরো নাম" : "Full name"}</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} required maxLength={80} className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
+              <>
+                <div><Label className="text-foreground/70">{lang === "bn" ? "পুরো নাম" : "Full name"}</Label>
+                  <Input value={name} onChange={(e) => setName(e.target.value)} required maxLength={80} className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
+                <div><Label className="text-foreground/70">{lang === "bn" ? "রেফারেল কোড (ঐচ্ছিক)" : "Referral code (optional)"}</Label>
+                  <Input value={referralCode} onChange={(e) => setReferralCode(e.target.value.toUpperCase())} maxLength={40} placeholder="RSTM-NAME123" className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 font-mono uppercase focus-visible:ring-primary" /></div>
+              </>
             )}
             <div><Label className="text-foreground/70">Email address</Label>
               <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
