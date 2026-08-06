@@ -174,7 +174,7 @@ function Sales() {
   );
 }
 
-type CompanyProfile = Record<string, string | null> | null | undefined;
+type CompanyProfile = Record<string, unknown> | null | undefined;
 type Customer = {
   name: string;
   phone: string | null;
