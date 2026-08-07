@@ -10,6 +10,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({ component: D
 
 function Dashboard() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
 
   const { data } = useQuery({
     queryKey: ["dashboard"],

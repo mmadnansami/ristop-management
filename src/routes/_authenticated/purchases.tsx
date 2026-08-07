@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/purchases")({ component: P
 
 function Purchases() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
 

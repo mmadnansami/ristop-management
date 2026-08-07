@@ -45,6 +45,7 @@ function Dues() {
 
 function DuesPanel({ party }: { party: "customer" | "supplier" }) {
   const { lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [selected, setSelected] = useState<string | null>(null);
 

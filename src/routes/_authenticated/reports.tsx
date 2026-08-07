@@ -9,6 +9,7 @@ export const Route = createFileRoute("/_authenticated/reports")({ component: Rep
 
 function Reports() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const { data } = useQuery({
     queryKey: ["reports"],
     queryFn: async () => {

@@ -46,6 +46,7 @@ function fmtDate(d: string | null | undefined) {
 
 function Sales() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
 
@@ -423,6 +424,7 @@ function SaleForm({
   onDone: () => void;
 }) {
   const { lang } = useI18n();
+  const { money } = useCurrency();
   const [productId, setProductId] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [qty, setQty] = useState(1);

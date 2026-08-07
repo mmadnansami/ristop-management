@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 function Admin() {
   const { lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [activateOpen, setActivateOpen] = useState(false);
   const [activateEmail, setActivateEmail] = useState("");

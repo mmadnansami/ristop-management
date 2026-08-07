@@ -30,6 +30,7 @@ const DURATION_PRESETS: { label_bn: string; label_en: string; days: number }[] =
 
 function Products() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
