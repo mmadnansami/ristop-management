@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +26,9 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/sales")({ component: Sales });
 
+const FREE_INVOICE_LIMIT = 10;
+const INVOICE_ACTION = "invoice_pdf";
+
 type Sale = {
   id: string;
   product_name: string;
@@ -48,6 +51,7 @@ function Sales() {
   const { t, lang } = useI18n();
   const { money } = useCurrency();
   const qc = useQueryClient();
+  const nav = useNavigate();
   const [open, setOpen] = useState(false);
 
   const { data: sales = [] } = useQuery({
@@ -206,7 +210,7 @@ function Sales() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => openInvoice(s, customer, me?.profile)}
+                          onClick={() => void handleInvoice(s, customer)}
                           className="hover:bg-primary/10"
                         >
                           <Download className="h-4 w-4 mr-1" /> PDF
@@ -232,7 +236,7 @@ type Customer = {
   email: string | null;
 } | null;
 
-function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
+function openInvoice(s: Sale, customer: Customer, company: CompanyProfile, money: (v: number | string | null | undefined) => string) {
   const c = company ?? {};
   const companyName = (c.company_name as string) || "Ristop Management";
   const tagline = (c.company_tagline as string) || "Smart Business Management";
@@ -292,16 +296,16 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
             ${s.validity_start && s.validity_end ? `<div class="validity">Validity: ${fmtDate(s.validity_start)} → ${fmtDate(s.validity_end)}</div>` : ""}
           </td>
           <td class="r">${s.quantity}</td>
-          <td class="r">৳ ${Number(s.unit_price).toLocaleString()}</td>
-          <td class="r"><strong>৳ ${Number(s.total).toLocaleString()}</strong></td>
+          <td class="r">${money(s.unit_price)}</td>
+          <td class="r"><strong>${money(s.total)}</strong></td>
         </tr>
       </tbody>
     </table>
 
     <div class="totals">
-      <div class="row"><span>Subtotal</span><span>৳ ${Number(s.total).toLocaleString()}</span></div>
-      <div class="row"><span>Tax</span><span>৳ ${tax}</span></div>
-      <div class="grand"><span>Total Due</span><span>৳ ${grand.toLocaleString()}</span></div>
+      <div class="row"><span>Subtotal</span><span>${money(s.total)}</span></div>
+      <div class="row"><span>Tax</span><span>${money(tax)}</span></div>
+      <div class="grand"><span>Total Due</span><span>${money(grand)}</span></div>
     </div>
 
     <div class="footer">
