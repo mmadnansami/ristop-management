@@ -7,8 +7,6 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { PLAN_LIST, formatPrice, priceOf, originalPriceOf, discountPercent, type Currency } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
-import demoVideo1Asset from "@/assets/ristop-demo-1.mp4.asset.json";
-import demoVideo2Asset from "@/assets/ristop-demo-2.mp4.asset.json";
 import {
   Boxes, TrendingUp, PieChart, Bell, Users, FileText,
   Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
@@ -38,7 +36,7 @@ function Landing() {
       {/* Nav */}
       <header className="sticky top-0 z-40 glass border-b border-border/50">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2"><Logo className="h-16 w-auto" /></Link>
+          <Link to="/" className="flex items-center gap-2"><Logo className="h-12 md:h-14 w-auto" /></Link>
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#features" className="text-muted-foreground hover:text-foreground transition">{t("features")}</a>
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition">{t("pricing")}</a>
@@ -102,7 +100,7 @@ function Landing() {
           {lang === "bn" ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।" : "See how Ristop Management works, in under a minute."}
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {[demoVideo1Asset.url, demoVideo2Asset.url].map((src, i) => (
+          {["/ristop-demo-1.mp4", "/ristop-demo-2.mp4"].map((src, i) => (
             <div key={src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
               <video
                 src={src}
