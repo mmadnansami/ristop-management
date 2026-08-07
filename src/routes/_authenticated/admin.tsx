@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 function Admin() {
   const { lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [activateOpen, setActivateOpen] = useState(false);
   const [activateEmail, setActivateEmail] = useState("");
@@ -100,7 +102,7 @@ function Admin() {
                     <td className="p-3 font-medium">{r.name}</td><td className="p-3">{r.email}</td>
                     <td className="p-3"><span className="px-2 py-0.5 rounded bg-primary/20 text-primary-glow text-xs">{r.plan}</span></td>
                     <td className="p-3">{r.payment_method}</td><td className="p-3 font-mono text-xs">{r.transaction_id}</td>
-                    <td className="p-3 text-right">৳{r.amount}</td>
+                    <td className="p-3 text-right">{money(r.amount)}</td>
                     <td className="p-3 text-right"><span className={`text-xs px-2 py-0.5 rounded ${r.status === "approved" ? "bg-success/20 text-success" : r.status === "rejected" ? "bg-destructive/20 text-destructive" : "bg-warning/20 text-warning"}`}>{r.status}</span></td>
                     <td className="p-3 text-right">
                       {r.status === "pending" && (

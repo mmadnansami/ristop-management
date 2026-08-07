@@ -5,7 +5,7 @@ import { SiteFooter, CareersCta } from "@/components/SiteFooter";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check } from "lucide-react";
-import syllabusAsset from "@/assets/ristop-interview-syllabus.pdf.asset.json";
+const syllabusAsset = { url: "/ristop-interview-syllabus.pdf" };
 
 type Page = {
   title_en: string;

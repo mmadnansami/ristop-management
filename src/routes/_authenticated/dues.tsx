@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,6 +45,7 @@ function Dues() {
 
 function DuesPanel({ party }: { party: "customer" | "supplier" }) {
   const { lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -118,7 +120,7 @@ function DuesPanel({ party }: { party: "customer" | "supplier" }) {
       <div className="rounded-2xl glass border border-border p-4 space-y-3">
         <div className="rounded-xl bg-gradient-primary/20 border border-primary/30 p-3">
           <div className="text-xs text-muted-foreground">{partyLabel}</div>
-          <div className="text-2xl font-black text-gradient">৳ {totalDue.toLocaleString()}</div>
+          <div className="text-2xl font-black text-gradient">{money(totalDue)}</div>
         </div>
         <div className="space-y-1.5 max-h-[60vh] overflow-y-auto">
           {parties.length === 0 && <div className="text-sm text-muted-foreground text-center py-6">{lang === "bn" ? "কেউ যোগ করা নেই" : "No parties yet"}</div>}
@@ -131,7 +133,7 @@ function DuesPanel({ party }: { party: "customer" | "supplier" }) {
                     <div className="font-semibold truncate">{p.name}</div>
                     <div className={`text-xs truncate ${active ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{p.phone || "—"}</div>
                   </div>
-                  <div className={`text-sm font-bold shrink-0 ${Number(p.balance) > 0 ? (active ? "text-primary-foreground" : "text-destructive") : active ? "text-primary-foreground" : "text-emerald-500"}`}>৳ {Number(p.balance || 0).toLocaleString()}</div>
+                  <div className={`text-sm font-bold shrink-0 ${Number(p.balance) > 0 ? (active ? "text-primary-foreground" : "text-destructive") : active ? "text-primary-foreground" : "text-emerald-500"}`}>{money(p.balance || 0)}</div>
                 </div>
               </button>
             );
@@ -149,7 +151,7 @@ function DuesPanel({ party }: { party: "customer" | "supplier" }) {
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <div>
                 <div className="text-xs text-muted-foreground">{lang === "bn" ? "বর্তমান বকেয়া" : "Current balance"}</div>
-                <div className="text-2xl font-black text-gradient">৳ {Number(parties.find((p) => p.id === selected)?.balance ?? 0).toLocaleString()}</div>
+                <div className="text-2xl font-black text-gradient">{money(parties.find((p) => p.id === selected)?.balance ?? 0)}</div>
               </div>
               <AddDialog onSubmit={(v) => addTx.mutate(v)} lang={lang} party={party} />
             </div>
@@ -159,7 +161,7 @@ function DuesPanel({ party }: { party: "customer" | "supplier" }) {
                 <div key={tx.id} className="flex items-center gap-3 rounded-lg border border-border/60 p-3">
                   {tx.kind === "charge" ? <ArrowUpCircle className="h-5 w-5 text-destructive shrink-0" /> : <ArrowDownCircle className="h-5 w-5 text-emerald-500 shrink-0" />}
                   <div className="min-w-0 flex-1">
-                    <div className="font-semibold">{tx.kind === "charge" ? (lang === "bn" ? "নতুন বকেয়া" : "New charge") : (lang === "bn" ? "পরিশোধ" : "Payment")} — ৳ {Number(tx.amount).toLocaleString()}</div>
+                    <div className="font-semibold">{tx.kind === "charge" ? (lang === "bn" ? "নতুন বকেয়া" : "New charge") : (lang === "bn" ? "পরিশোধ" : "Payment")} — {money(tx.amount)}</div>
                     <div className="text-xs text-muted-foreground truncate">{new Date(tx.occurred_at).toLocaleDateString()} • {tx.note || "—"}</div>
                   </div>
                   <Button size="icon" variant="ghost" onClick={() => deleteTx.mutate(tx)}><Trash2 className="h-4 w-4 text-destructive" /></Button>

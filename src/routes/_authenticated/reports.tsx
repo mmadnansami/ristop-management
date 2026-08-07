@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export const Route = createFileRoute("/_authenticated/reports")({ component: Reports });
 
 function Reports() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const { data } = useQuery({
     queryKey: ["reports"],
     queryFn: async () => {
@@ -39,7 +41,7 @@ function Reports() {
         ].map((c) => (
           <div key={c.l} className="rounded-2xl glass border border-border p-5">
             <div className="text-sm text-muted-foreground">{c.l}</div>
-            <div className="text-2xl font-bold mt-2 text-gradient">৳{c.v.toLocaleString()}</div>
+            <div className="text-2xl font-bold mt-2 text-gradient">{money(c.v)}</div>
           </div>
         ))}
       </div>

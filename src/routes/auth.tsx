@@ -130,7 +130,7 @@ function AuthPage() {
         <div className="absolute left-0 top-1/3 h-72 w-72 rounded-full bg-success/10 blur-[90px]" />
       </div>
       <header className="container relative z-10 mx-auto flex justify-between items-center px-4 py-5">
-        <Link to="/"><Logo className="h-14 md:h-16 w-auto" /></Link>
+        <Link to="/"><Logo className="h-12 md:h-14 w-auto" /></Link>
         <LanguageToggle />
       </header>
       <main className="relative z-10 flex-1 grid items-center gap-8 px-4 py-8 md:grid-cols-[1.05fr_0.95fr] md:px-8 lg:px-14">
@@ -147,7 +147,7 @@ function AuthPage() {
           </div>
         </section>
         <div className="w-full max-w-md justify-self-center rounded-3xl glass-strong shadow-glow p-7 md:p-10">
-          <div className="flex justify-center mb-4"><Logo className="h-16 w-auto" /></div>
+          <div className="flex justify-center mb-4"><Logo className="h-14 w-auto" /></div>
           <h1 className="text-3xl font-bold text-center">
             {isSignup ? (lang === "bn" ? "একাউন্ট তৈরি করুন" : "Create account") : (lang === "bn" ? "স্বাগতম" : "Welcome Back")}
           </h1>

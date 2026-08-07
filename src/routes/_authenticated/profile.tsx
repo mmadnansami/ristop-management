@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { CurrencyToggle } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -159,6 +160,21 @@ function Profile() {
             : "Update your personal & company details — auto-applied to invoices"}
         </p>
       </div>
+
+      {/* Display currency */}
+      <div className="rounded-3xl glass-strong p-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="font-semibold">{lang === "bn" ? "ডিসপ্লে কারেন্সি" : "Display currency"}</div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {lang === "bn"
+              ? "সফটওয়্যারের সব টাকার অঙ্ক এই কারেন্সিতে দেখানো হবে (ডিফল্ট USD)।"
+              : "All amounts across the software show in this currency (USD by default)."}
+          </p>
+        </div>
+        <CurrencyToggle />
+      </div>
+
+
 
       {/* Identity header */}
       <div className="rounded-3xl glass-strong p-6 flex items-center gap-5">

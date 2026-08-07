@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +30,7 @@ const DURATION_PRESETS: { label_bn: string; label_en: string; days: number }[] =
 
 function Products() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -80,7 +82,7 @@ function Products() {
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold truncate">{p.name}</h3>
-                  <div className="text-lg font-bold text-gradient">৳{p.price}</div>
+                  <div className="text-lg font-bold text-gradient">{money(p.price)}</div>
                 </div>
                 {p.category && <div className="text-xs text-muted-foreground mt-1">{p.category}</div>}
                 <div className="flex items-center justify-between mt-3 text-xs">

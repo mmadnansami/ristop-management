@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,9 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/sales")({ component: Sales });
 
+const FREE_INVOICE_LIMIT = 10;
+const INVOICE_ACTION = "invoice_pdf";
+
 type Sale = {
   id: string;
   product_name: string;
@@ -45,7 +49,9 @@ function fmtDate(d: string | null | undefined) {
 
 function Sales() {
   const { t, lang } = useI18n();
+  const { money } = useCurrency();
   const qc = useQueryClient();
+  const nav = useNavigate();
   const [open, setOpen] = useState(false);
 
   const { data: sales = [] } = useQuery({
@@ -77,6 +83,54 @@ function Sales() {
     },
   });
 
+  // Free plan invoice quota — 10 PDF invoices, then a paid plan is required.
+  const { data: quota } = useQuery({
+    queryKey: ["invoice-quota"],
+    queryFn: async () => {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) return null;
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("status,is_paid,expires_at")
+        .eq("user_id", u.user.id)
+        .eq("status", "active")
+        .maybeSingle();
+      const isPaid =
+        !!sub?.is_paid && (!sub.expires_at || new Date(sub.expires_at).getTime() > Date.now());
+      const { count } = await supabase
+        .from("activity_log")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", u.user.id)
+        .eq("action", INVOICE_ACTION);
+      return { isPaid, used: count ?? 0 };
+    },
+  });
+
+  const used = quota?.used ?? 0;
+  const isPaid = quota?.isPaid ?? false;
+  const remaining = Math.max(0, FREE_INVOICE_LIMIT - used);
+
+  const handleInvoice = async (s: Sale, customer: Customer) => {
+    if (!isPaid && remaining <= 0) {
+      toast.error(
+        lang === "bn"
+          ? "ফ্রি প্ল্যানে ১০টি ইনভয়েস শেষ হয়ে গেছে। আরও ইনভয়েসের জন্য প্রিমিয়াম নিন।"
+          : "Free plan limit reached (10 invoices). Upgrade to premium for unlimited invoices.",
+      );
+      void nav({ to: "/subscribe", search: { plan: "quarterly" } });
+      return;
+    }
+    openInvoice(s, customer, me?.profile, money);
+    const { data: u } = await supabase.auth.getUser();
+    if (u.user && !isPaid) {
+      await supabase
+        .from("activity_log")
+        .insert({ user_id: u.user.id, action: INVOICE_ACTION, detail: `Invoice for ${s.product_name}` });
+      qc.invalidateQueries({ queryKey: ["invoice-quota"] });
+    }
+  };
+
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -86,6 +140,19 @@ function Sales() {
             {lang === "bn"
               ? "নতুন সেল রেকর্ড করুন এবং সুন্দর ইনভয়েস ডাউনলোড করুন"
               : "Record sales and download beautiful invoices"}
+          </p>
+          <p className="mt-2 text-xs">
+            {isPaid ? (
+              <span className="inline-flex rounded-full bg-primary/15 border border-primary/30 px-3 py-1 text-primary-glow">
+                {lang === "bn" ? "প্রিমিয়াম — আনলিমিটেড ইনভয়েস" : "Premium — unlimited invoices"}
+              </span>
+            ) : (
+              <span className={`inline-flex rounded-full px-3 py-1 border ${remaining > 0 ? "border-border text-muted-foreground" : "border-destructive/50 text-destructive"}`}>
+                {lang === "bn"
+                  ? `ফ্রি ইনভয়েস বাকি: ${remaining}/${FREE_INVOICE_LIMIT}`
+                  : `Free invoices left: ${remaining}/${FREE_INVOICE_LIMIT}`}
+              </span>
+            )}
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
@@ -140,12 +207,12 @@ function Sales() {
                       <td className="p-4">{fmtDate(s.sold_at)}</td>
                       <td className="p-4 font-medium">{s.product_name}</td>
                       <td className="p-4 text-right">{s.quantity}</td>
-                      <td className="p-4 text-right">৳{Number(s.unit_price).toLocaleString()}</td>
+                      <td className="p-4 text-right">{money(s.unit_price)}</td>
                       <td className="p-4 text-right font-semibold">
-                        ৳{Number(s.total).toLocaleString()}
+                        {money(s.total)}
                       </td>
                       <td className="p-4 text-right text-success">
-                        ৳{Number(s.profit).toLocaleString()}
+                        {money(s.profit)}
                       </td>
                       <td className="p-4 text-xs">
                         {s.validity_start && s.validity_end ? (
@@ -156,7 +223,7 @@ function Sales() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => openInvoice(s, customer, me?.profile)}
+                          onClick={() => void handleInvoice(s, customer)}
                           className="hover:bg-primary/10"
                         >
                           <Download className="h-4 w-4 mr-1" /> PDF
@@ -182,7 +249,7 @@ type Customer = {
   email: string | null;
 } | null;
 
-function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
+function openInvoice(s: Sale, customer: Customer, company: CompanyProfile, money: (v: number | string | null | undefined) => string) {
   const c = company ?? {};
   const companyName = (c.company_name as string) || "Ristop Management";
   const tagline = (c.company_tagline as string) || "Smart Business Management";
@@ -242,16 +309,16 @@ function openInvoice(s: Sale, customer: Customer, company: CompanyProfile) {
             ${s.validity_start && s.validity_end ? `<div class="validity">Validity: ${fmtDate(s.validity_start)} → ${fmtDate(s.validity_end)}</div>` : ""}
           </td>
           <td class="r">${s.quantity}</td>
-          <td class="r">৳ ${Number(s.unit_price).toLocaleString()}</td>
-          <td class="r"><strong>৳ ${Number(s.total).toLocaleString()}</strong></td>
+          <td class="r">${money(s.unit_price)}</td>
+          <td class="r"><strong>${money(s.total)}</strong></td>
         </tr>
       </tbody>
     </table>
 
     <div class="totals">
-      <div class="row"><span>Subtotal</span><span>৳ ${Number(s.total).toLocaleString()}</span></div>
-      <div class="row"><span>Tax</span><span>৳ ${tax}</span></div>
-      <div class="grand"><span>Total Due</span><span>৳ ${grand.toLocaleString()}</span></div>
+      <div class="row"><span>Subtotal</span><span>${money(s.total)}</span></div>
+      <div class="row"><span>Tax</span><span>${money(tax)}</span></div>
+      <div class="grand"><span>Total Due</span><span>${money(grand)}</span></div>
     </div>
 
     <div class="footer">
@@ -422,6 +489,7 @@ function SaleForm({
   onDone: () => void;
 }) {
   const { lang } = useI18n();
+  const { money } = useCurrency();
   const [productId, setProductId] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [qty, setQty] = useState(1);
@@ -469,7 +537,7 @@ function SaleForm({
         .eq("id", p.id);
       await supabase
         .from("activity_log")
-        .insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
+        .insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: money(total) });
     }
     setLoading(false);
     if (error) toast.error(error.message);
@@ -490,7 +558,7 @@ function SaleForm({
           <SelectContent>
             {products.map((p) => (
               <SelectItem key={p.id} value={p.id}>
-                {p.name} — ৳{p.price} (stock: {p.stock})
+                {p.name} — {money(p.price)} (stock: {p.stock})
               </SelectItem>
             ))}
           </SelectContent>
@@ -551,7 +619,7 @@ function SaleForm({
       {p && (
         <div className="rounded-xl glass p-3 text-sm flex justify-between">
           <span>{lang === "bn" ? "মোট" : "Total"}</span>
-          <span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span>
+          <span className="font-bold text-gradient">{money(p.price * qty)}</span>
         </div>
       )}
       <Button
