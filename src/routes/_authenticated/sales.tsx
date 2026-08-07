@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -140,12 +141,12 @@ function Sales() {
                       <td className="p-4">{fmtDate(s.sold_at)}</td>
                       <td className="p-4 font-medium">{s.product_name}</td>
                       <td className="p-4 text-right">{s.quantity}</td>
-                      <td className="p-4 text-right">৳{Number(s.unit_price).toLocaleString()}</td>
+                      <td className="p-4 text-right">{money(s.unit_price)}</td>
                       <td className="p-4 text-right font-semibold">
-                        ৳{Number(s.total).toLocaleString()}
+                        {money(s.total)}
                       </td>
                       <td className="p-4 text-right text-success">
-                        ৳{Number(s.profit).toLocaleString()}
+                        {money(s.profit)}
                       </td>
                       <td className="p-4 text-xs">
                         {s.validity_start && s.validity_end ? (
@@ -490,7 +491,7 @@ function SaleForm({
           <SelectContent>
             {products.map((p) => (
               <SelectItem key={p.id} value={p.id}>
-                {p.name} — ৳{p.price} (stock: {p.stock})
+                {p.name} — {money(p.price)} (stock: {p.stock})
               </SelectItem>
             ))}
           </SelectContent>
@@ -551,7 +552,7 @@ function SaleForm({
       {p && (
         <div className="rounded-xl glass p-3 text-sm flex justify-between">
           <span>{lang === "bn" ? "মোট" : "Total"}</span>
-          <span className="font-bold text-gradient">৳{(p.price * qty).toFixed(2)}</span>
+          <span className="font-bold text-gradient">{money(p.price * qty)}</span>
         </div>
       )}
       <Button

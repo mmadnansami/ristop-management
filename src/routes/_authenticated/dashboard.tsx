@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useCurrency } from "@/lib/currency";
 import { TrendingUp, DollarSign, ShoppingCart, AlertTriangle } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -59,8 +60,8 @@ function Dashboard() {
   const top = [...prodMap.values()].sort((a, b) => b.qty - a.qty).slice(0, 5);
 
   const cards = [
-    { label: t("totalSales"), value: `৳ ${totalSales.toLocaleString()}`, icon: DollarSign, color: "from-violet-500/30" },
-    { label: t("totalProfit"), value: `৳ ${totalProfit.toLocaleString()}`, icon: TrendingUp, color: "from-fuchsia-500/30" },
+    { label: t("totalSales"), value: money(totalSales), icon: DollarSign, color: "from-violet-500/30" },
+    { label: t("totalProfit"), value: money(totalProfit), icon: TrendingUp, color: "from-fuchsia-500/30" },
     { label: t("totalOrders"), value: totalOrders.toString(), icon: ShoppingCart, color: "from-purple-500/30" },
     { label: t("lowStock"), value: lowStock.length.toString(), icon: AlertTriangle, color: "from-rose-500/30", warn: true },
   ];
@@ -132,7 +133,7 @@ function Dashboard() {
               {top.map((p) => (
                 <div key={p.name} className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
                   <div><div className="text-sm font-medium">{p.name}</div><div className="text-xs text-muted-foreground">{p.qty} sold</div></div>
-                  <div className="text-sm font-bold text-primary-glow">৳{p.price}</div>
+                  <div className="text-sm font-bold text-primary-glow">{money(p.price)}</div>
                 </div>
               ))}
             </div>
