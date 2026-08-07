@@ -1,14 +1,14 @@
-import officialLogoAsset from "@/assets/ristop-official-logo.png.asset.json";
-import mascotAsset from "@/assets/ristop-mascot.png.asset.json";
-
-const officialLogoUrl = officialLogoAsset.url;
-const mascotUrl = mascotAsset.url;
+/**
+ * Brand assets are served from /public so they load on every host
+ * (Lovable preview, Vercel deployment and custom domains alike).
+ */
+const officialLogoUrl = "/ristop-official-logo.webp";
+const mascotUrl = "/ristop-mascot.png";
 
 /**
  * Official RISTOP MANAGEMENT wordmark (the customer-approved logo).
- * Served from immutable project assets so it renders identically on every domain.
  */
-export function Logo({ className = "h-10 w-auto" }: { className?: string }) {
+export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
   return (
     <span
       aria-label="Ristop Management — Official Logo"
@@ -18,7 +18,7 @@ export function Logo({ className = "h-10 w-auto" }: { className?: string }) {
       itemType="https://schema.org/Organization"
     >
       <meta itemProp="name" content="Ristop Management" />
-      <link itemProp="url" href="https://ristop-smart-hub.lovable.app/" />
+      <link itemProp="url" href="https://ristopmanagement.vercel.app/" />
       <img
         src={officialLogoUrl}
         alt="Ristop Management official logo — business management software"
@@ -26,7 +26,7 @@ export function Logo({ className = "h-10 w-auto" }: { className?: string }) {
         itemProp="logo"
         width={320}
         height={100}
-        className="h-full w-auto object-contain"
+        className="h-full w-auto max-w-[220px] object-contain"
         loading="eager"
         decoding="async"
       />
