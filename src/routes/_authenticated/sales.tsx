@@ -141,6 +141,19 @@ function Sales() {
               ? "নতুন সেল রেকর্ড করুন এবং সুন্দর ইনভয়েস ডাউনলোড করুন"
               : "Record sales and download beautiful invoices"}
           </p>
+          <p className="mt-2 text-xs">
+            {isPaid ? (
+              <span className="inline-flex rounded-full bg-primary/15 border border-primary/30 px-3 py-1 text-primary-glow">
+                {lang === "bn" ? "প্রিমিয়াম — আনলিমিটেড ইনভয়েস" : "Premium — unlimited invoices"}
+              </span>
+            ) : (
+              <span className={`inline-flex rounded-full px-3 py-1 border ${remaining > 0 ? "border-border text-muted-foreground" : "border-destructive/50 text-destructive"}`}>
+                {lang === "bn"
+                  ? `ফ্রি ইনভয়েস বাকি: ${remaining}/${FREE_INVOICE_LIMIT}`
+                  : `Free invoices left: ${remaining}/${FREE_INVOICE_LIMIT}`}
+              </span>
+            )}
+          </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -524,7 +537,7 @@ function SaleForm({
         .eq("id", p.id);
       await supabase
         .from("activity_log")
-        .insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: `৳${total}` });
+        .insert({ user_id: u.user.id, action: `Sale: ${p.name} x${qty}`, detail: money(total) });
     }
     setLoading(false);
     if (error) toast.error(error.message);
