@@ -79,6 +79,54 @@ function Sales() {
     },
   });
 
+  // Free plan invoice quota — 10 PDF invoices, then a paid plan is required.
+  const { data: quota } = useQuery({
+    queryKey: ["invoice-quota"],
+    queryFn: async () => {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) return null;
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("status,is_paid,expires_at")
+        .eq("user_id", u.user.id)
+        .eq("status", "active")
+        .maybeSingle();
+      const isPaid =
+        !!sub?.is_paid && (!sub.expires_at || new Date(sub.expires_at).getTime() > Date.now());
+      const { count } = await supabase
+        .from("activity_log")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", u.user.id)
+        .eq("action", INVOICE_ACTION);
+      return { isPaid, used: count ?? 0 };
+    },
+  });
+
+  const used = quota?.used ?? 0;
+  const isPaid = quota?.isPaid ?? false;
+  const remaining = Math.max(0, FREE_INVOICE_LIMIT - used);
+
+  const handleInvoice = async (s: Sale, customer: Customer) => {
+    if (!isPaid && remaining <= 0) {
+      toast.error(
+        lang === "bn"
+          ? "ফ্রি প্ল্যানে ১০টি ইনভয়েস শেষ হয়ে গেছে। আরও ইনভয়েসের জন্য প্রিমিয়াম নিন।"
+          : "Free plan limit reached (10 invoices). Upgrade to premium for unlimited invoices.",
+      );
+      void nav({ to: "/subscribe", search: { plan: "quarterly" } });
+      return;
+    }
+    openInvoice(s, customer, me?.profile, money);
+    const { data: u } = await supabase.auth.getUser();
+    if (u.user && !isPaid) {
+      await supabase
+        .from("activity_log")
+        .insert({ user_id: u.user.id, action: INVOICE_ACTION, detail: `Invoice for ${s.product_name}` });
+      qc.invalidateQueries({ queryKey: ["invoice-quota"] });
+    }
+  };
+
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
