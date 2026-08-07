@@ -160,6 +160,21 @@ function Profile() {
         </p>
       </div>
 
+      {/* Display currency */}
+      <div className="rounded-3xl glass-strong p-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="font-semibold">{lang === "bn" ? "ডিসপ্লে কারেন্সি" : "Display currency"}</div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {lang === "bn"
+              ? "সফটওয়্যারের সব টাকার অঙ্ক এই কারেন্সিতে দেখানো হবে (ডিফল্ট USD)।"
+              : "All amounts across the software show in this currency (USD by default)."}
+          </p>
+        </div>
+        <CurrencyToggle />
+      </div>
+
+
+
       {/* Identity header */}
       <div className="rounded-3xl glass-strong p-6 flex items-center gap-5">
         <Avatar className="h-20 w-20 ring-2 ring-primary/50 shadow-glow">
