@@ -919,6 +919,7 @@ export type Database = {
         Args: { _code: string; _user_id: string }
         Returns: undefined
       }
+      claim_affiliate_click: { Args: { _click_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

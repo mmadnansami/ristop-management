@@ -24,22 +24,26 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({ mode: (s.mode === "signup" ? "signup" : "signin") as "signin" | "signup" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    mode: (s.mode === "signup" ? "signup" : "signin") as "signin" | "signup",
+    referral: typeof s.referral === "string" ? s.referral.slice(0, 40).toUpperCase() : "",
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
-  const { mode } = Route.useSearch();
+  const { mode, referral } = Route.useSearch();
   const [isSignup, setIsSignup] = useState(mode === "signup");
   const { lang } = useI18n();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [referralCode, setReferralCode] = useState("");
+  const [referralCode, setReferralCode] = useState(referral);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => { setIsSignup(mode === "signup"); }, [mode]);
+  useEffect(() => { if (referral) setReferralCode(referral); }, [referral]);
 
   useEffect(() => {
     const finishOAuth = async () => {
@@ -114,7 +118,7 @@ function AuthPage() {
   const google = async () => {
     setLoading(true);
     const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth?mode=signin`,
       extraParams: { prompt: "select_account" },
     });
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
