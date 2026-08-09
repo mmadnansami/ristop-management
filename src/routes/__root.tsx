@@ -15,6 +15,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { CurrencyProvider } from "@/lib/currency";
 import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "@/components/ui/sonner";
+import { AffiliateTracker } from "@/components/AffiliateTracker";
 
 function NotFoundComponent() {
   return (
@@ -158,6 +159,7 @@ function RootComponent() {
       <I18nProvider>
         <CurrencyProvider>
           <AuthListener />
+          <AffiliateTracker />
           <Outlet />
           <Toaster position="top-right" />
         </CurrencyProvider>

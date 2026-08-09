@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Cloud, Crown, Sparkles, Building2, User as UserIcon, Lock, RotateCcw } from "lucide-react";
+import { PartnerCenter } from "@/components/PartnerCenter";
 
 export const Route = createFileRoute("/_authenticated/profile")({ component: Profile });
 
@@ -201,6 +202,8 @@ function Profile() {
           </div>
         </div>
       </div>
+
+      <PartnerCenter />
 
       {/* Personal info */}
       <Section icon={UserIcon} title={lang === "bn" ? "ব্যক্তিগত তথ্য" : "Personal Info"}>
