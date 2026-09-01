@@ -44,7 +44,7 @@ function Admin() {
   });
 
   const sendReset = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/auth` });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
     if (error) toast.error(error.message); else toast.success(lang === "bn" ? "রিসেট লিংক পাঠানো হয়েছে" : "Reset link sent");
   };
 

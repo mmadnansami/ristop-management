@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+import { signInWithGoogle } from "@/lib/auth-oauth";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -117,14 +117,12 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/auth?mode=signin`,
-      extraParams: { prompt: "select_account" },
-    });
+    const res = await signInWithGoogle();
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
     navigate({ to: "/dashboard", replace: true });
   };
+
 
   return (
     <div className="auth-scene min-h-screen relative flex flex-col overflow-hidden">
