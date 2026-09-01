@@ -24,7 +24,7 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { mode?: "signin" | "signup"; referral?: string } => ({
     mode: (s.mode === "signup" ? "signup" : "signin") as "signin" | "signup",
     referral: typeof s.referral === "string" ? s.referral.slice(0, 40).toUpperCase() : "",
   }),
