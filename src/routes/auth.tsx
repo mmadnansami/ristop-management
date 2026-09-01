@@ -180,6 +180,13 @@ function AuthPage() {
               <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
             <div><Label className="text-foreground/70">Password</Label>
               <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
+            {!isSignup && (
+              <div className="text-right">
+                <Link to="/forgot-password" className="text-sm font-medium text-primary-glow hover:underline">
+                  {lang === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
+                </Link>
+              </div>
+            )}
             <Button type="submit" disabled={loading} className="w-full bg-gradient-primary shadow-glow h-12 mt-2 rounded-xl text-base font-semibold">
               {loading ? "..." : isSignup ? (lang === "bn" ? "সাইন-আপ" : "Sign Up") : (lang === "bn" ? "লগইন" : "Login")}
             </Button>
