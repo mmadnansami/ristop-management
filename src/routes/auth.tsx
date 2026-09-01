@@ -39,7 +39,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [referralCode, setReferralCode] = useState(referral);
+  const [referralCode, setReferralCode] = useState(referral ?? "");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => { setIsSignup(mode === "signup"); }, [mode]);
