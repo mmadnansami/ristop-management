@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+import { signInWithGoogle } from "@/lib/auth-oauth";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { mode?: "signin" | "signup"; referral?: string } => ({
     mode: (s.mode === "signup" ? "signup" : "signin") as "signin" | "signup",
     referral: typeof s.referral === "string" ? s.referral.slice(0, 40).toUpperCase() : "",
   }),
@@ -39,7 +39,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [referralCode, setReferralCode] = useState(referral);
+  const [referralCode, setReferralCode] = useState(referral ?? "");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => { setIsSignup(mode === "signup"); }, [mode]);
@@ -117,14 +117,12 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/auth?mode=signin`,
-      extraParams: { prompt: "select_account" },
-    });
+    const res = await signInWithGoogle();
     if (res.error) { toast.error(res.error.message); setLoading(false); return; }
     if (res.redirected) return;
     navigate({ to: "/dashboard", replace: true });
   };
+
 
   return (
     <div className="auth-scene min-h-screen relative flex flex-col overflow-hidden">
@@ -182,6 +180,13 @@ function AuthPage() {
               <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
             <div><Label className="text-foreground/70">Password</Label>
               <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="mt-1.5 h-12 rounded-xl bg-white/5 border-white/15 focus-visible:ring-primary" /></div>
+            {!isSignup && (
+              <div className="text-right">
+                <Link to="/forgot-password" className="text-sm font-medium text-primary-glow hover:underline">
+                  {lang === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
+                </Link>
+              </div>
+            )}
             <Button type="submit" disabled={loading} className="w-full bg-gradient-primary shadow-glow h-12 mt-2 rounded-xl text-base font-semibold">
               {loading ? "..." : isSignup ? (lang === "bn" ? "সাইন-আপ" : "Sign Up") : (lang === "bn" ? "লগইন" : "Login")}
             </Button>
