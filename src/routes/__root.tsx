@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
-      { rel: "apple-touch-icon", href: "/ristop-official-logo.webp" },
+      { rel: "apple-touch-icon", href: "/ristop-official-logo.png" },
       { rel: "canonical", href: "/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -94,8 +94,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             name: "Ristop Management",
             alternateName: "Ristop Software",
             url: "https://ristop-smart-hub.lovable.app/",
-            logo: "https://ristop-smart-hub.lovable.app/ristop-official-logo.webp",
-            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.webp",
+            logo: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
+            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
             description: SITE_DESC,
             telephone: "+8801317680620",
             areaServed: { "@type": "Country", name: "Bangladesh" },
@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             operatingSystem: "Web, Android, iOS",
             applicationCategory: "BusinessApplication",
             description: SITE_DESC,
-            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.webp",
+            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
             offers: [
               { "@type": "Offer", priceCurrency: "BDT", price: "190", name: "Monthly plan (launch discount)" },
               { "@type": "Offer", priceCurrency: "USD", price: "3", name: "Monthly plan (launch discount)" },

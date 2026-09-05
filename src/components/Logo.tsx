@@ -2,8 +2,8 @@
  * Brand assets are served from /public so they load on every host
  * (Lovable preview, Vercel deployment and custom domains alike).
  */
-const officialLogoUrl = "/ristop-official-logo.webp";
-const mascotUrl = "/ristop-mascot.png";
+const officialLogoUrl = "/ristop-official-logo.png";
+const mascotUrl = "/ristop-mascot.webp";
 
 /**
  * Official RISTOP MANAGEMENT wordmark (the customer-approved logo).
