@@ -180,7 +180,8 @@ function RootComponent() {
       <I18nProvider>
         <CurrencyProvider>
           <AuthListener />
-          <AffiliateTracker />
+          <RecoveryRedirect />
+
           <Outlet />
           <Toaster position="top-right" />
         </CurrencyProvider>
