@@ -41,6 +41,32 @@ function ResetPassword() {
 
     (async () => {
       const params = new URLSearchParams(window.location.search);
+      const hash = new URLSearchParams((window.location.hash || "").replace(/^#/, ""));
+
+      // 1) Implicit flow: tokens delivered in the URL hash.
+      const accessToken = hash.get("access_token");
+      const refreshToken = hash.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        if (!cancelled) {
+          if (error) setInvalid(true);
+          else setReady(true);
+        }
+        return;
+      }
+
+      // 2) Email-link flow with token_hash (verify OTP).
+      const tokenHash = params.get("token_hash") ?? hash.get("token_hash") ?? params.get("token");
+      if (tokenHash) {
+        const { error } = await supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash });
+        if (!cancelled) {
+          if (error) setInvalid(true);
+          else setReady(true);
+        }
+        return;
+      }
+
+      // 3) PKCE flow with ?code=
       const code = params.get("code");
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
@@ -60,6 +86,7 @@ function ResetPassword() {
           else setInvalid(true);
         }, 2500);
     })();
+
 
     return () => {
       cancelled = true;
