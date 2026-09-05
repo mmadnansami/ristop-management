@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
-      { rel: "apple-touch-icon", href: "/ristop-official-logo.webp" },
+      { rel: "apple-touch-icon", href: "/ristop-official-logo.png" },
       { rel: "canonical", href: "/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -94,8 +94,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             name: "Ristop Management",
             alternateName: "Ristop Software",
             url: "https://ristop-smart-hub.lovable.app/",
-            logo: "https://ristop-smart-hub.lovable.app/ristop-official-logo.webp",
-            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.webp",
+            logo: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
+            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
             description: SITE_DESC,
             telephone: "+8801317680620",
             areaServed: { "@type": "Country", name: "Bangladesh" },
@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             operatingSystem: "Web, Android, iOS",
             applicationCategory: "BusinessApplication",
             description: SITE_DESC,
-            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.webp",
+            image: "https://ristop-smart-hub.lovable.app/ristop-official-logo.png",
             offers: [
               { "@type": "Offer", priceCurrency: "BDT", price: "190", name: "Monthly plan (launch discount)" },
               { "@type": "Offer", priceCurrency: "USD", price: "3", name: "Monthly plan (launch discount)" },
@@ -130,11 +130,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="bn" data-lang="en" className="dark">
+    <html lang="en" data-lang="en" className="dark">
       <head><HeadContent /></head>
       <body>{children}<Scripts /></body>
     </html>
   );
+}
+
+/**
+ * Password-recovery links can land on any path (Supabase falls back to the
+ * Site URL). Catch the recovery token anywhere and send the user to the
+ * reset-password screen with the token preserved.
+ */
+function RecoveryRedirect() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const { pathname, hash, search } = window.location;
+    if (pathname === "/reset-password") return;
+    const isRecovery = hash.includes("type=recovery") || new URLSearchParams(search).get("type") === "recovery";
+    if (isRecovery) window.location.replace(`/reset-password${search}${hash}`);
+  }, []);
+  return null;
 }
 
 function AuthListener() {
@@ -142,6 +158,10 @@ function AuthListener() {
   const qc = useQueryClient();
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        if (window.location.pathname !== "/reset-password") window.location.replace("/reset-password");
+        return;
+      }
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
       if (event === "SIGNED_OUT") qc.clear();
@@ -152,6 +172,7 @@ function AuthListener() {
   return null;
 }
 
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
@@ -159,7 +180,10 @@ function RootComponent() {
       <I18nProvider>
         <CurrencyProvider>
           <AuthListener />
+          <RecoveryRedirect />
           <AffiliateTracker />
+
+
           <Outlet />
           <Toaster position="top-right" />
         </CurrencyProvider>
