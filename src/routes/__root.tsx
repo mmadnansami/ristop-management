@@ -181,6 +181,8 @@ function RootComponent() {
         <CurrencyProvider>
           <AuthListener />
           <RecoveryRedirect />
+          <AffiliateTracker />
+
 
           <Outlet />
           <Toaster position="top-right" />
