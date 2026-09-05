@@ -130,11 +130,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="bn" data-lang="en" className="dark">
+    <html lang="en" data-lang="en" className="dark">
       <head><HeadContent /></head>
       <body>{children}<Scripts /></body>
     </html>
   );
+}
+
+/**
+ * Password-recovery links can land on any path (Supabase falls back to the
+ * Site URL). Catch the recovery token anywhere and send the user to the
+ * reset-password screen with the token preserved.
+ */
+function RecoveryRedirect() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const { pathname, hash, search } = window.location;
+    if (pathname === "/reset-password") return;
+    const isRecovery = hash.includes("type=recovery") || new URLSearchParams(search).get("type") === "recovery";
+    if (isRecovery) window.location.replace(`/reset-password${search}${hash}`);
+  }, []);
+  return null;
 }
 
 function AuthListener() {
@@ -142,6 +158,10 @@ function AuthListener() {
   const qc = useQueryClient();
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        if (window.location.pathname !== "/reset-password") window.location.replace("/reset-password");
+        return;
+      }
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
       if (event === "SIGNED_OUT") qc.clear();
@@ -151,6 +171,7 @@ function AuthListener() {
   }, [router, qc]);
   return null;
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
