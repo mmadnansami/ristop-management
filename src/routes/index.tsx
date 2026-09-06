@@ -33,18 +33,9 @@ function Landing() {
   const [currency, setCurrency] = useState<Currency>("BDT");
   return (
     <div className="min-h-screen bg-gradient-hero">
-      {/* Top brand banner */}
-      <a href="#pricing" className="block w-full border-b border-primary/30" aria-label="Ristop Management — understand your business">
-        <img
-          src="/ristop-banner.jpg"
-          alt="Ristop Management — understand your business: dashboard, sales, inventory, customers, expenses and reports"
-          width={1920}
-          height={799}
-          className="w-full h-auto object-cover"
-          loading="eager"
-          decoding="async"
-        />
-      </a>
+      {/* Top ad banner strip (auto-rotating) */}
+      <AdBanner />
+
 
       {/* Nav */}
       <header className="sticky top-0 z-40 glass border-b border-border/50">
