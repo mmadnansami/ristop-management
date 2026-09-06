@@ -427,6 +427,54 @@ export type Database = {
         }
         Relationships: []
       }
+      market_insights: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          price_direction: string
+          product_name: string | null
+          published_at: string
+          region: string
+          source_name: string | null
+          source_url: string | null
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          price_direction?: string
+          product_name?: string | null
+          published_at?: string
+          region?: string
+          source_name?: string | null
+          source_url?: string | null
+          summary: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          price_direction?: string
+          product_name?: string | null
+          published_at?: string
+          region?: string
+          source_name?: string | null
+          source_url?: string | null
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null
