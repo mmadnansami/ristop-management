@@ -15,6 +15,7 @@ export function AffiliateTracker() {
       const url = new URL(window.location.href);
       const code = url.searchParams.get("ref")?.trim().toUpperCase();
       if (code) {
+        localStorage.setItem("ristop_ref_code", code);
         const visitorId = localStorage.getItem("ristop_visitor_id") ?? crypto.randomUUID();
         localStorage.setItem("ristop_visitor_id", visitorId);
         const visitorHash = await sha256(visitorId);

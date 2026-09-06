@@ -59,11 +59,19 @@ function SubscribePage() {
     const r = schema.safeParse(form);
     if (!r.success) { toast.error(bn ? "সব ফিল্ড সঠিকভাবে পূরণ করুন" : "Please fill all fields correctly"); return; }
     setLoading(true);
-    const { error } = await supabase.from("subscription_requests").insert({
+    const { data: userData } = await supabase.auth.getUser();
+    const refCode = (typeof window !== "undefined" ? localStorage.getItem("ristop_ref_code") : null) || null;
+    const payload = {
       name: form.name, email: form.email, phone: form.phone,
       plan: selectedPlan, payment_method: form.method, transaction_id: form.txn,
       amount,
-    });
+      user_id: userData.user?.id ?? null,
+      currency,
+      coupon_code: coupon.trim() || null,
+      affiliate_code: refCode,
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await supabase.from("subscription_requests").insert(payload as any);
     setLoading(false);
     if (error) { toast.error(error.message); return; }
     const msg = `New Ristop Subscription Request\nName: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\nPlan: ${selectedPlan} (${formatPrice(amount, currency)})\nCurrency: ${currency}\nCoupon: ${coupon || "-"}\nMethod: ${form.method}\nTxnID: ${form.txn}`;

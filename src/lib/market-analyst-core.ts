@@ -48,10 +48,50 @@ function buildMarketQuery(region: Region, category?: string, userQuestion?: stri
   return `(${regionPart}) (${topic}) (price OR demand OR market OR retail OR commodity OR inflation OR supply OR shortage OR export OR import)`;
 }
 
+/** fetch with a hard timeout so a slow public source can never hang the page. */
+export async function fetchWithTimeout(url: string, init: RequestInit = {}, ms = 12000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Admin-curated insights are the trusted fallback when public sources fail. */
+export async function fetchAdminInsights(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  region: Region,
+): Promise<{ articles: SourceArticle[]; brief: string }> {
+  try {
+    const { data } = await supabase
+      .from("market_insights")
+      .select("title, summary, source_name, source_url, published_at, region, product_name, price_direction, category")
+      .in("region", [region, "both"])
+      .order("published_at", { ascending: false })
+      .limit(20);
+    const rows = (data ?? []) as Array<Record<string, unknown>>;
+    const articles: SourceArticle[] = rows.map((r) => ({
+      title: safeText(r.title),
+      url: safeText(r.source_url) || "admin-curated",
+      source: safeText(r.source_name) || "Ristop admin desk",
+      published_at: safeText(r.published_at) || new Date().toISOString(),
+    })).filter((a) => a.title);
+    const brief = rows
+      .map((r) => `- ${safeText(r.product_name) || safeText(r.category) || "market"} (${safeText(r.price_direction)}): ${safeText(r.title)} — ${safeText(r.summary)} [${safeText(r.source_name) || "Ristop admin desk"}]`)
+      .join("\n");
+    return { articles, brief };
+  } catch {
+    return { articles: [], brief: "" };
+  }
+}
+
 export async function fetchMarketSources(region: Region, category?: string, userQuestion?: string, days = 1): Promise<{ articles: SourceArticle[]; note?: string }> {
   const params = new URLSearchParams({ query: buildMarketQuery(region, category, userQuestion), mode: "artlist", format: "json", maxrecords: "50", sort: "datedesc", timespan: `${days}d` });
   try {
-    const res = await fetch(`https://api.gdeltproject.org/api/v2/doc/doc?${params.toString()}`, { headers: { "User-Agent": "Ristop-Market-Analyst/1.0" } });
+    const res = await fetchWithTimeout(`https://api.gdeltproject.org/api/v2/doc/doc?${params.toString()}`, { headers: { "User-Agent": "Ristop-Market-Analyst/1.0" } });
     if (!res.ok) return { articles: [], note: `SOURCE_${res.status}` };
     const json = await res.json() as { articles?: Array<Record<string, unknown>> };
     return { articles: (json.articles ?? []).map((a) => ({ title: safeText(a.title), url: safeText(a.url), source: safeText(a.sourceCommonName || a.domain || "source"), published_at: safeText(a.seendate || a.publishedDate || new Date().toISOString()) })).filter((a) => a.title && a.url).slice(0, 35) };
