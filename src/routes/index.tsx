@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
+import { AdBanner } from "@/components/AdBanner";
+
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { RisAssistant } from "@/components/RisAssistant";
 import { SiteFooter, CareersCta } from "@/components/SiteFooter";
