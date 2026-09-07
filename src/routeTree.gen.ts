@@ -10,8 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
+import { Route as SalesManagementSoftwareBangladeshRouteImport } from './routes/sales-management-software-bangladesh'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as InventoryManagementSoftwareBangladeshRouteImport } from './routes/inventory-management-software-bangladesh'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as CustomerManagementSoftwareBangladeshRouteImport } from './routes/customer-management-software-bangladesh'
+import { Route as BusinessSoftwareBangladeshRouteImport } from './routes/business-software-bangladesh'
+import { Route as BusinessProfitManagementSoftwareRouteImport } from './routes/business-profit-management-software'
+import { Route as BusinessManagementSoftwareBangladeshRouteImport } from './routes/business-management-software-bangladesh'
 import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -35,16 +41,52 @@ const SubscribeRoute = SubscribeRouteImport.update({
   path: '/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SalesManagementSoftwareBangladeshRoute =
+  SalesManagementSoftwareBangladeshRouteImport.update({
+    id: '/sales-management-software-bangladesh',
+    path: '/sales-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InventoryManagementSoftwareBangladeshRoute =
+  InventoryManagementSoftwareBangladeshRouteImport.update({
+    id: '/inventory-management-software-bangladesh',
+    path: '/inventory-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CustomerManagementSoftwareBangladeshRoute =
+  CustomerManagementSoftwareBangladeshRouteImport.update({
+    id: '/customer-management-software-bangladesh',
+    path: '/customer-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BusinessSoftwareBangladeshRoute =
+  BusinessSoftwareBangladeshRouteImport.update({
+    id: '/business-software-bangladesh',
+    path: '/business-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BusinessProfitManagementSoftwareRoute =
+  BusinessProfitManagementSoftwareRouteImport.update({
+    id: '/business-profit-management-software',
+    path: '/business-profit-management-software',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BusinessManagementSoftwareBangladeshRoute =
+  BusinessManagementSoftwareBangladeshRouteImport.update({
+    id: '/business-management-software-bangladesh',
+    path: '/business-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth-callback',
   path: '/auth-callback',
@@ -135,8 +177,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
+  '/business-management-software-bangladesh': typeof BusinessManagementSoftwareBangladeshRoute
+  '/business-profit-management-software': typeof BusinessProfitManagementSoftwareRoute
+  '/business-software-bangladesh': typeof BusinessSoftwareBangladeshRoute
+  '/customer-management-software-bangladesh': typeof CustomerManagementSoftwareBangladeshRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
   '/subscribe': typeof SubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -156,8 +204,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
+  '/business-management-software-bangladesh': typeof BusinessManagementSoftwareBangladeshRoute
+  '/business-profit-management-software': typeof BusinessProfitManagementSoftwareRoute
+  '/business-software-bangladesh': typeof BusinessSoftwareBangladeshRoute
+  '/customer-management-software-bangladesh': typeof CustomerManagementSoftwareBangladeshRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
   '/subscribe': typeof SubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -179,8 +233,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
+  '/business-management-software-bangladesh': typeof BusinessManagementSoftwareBangladeshRoute
+  '/business-profit-management-software': typeof BusinessProfitManagementSoftwareRoute
+  '/business-software-bangladesh': typeof BusinessSoftwareBangladeshRoute
+  '/customer-management-software-bangladesh': typeof CustomerManagementSoftwareBangladeshRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
   '/subscribe': typeof SubscribeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
@@ -202,8 +262,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/auth-callback'
+    | '/business-management-software-bangladesh'
+    | '/business-profit-management-software'
+    | '/business-software-bangladesh'
+    | '/customer-management-software-bangladesh'
     | '/forgot-password'
+    | '/inventory-management-software-bangladesh'
     | '/reset-password'
+    | '/sales-management-software-bangladesh'
     | '/subscribe'
     | '/admin'
     | '/customers'
@@ -223,8 +289,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/auth-callback'
+    | '/business-management-software-bangladesh'
+    | '/business-profit-management-software'
+    | '/business-software-bangladesh'
+    | '/customer-management-software-bangladesh'
     | '/forgot-password'
+    | '/inventory-management-software-bangladesh'
     | '/reset-password'
+    | '/sales-management-software-bangladesh'
     | '/subscribe'
     | '/admin'
     | '/customers'
@@ -245,8 +317,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/auth-callback'
+    | '/business-management-software-bangladesh'
+    | '/business-profit-management-software'
+    | '/business-software-bangladesh'
+    | '/customer-management-software-bangladesh'
     | '/forgot-password'
+    | '/inventory-management-software-bangladesh'
     | '/reset-password'
+    | '/sales-management-software-bangladesh'
     | '/subscribe'
     | '/_authenticated/admin'
     | '/_authenticated/customers'
@@ -268,8 +346,14 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  BusinessManagementSoftwareBangladeshRoute: typeof BusinessManagementSoftwareBangladeshRoute
+  BusinessProfitManagementSoftwareRoute: typeof BusinessProfitManagementSoftwareRoute
+  BusinessSoftwareBangladeshRoute: typeof BusinessSoftwareBangladeshRoute
+  CustomerManagementSoftwareBangladeshRoute: typeof CustomerManagementSoftwareBangladeshRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  InventoryManagementSoftwareBangladeshRoute: typeof InventoryManagementSoftwareBangladeshRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SalesManagementSoftwareBangladeshRoute: typeof SalesManagementSoftwareBangladeshRoute
   SubscribeRoute: typeof SubscribeRoute
   InfoSlugRoute: typeof InfoSlugRoute
 }
@@ -283,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sales-management-software-bangladesh': {
+      id: '/sales-management-software-bangladesh'
+      path: '/sales-management-software-bangladesh'
+      fullPath: '/sales-management-software-bangladesh'
+      preLoaderRoute: typeof SalesManagementSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -290,11 +381,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inventory-management-software-bangladesh': {
+      id: '/inventory-management-software-bangladesh'
+      path: '/inventory-management-software-bangladesh'
+      fullPath: '/inventory-management-software-bangladesh'
+      preLoaderRoute: typeof InventoryManagementSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/forgot-password': {
       id: '/forgot-password'
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customer-management-software-bangladesh': {
+      id: '/customer-management-software-bangladesh'
+      path: '/customer-management-software-bangladesh'
+      fullPath: '/customer-management-software-bangladesh'
+      preLoaderRoute: typeof CustomerManagementSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-software-bangladesh': {
+      id: '/business-software-bangladesh'
+      path: '/business-software-bangladesh'
+      fullPath: '/business-software-bangladesh'
+      preLoaderRoute: typeof BusinessSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-profit-management-software': {
+      id: '/business-profit-management-software'
+      path: '/business-profit-management-software'
+      fullPath: '/business-profit-management-software'
+      preLoaderRoute: typeof BusinessProfitManagementSoftwareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-management-software-bangladesh': {
+      id: '/business-management-software-bangladesh'
+      path: '/business-management-software-bangladesh'
+      fullPath: '/business-management-software-bangladesh'
+      preLoaderRoute: typeof BusinessManagementSoftwareBangladeshRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth-callback': {
@@ -457,8 +583,18 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  BusinessManagementSoftwareBangladeshRoute:
+    BusinessManagementSoftwareBangladeshRoute,
+  BusinessProfitManagementSoftwareRoute: BusinessProfitManagementSoftwareRoute,
+  BusinessSoftwareBangladeshRoute: BusinessSoftwareBangladeshRoute,
+  CustomerManagementSoftwareBangladeshRoute:
+    CustomerManagementSoftwareBangladeshRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  InventoryManagementSoftwareBangladeshRoute:
+    InventoryManagementSoftwareBangladeshRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SalesManagementSoftwareBangladeshRoute:
+    SalesManagementSoftwareBangladeshRoute,
   SubscribeRoute: SubscribeRoute,
   InfoSlugRoute: InfoSlugRoute,
 }
