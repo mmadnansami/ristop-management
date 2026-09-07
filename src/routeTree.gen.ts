@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as BusinessSoftwareBangladeshRouteImport } from './routes/business-software-bangladesh'
 import { Route as BusinessManagementSoftwareBangladeshRouteImport } from './routes/business-management-software-bangladesh'
 import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -46,6 +47,12 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BusinessSoftwareBangladeshRoute =
+  BusinessSoftwareBangladeshRouteImport.update({
+    id: '/business-software-bangladesh',
+    path: '/business-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const BusinessManagementSoftwareBangladeshRoute =
   BusinessManagementSoftwareBangladeshRouteImport.update({
     id: '/business-management-software-bangladesh',
@@ -143,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/business-management-software-bangladesh': typeof BusinessManagementSoftwareBangladeshRoute
+  '/business-software-bangladesh': typeof BusinessSoftwareBangladeshRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/subscribe': typeof SubscribeRoute
@@ -165,6 +173,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/business-management-software-bangladesh': typeof BusinessManagementSoftwareBangladeshRoute
+  '/business-software-bangladesh': typeof BusinessSoftwareBangladeshRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/subscribe': typeof SubscribeRoute
@@ -189,6 +198,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/business-management-software-bangladesh': typeof BusinessManagementSoftwareBangladeshRoute
+  '/business-software-bangladesh': typeof BusinessSoftwareBangladeshRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/subscribe': typeof SubscribeRoute
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/auth-callback'
     | '/business-management-software-bangladesh'
+    | '/business-software-bangladesh'
     | '/forgot-password'
     | '/reset-password'
     | '/subscribe'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/auth-callback'
     | '/business-management-software-bangladesh'
+    | '/business-software-bangladesh'
     | '/forgot-password'
     | '/reset-password'
     | '/subscribe'
@@ -258,6 +270,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/auth-callback'
     | '/business-management-software-bangladesh'
+    | '/business-software-bangladesh'
     | '/forgot-password'
     | '/reset-password'
     | '/subscribe'
@@ -282,6 +295,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   BusinessManagementSoftwareBangladeshRoute: typeof BusinessManagementSoftwareBangladeshRoute
+  BusinessSoftwareBangladeshRoute: typeof BusinessSoftwareBangladeshRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SubscribeRoute: typeof SubscribeRoute
@@ -309,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-software-bangladesh': {
+      id: '/business-software-bangladesh'
+      path: '/business-software-bangladesh'
+      fullPath: '/business-software-bangladesh'
+      preLoaderRoute: typeof BusinessSoftwareBangladeshRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/business-management-software-bangladesh': {
@@ -480,6 +501,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   BusinessManagementSoftwareBangladeshRoute:
     BusinessManagementSoftwareBangladeshRoute,
+  BusinessSoftwareBangladeshRoute: BusinessSoftwareBangladeshRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SubscribeRoute: SubscribeRoute,
