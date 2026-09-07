@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
+import { Route as SalesManagementSoftwareBangladeshRouteImport } from './routes/sales-management-software-bangladesh'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as InventoryManagementSoftwareBangladeshRouteImport } from './routes/inventory-management-software-bangladesh'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -38,6 +39,12 @@ const SubscribeRoute = SubscribeRouteImport.update({
   path: '/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SalesManagementSoftwareBangladeshRoute =
+  SalesManagementSoftwareBangladeshRouteImport.update({
+    id: '/sales-management-software-bangladesh',
+    path: '/sales-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -161,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
   '/subscribe': typeof SubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -185,6 +193,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
   '/subscribe': typeof SubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -211,6 +220,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
   '/subscribe': typeof SubscribeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/inventory-management-software-bangladesh'
     | '/reset-password'
+    | '/sales-management-software-bangladesh'
     | '/subscribe'
     | '/admin'
     | '/customers'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/inventory-management-software-bangladesh'
     | '/reset-password'
+    | '/sales-management-software-bangladesh'
     | '/subscribe'
     | '/admin'
     | '/customers'
@@ -286,6 +298,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/inventory-management-software-bangladesh'
     | '/reset-password'
+    | '/sales-management-software-bangladesh'
     | '/subscribe'
     | '/_authenticated/admin'
     | '/_authenticated/customers'
@@ -312,6 +325,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InventoryManagementSoftwareBangladeshRoute: typeof InventoryManagementSoftwareBangladeshRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SalesManagementSoftwareBangladeshRoute: typeof SalesManagementSoftwareBangladeshRoute
   SubscribeRoute: typeof SubscribeRoute
   InfoSlugRoute: typeof InfoSlugRoute
 }
@@ -323,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/subscribe'
       fullPath: '/subscribe'
       preLoaderRoute: typeof SubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sales-management-software-bangladesh': {
+      id: '/sales-management-software-bangladesh'
+      path: '/sales-management-software-bangladesh'
+      fullPath: '/sales-management-software-bangladesh'
+      preLoaderRoute: typeof SalesManagementSoftwareBangladeshRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -527,6 +548,8 @@ const rootRouteChildren: RootRouteChildren = {
   InventoryManagementSoftwareBangladeshRoute:
     InventoryManagementSoftwareBangladeshRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SalesManagementSoftwareBangladeshRoute:
+    SalesManagementSoftwareBangladeshRoute,
   SubscribeRoute: SubscribeRoute,
   InfoSlugRoute: InfoSlugRoute,
 }
