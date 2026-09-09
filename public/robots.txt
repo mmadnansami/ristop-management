@@ -1,4 +1,23 @@
 User-agent: *
 Allow: /
+Allow: /business-management-software-bangladesh
+Allow: /business-software-bangladesh
+Allow: /inventory-management-software-bangladesh
+Allow: /sales-management-software-bangladesh
+Allow: /customer-management-software-bangladesh
+Allow: /business-profit-management-software
+Allow: /subscribe
+Allow: /auth
+Disallow: /dashboard
+Disallow: /products
+Disallow: /sales
+Disallow: /purchases
+Disallow: /customers
+Disallow: /suppliers
+Disallow: /dues
+Disallow: /reports
+Disallow: /profile
+Disallow: /admin
+Disallow: /market-analyst
 
-Sitemap: https://ristop-smart-hub.lovable.app/sitemap.xml
+Sitemap: https://ristopmanagement.site/sitemap.xml
