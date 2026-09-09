@@ -19,12 +19,16 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Best Business Management Software | Ristop" },
-      { name: "description", content: "Ristop is a complete business management software for Bangladesh with sales, stock, customer, supplier, dues, reports and AI tools." },
-      { property: "og:title", content: "Best Business Management Software | Ristop" },
-      { property: "og:description", content: "Manage sales, inventory, customers, suppliers, dues and reports from one secure workspace." },
+      { title: "Ristop Management | Business Management Software in Bangladesh" },
+      { name: "description", content: "Ristop Management is a smart business management software in Bangladesh for sales, inventory, customers, suppliers, dues, invoices, profit, reports and AI-powered business insights." },
+      { property: "og:title", content: "Ristop Management | Business Management Software in Bangladesh" },
+      { property: "og:description", content: "Manage your business with greater clarity, control and confidence. Ristop Management brings sales, inventory, customers, profit, invoices and AI-powered insights into one place." },
+      { property: "og:url", content: "https://ristopmanagement.site/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://ristopmanagement.site/" },
     ],
   }),
   component: Landing,
@@ -59,12 +63,14 @@ function Landing() {
       <section className="relative overflow-hidden">
         <div className="container mx-auto px-4 py-20 md:py-32 text-center">
           <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs text-primary-glow mb-6">
-            <Sparkles className="h-3.5 w-3.5" /> {lang === "bn" ? "AI দ্বারা চালিত" : "Powered by AI"}
+            <Sparkles className="h-3.5 w-3.5" /> Ristop Management
           </div>
           <h1 className="text-4xl md:text-7xl font-bold tracking-tight max-w-4xl mx-auto">
-            <span className="text-gradient">{t("heroTitle")}</span>
+            <span className="text-gradient">Understand Your BUSINESS.</span>
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">{t("heroSub")}</p>
+          <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            Ristop Management is a smart business management software that helps you manage sales, inventory, customers, profit, invoices and business insights from one place.
+          </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link to="/auth" search={{ mode: "signup" }}>
               <Button size="lg" className="bg-gradient-primary shadow-glow text-base h-12 px-7">
@@ -120,6 +126,28 @@ function Landing() {
               />
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* SEO Section: A Smarter Business Management Software for Growing Businesses */}
+      <section className="container mx-auto px-4 py-16 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold">
+          <span className="text-gradient">A Smarter Business Management Software for Growing Businesses</span>
+        </h2>
+        <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
+          Manage your sales, inventory, customers, supplier dues, invoices, profit and reports in one connected workspace with Ristop Management.
+        </p>
+      </section>
+
+      {/* SEO Section: Why Choose Ristop Management? */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="rounded-3xl glass border border-primary/20 p-8 md:p-12 max-w-5xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
+            Why Choose <span className="text-gradient">Ristop Management</span>?
+          </h2>
+          <p className="text-muted-foreground text-center leading-relaxed max-w-3xl mx-auto">
+            Ristop Management gives you full clarity over your daily business operations. From real-time stock alerts and customer dues tracking to instant invoice generation and AI-assisted insights, Ristop Management is designed to help small and growing businesses in Bangladesh and worldwide streamline their workflows efficiently.
+          </p>
         </div>
       </section>
 
@@ -224,6 +252,46 @@ function Landing() {
               <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
               <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary-glow">{lang === "bn" ? "দেখুন" : "Explore"} <ArrowRight className="h-4 w-4" /></span>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
+          Frequently Asked Questions (<span className="text-gradient">FAQ</span>)
+        </h2>
+        <div className="max-w-3xl mx-auto space-y-4">
+          {[
+            {
+              q: "What is Ristop Management?",
+              a: "Ristop Management is a smart, cloud-based business management software designed for businesses in Bangladesh and worldwide to track sales, stock, customers, dues, invoices, profit, and business insights."
+            },
+            {
+              q: "Who can use Ristop Management?",
+              a: "Retailers, wholesalers, distributors, e-commerce shop owners, service providers, and small to medium businesses can use Ristop Management."
+            },
+            {
+              q: "How does Ristop Management help manage sales and inventory?",
+              a: "Ristop Management updates inventory automatically whenever a sale is recorded, provides low-stock alerts, and generates detailed sales & stock reports."
+            },
+            {
+              q: "Can I manage customers and suppliers with Ristop Management?",
+              a: "Yes! You can record customer purchases, manage supplier ledgers, and track pending dues easily."
+            },
+            {
+              q: "Does Ristop Management provide business reports?",
+              a: "Yes, Ristop Management provides profit and loss statements, daily sales reports, expense tracking, and customer balance summaries."
+            },
+            {
+              q: "Does Ristop Management include AI-powered business insights?",
+              a: "Yes, Ristop Management features Ris AI to assist with software navigation, product guidance, and business analytics."
+            }
+          ].map((faq) => (
+            <div key={faq.q} className="rounded-2xl glass border border-border p-6">
+              <h3 className="font-semibold text-lg text-foreground">{faq.q}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+            </div>
           ))}
         </div>
       </section>
