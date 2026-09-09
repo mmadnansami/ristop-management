@@ -60,6 +60,20 @@ function Dashboard() {
   });
   const top = [...prodMap.values()].sort((a, b) => b.qty - a.qty).slice(0, 5);
 
+  // Business Health Score Calculation (0 - 100)
+  const salesScore = Math.min(30, totalSales > 0 ? 30 : 10);
+  const profitScore = Math.min(30, totalProfit > 0 ? 30 : 5);
+  const inventoryScore = lowStock.length === 0 ? 20 : Math.max(5, 20 - lowStock.length * 3);
+  const ordersScore = Math.min(20, totalOrders * 2);
+  const healthScore = salesScore + profitScore + inventoryScore + ordersScore;
+
+  const healthStatus =
+    healthScore >= 80
+      ? { text: lang === "bn" ? "উত্তম (Excellent)" : "Excellent", color: "text-emerald-400" }
+      : healthScore >= 50
+      ? { text: lang === "bn" ? "ভালো (Good)" : "Good", color: "text-amber-400" }
+      : { text: lang === "bn" ? "মনোযোগ প্রয়োজন (Needs Attention)" : "Needs Attention", color: "text-rose-400" };
+
   const cards = [
     { label: t("totalSales"), value: money(totalSales), icon: DollarSign, color: "from-violet-500/30" },
     { label: t("totalProfit"), value: money(totalProfit), icon: TrendingUp, color: "from-fuchsia-500/30" },
@@ -72,6 +86,53 @@ function Dashboard() {
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gradient">{t("dashboard")}</h1>
         <p className="text-sm text-muted-foreground mt-1">{lang === "bn" ? "একনজরে সব কিছু" : "Everything at a glance"}</p>
+      </div>
+
+      {/* Business Health Score & Daily Brief */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-2xl glass border border-primary/30 p-5 bg-gradient-to-br from-primary/10 to-transparent">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === "bn" ? "বিজনেস হেলথ স্কোর" : "Business Health Score"}</div>
+          <div className="mt-3 flex items-baseline gap-3">
+            <span className="text-4xl font-extrabold text-gradient">{healthScore}</span>
+            <span className="text-sm text-muted-foreground">/ 100</span>
+          </div>
+          <div className={`mt-2 text-sm font-semibold ${healthStatus.color}`}>
+            {healthStatus.text}
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+            {lang === "bn"
+              ? "সেলস, প্রফিট এবং ইনভেন্টরি ট্র্যাকিং ডাটা থেকে আপনার ব্যবসার স্বাস্থ্য স্কোর গণনা করা হয়েছে।"
+              : "Calculated based on actual sales, profit, and stock health data."}
+          </p>
+        </div>
+
+        <div className="md:col-span-2 rounded-2xl glass border border-border p-5">
+          <div className="text-xs font-semibold text-primary-glow uppercase tracking-wider mb-2">
+            {lang === "bn" ? "দৈনিক বিজনেস ব্রিফ (Daily Business Brief)" : "Daily Business Brief"}
+          </div>
+          <h2 className="text-base font-semibold">
+            {lang === "bn" ? "শুভ দিন! আজকের গুরুত্বপূর্ণ আপডেট:" : "Good day! Here is what needs attention:"}
+          </h2>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            {lowStock.length > 0 ? (
+              <li className="flex items-center gap-2 text-amber-400">
+                <AlertTriangle className="h-4 w-4 shrink-0" />
+                {lang === "bn"
+                  ? `${lowStock.length}টি পণ্যের স্টক কম রয়েছে। এখনই রিমাইন্ডার চেক করুন।`
+                  : `${lowStock.length} items are low on stock. Please restock soon.`}
+              </li>
+            ) : (
+              <li className="flex items-center gap-2 text-emerald-400">
+                ✓ {lang === "bn" ? "আপনার সকল পণ্যের স্টক পর্যাপ্ত আছে।" : "All products are sufficiently stocked."}
+              </li>
+            )}
+            <li className="flex items-center gap-2">
+              • {lang === "bn"
+                ? `আজ পর্যন্ত মোট অর্ডারের সংখ্যা ${totalOrders} টি এবং অর্জিত প্রফিট ${money(totalProfit)}।`
+                : `Total orders to date: ${totalOrders}, total profit earned: ${money(totalProfit)}.`}
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
