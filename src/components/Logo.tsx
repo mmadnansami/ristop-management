@@ -24,9 +24,9 @@ export function Logo({ className = "h-12 w-auto" }: { className?: string }) {
         alt="Ristop Management official logo — business management software"
         title="Ristop Management"
         itemProp="logo"
-        width={380}
-        height={120}
-        className="h-full w-auto min-w-[140px] max-w-[320px] object-contain scale-110"
+        width={320}
+        height={90}
+        className="h-full w-auto max-w-[260px] object-contain"
         loading="eager"
         decoding="async"
       />
