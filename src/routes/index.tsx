@@ -112,18 +112,23 @@ function Landing() {
           {lang === "bn" ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।" : "See how Ristop Management works, in under a minute."}
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {["/ristop-demo-1.mp4", "/ristop-demo-2.mp4"].map((src, i) => (
-            <div key={src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
+          {[
+            { src: "/ristop-demo-1.mp4", type: "video/mp4" },
+            { src: "/ristop-demo-2.mp4", type: "video/mp4" }
+          ].map((video, i) => (
+            <div key={video.src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
               <video
-                src={src}
                 controls
                 playsInline
                 muted
                 loop
-                preload="metadata"
+                preload="auto"
                 aria-label={`Ristop Management demo video ${i + 1}`}
-                className="w-full rounded-xl bg-black"
-              />
+                className="w-full h-auto max-h-[360px] rounded-xl bg-black object-cover"
+              >
+                <source src={video.src} type={video.type} />
+                Your browser does not support the video tag.
+              </video>
             </div>
           ))}
         </div>
