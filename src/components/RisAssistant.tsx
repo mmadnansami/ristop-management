@@ -134,46 +134,46 @@ export function RisAssistant() {
             </button>
           </div>
 
-          {/* Mode Selector Switcher */}
-          <div className="p-2 bg-secondary/50 border-b border-border flex items-center justify-between text-xs px-3">
-            <span className="text-muted-foreground font-medium">{lang === "bn" ? "লেয়ার সিলেক্ট করুন:" : "Select Layer:"}</span>
-            <div className="flex rounded-lg bg-background/80 p-0.5 border border-border">
-              <button
-                type="button"
-                onClick={() => setMode("free")}
-                className={`px-2.5 py-1 rounded-md transition font-medium flex items-center gap-1 ${
-                  mode === "free"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <ShieldCheck className="h-3.5 w-3.5" />
-                {lang === "bn" ? "ফ্রি" : "Free"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode("advance")}
-                className={`px-2.5 py-1 rounded-md transition font-medium flex items-center gap-1 ${
-                  mode === "advance"
-                    ? "bg-gradient-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {isSubscribed ? <Sparkles className="h-3.5 w-3.5 text-amber-300" /> : <Lock className="h-3.5 w-3.5" />}
-                {lang === "bn" ? "এডভান্স" : "Advance"}
-              </button>
+          {/* Mode Badge / Selector */}
+          {isSubscribed ? (
+            <div className="p-2 bg-secondary/50 border-b border-border flex items-center justify-between text-xs px-3">
+              <span className="text-muted-foreground font-medium">{lang === "bn" ? "লেয়ার সিলেক্ট করুন:" : "Select Layer:"}</span>
+              <div className="flex rounded-lg bg-background/80 p-0.5 border border-border">
+                <button
+                  type="button"
+                  onClick={() => setMode("free")}
+                  className={`px-2.5 py-1 rounded-md transition font-medium flex items-center gap-1 ${
+                    mode === "free"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  {lang === "bn" ? "ফ্রি" : "Free"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("advance")}
+                  className={`px-2.5 py-1 rounded-md transition font-medium flex items-center gap-1 ${
+                    mode === "advance"
+                      ? "bg-gradient-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+                  {lang === "bn" ? "এডভান্স" : "Advance"}
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* Subscriptions Alert Banner if Advance Mode Selected without Subscription */}
-          {mode === "advance" && !isSubscribed && (
+          ) : (
             <div className="bg-amber-500/10 border-b border-amber-500/30 px-3 py-2 text-xs flex items-center justify-between text-amber-200">
               <span className="flex items-center gap-1.5">
-                <Crown className="h-4 w-4 text-amber-400 shrink-0" />
-                {lang === "bn" ? "এডভান্সড এআই সাবসক্রিপশন প্রয়োজন" : "Advance AI requires subscription"}
+                <Lock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                {lang === "bn" ? "ফ্রি ভার্সনে এডভান্স এআই লক করা" : "Advance AI is locked in Free version"}
               </span>
-              <Link to="/subscribe" className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-2 py-0.5 rounded text-[11px] transition">
-                {lang === "bn" ? "আপগ্রেড" : "Upgrade"}
+              <Link to="/subscribe" className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-2 py-0.5 rounded text-[11px] transition flex items-center gap-1">
+                <Crown className="h-3 w-3" />
+                {lang === "bn" ? "আপগ্রেড করুন" : "Upgrade"}
               </Link>
             </div>
           )}
