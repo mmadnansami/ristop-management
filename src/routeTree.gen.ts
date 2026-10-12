@@ -9,90 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
-import { Route as BusinessManagementSoftwareBangladeshRouteImport } from './routes/business-management-software-bangladesh'
-import { Route as BusinessProfitManagementSoftwareRouteImport } from './routes/business-profit-management-software'
-import { Route as BusinessSoftwareBangladeshRouteImport } from './routes/business-software-bangladesh'
-import { Route as CustomerManagementSoftwareBangladeshRouteImport } from './routes/customer-management-software-bangladesh'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as InventoryManagementSoftwareBangladeshRouteImport } from './routes/inventory-management-software-bangladesh'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as SalesManagementSoftwareBangladeshRouteImport } from './routes/sales-management-software-bangladesh'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedDuesRouteImport } from './routes/_authenticated/dues'
-import { Route as AuthenticatedMarketAnalystRouteImport } from './routes/_authenticated/market-analyst'
-import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedPurchasesRouteImport } from './routes/_authenticated/purchases'
-import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
-import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
-import { Route as AuthenticatedStockRouteImport } from './routes/_authenticated/stock'
-import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
+import { Route as SalesManagementSoftwareBangladeshRouteImport } from './routes/sales-management-software-bangladesh'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as InventoryManagementSoftwareBangladeshRouteImport } from './routes/inventory-management-software-bangladesh'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as CustomerManagementSoftwareBangladeshRouteImport } from './routes/customer-management-software-bangladesh'
+import { Route as BusinessSoftwareBangladeshRouteImport } from './routes/business-software-bangladesh'
+import { Route as BusinessProfitManagementSoftwareRouteImport } from './routes/business-profit-management-software'
+import { Route as BusinessManagementSoftwareBangladeshRouteImport } from './routes/business-management-software-bangladesh'
+import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as InfoSlugRouteImport } from './routes/info.$slug'
+import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
+import { Route as AuthenticatedStockRouteImport } from './routes/_authenticated/stock'
+import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedPurchasesRouteImport } from './routes/_authenticated/purchases'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
+import { Route as AuthenticatedMarketAnalystRouteImport } from './routes/_authenticated/market-analyst'
+import { Route as AuthenticatedDuesRouteImport } from './routes/_authenticated/dues'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
-  id: '/auth-callback',
-  path: '/auth-callback',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessManagementSoftwareBangladeshRoute =
-  BusinessManagementSoftwareBangladeshRouteImport.update({
-    id: '/business-management-software-bangladesh',
-    path: '/business-management-software-bangladesh',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BusinessProfitManagementSoftwareRoute =
-  BusinessProfitManagementSoftwareRouteImport.update({
-    id: '/business-profit-management-software',
-    path: '/business-profit-management-software',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BusinessSoftwareBangladeshRoute =
-  BusinessSoftwareBangladeshRouteImport.update({
-    id: '/business-software-bangladesh',
-    path: '/business-software-bangladesh',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const CustomerManagementSoftwareBangladeshRoute =
-  CustomerManagementSoftwareBangladeshRouteImport.update({
-    id: '/customer-management-software-bangladesh',
-    path: '/customer-management-software-bangladesh',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InventoryManagementSoftwareBangladeshRoute =
-  InventoryManagementSoftwareBangladeshRouteImport.update({
-    id: '/inventory-management-software-bangladesh',
-    path: '/inventory-management-software-bangladesh',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const SubscribeRoute = SubscribeRouteImport.update({
+  id: '/subscribe',
+  path: '/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SalesManagementSoftwareBangladeshRoute =
@@ -101,29 +47,103 @@ const SalesManagementSoftwareBangladeshRoute =
     path: '/sales-management-software-bangladesh',
     getParentRoute: () => rootRouteImport,
   } as any)
-const SubscribeRoute = SubscribeRouteImport.update({
-  id: '/subscribe',
-  path: '/subscribe',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const InventoryManagementSoftwareBangladeshRoute =
+  InventoryManagementSoftwareBangladeshRouteImport.update({
+    id: '/inventory-management-software-bangladesh',
+    path: '/inventory-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerManagementSoftwareBangladeshRoute =
+  CustomerManagementSoftwareBangladeshRouteImport.update({
+    id: '/customer-management-software-bangladesh',
+    path: '/customer-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BusinessSoftwareBangladeshRoute =
+  BusinessSoftwareBangladeshRouteImport.update({
+    id: '/business-software-bangladesh',
+    path: '/business-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BusinessProfitManagementSoftwareRoute =
+  BusinessProfitManagementSoftwareRouteImport.update({
+    id: '/business-profit-management-software',
+    path: '/business-profit-management-software',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BusinessManagementSoftwareBangladeshRoute =
+  BusinessManagementSoftwareBangladeshRouteImport.update({
+    id: '/business-management-software-bangladesh',
+    path: '/business-management-software-bangladesh',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth-callback',
+  path: '/auth-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InfoSlugRoute = InfoSlugRouteImport.update({
+  id: '/info/$slug',
+  path: '/info/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
-  id: '/customers',
-  path: '/customers',
+const AuthenticatedStockRoute = AuthenticatedStockRouteImport.update({
+  id: '/stock',
+  path: '/stock',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedDuesRoute = AuthenticatedDuesRouteImport.update({
-  id: '/dues',
-  path: '/dues',
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPurchasesRoute = AuthenticatedPurchasesRouteImport.update({
+  id: '/purchases',
+  path: '/purchases',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMarketAnalystRoute =
@@ -132,45 +152,25 @@ const AuthenticatedMarketAnalystRoute =
     path: '/market-analyst',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
+const AuthenticatedDuesRoute = AuthenticatedDuesRouteImport.update({
+  id: '/dues',
+  path: '/dues',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedPurchasesRoute = AuthenticatedPurchasesRouteImport.update({
-  id: '/purchases',
-  path: '/purchases',
+const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
-  id: '/sales',
-  path: '/sales',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedStockRoute = AuthenticatedStockRouteImport.update({
-  id: '/stock',
-  path: '/stock',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
-  id: '/suppliers',
-  path: '/suppliers',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const InfoSlugRoute = InfoSlugRouteImport.update({
-  id: '/info/$slug',
-  path: '/info/$slug',
-  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -360,81 +360,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth-callback': {
-      id: '/auth-callback'
-      path: '/auth-callback'
-      fullPath: '/auth-callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business-management-software-bangladesh': {
-      id: '/business-management-software-bangladesh'
-      path: '/business-management-software-bangladesh'
-      fullPath: '/business-management-software-bangladesh'
-      preLoaderRoute: typeof BusinessManagementSoftwareBangladeshRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business-profit-management-software': {
-      id: '/business-profit-management-software'
-      path: '/business-profit-management-software'
-      fullPath: '/business-profit-management-software'
-      preLoaderRoute: typeof BusinessProfitManagementSoftwareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business-software-bangladesh': {
-      id: '/business-software-bangladesh'
-      path: '/business-software-bangladesh'
-      fullPath: '/business-software-bangladesh'
-      preLoaderRoute: typeof BusinessSoftwareBangladeshRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/customer-management-software-bangladesh': {
-      id: '/customer-management-software-bangladesh'
-      path: '/customer-management-software-bangladesh'
-      fullPath: '/customer-management-software-bangladesh'
-      preLoaderRoute: typeof CustomerManagementSoftwareBangladeshRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inventory-management-software-bangladesh': {
-      id: '/inventory-management-software-bangladesh'
-      path: '/inventory-management-software-bangladesh'
-      fullPath: '/inventory-management-software-bangladesh'
-      preLoaderRoute: typeof InventoryManagementSoftwareBangladeshRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
+    '/subscribe': {
+      id: '/subscribe'
+      path: '/subscribe'
+      fullPath: '/subscribe'
+      preLoaderRoute: typeof SubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sales-management-software-bangladesh': {
@@ -444,81 +374,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalesManagementSoftwareBangladeshRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/subscribe': {
-      id: '/subscribe'
-      path: '/subscribe'
-      fullPath: '/subscribe'
-      preLoaderRoute: typeof SubscribeRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/inventory-management-software-bangladesh': {
+      id: '/inventory-management-software-bangladesh'
+      path: '/inventory-management-software-bangladesh'
+      fullPath: '/inventory-management-software-bangladesh'
+      preLoaderRoute: typeof InventoryManagementSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/customers': {
-      id: '/_authenticated/customers'
-      path: '/customers'
-      fullPath: '/customers'
-      preLoaderRoute: typeof AuthenticatedCustomersRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/customer-management-software-bangladesh': {
+      id: '/customer-management-software-bangladesh'
+      path: '/customer-management-software-bangladesh'
+      fullPath: '/customer-management-software-bangladesh'
+      preLoaderRoute: typeof CustomerManagementSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dues': {
-      id: '/_authenticated/dues'
-      path: '/dues'
-      fullPath: '/dues'
-      preLoaderRoute: typeof AuthenticatedDuesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/business-software-bangladesh': {
+      id: '/business-software-bangladesh'
+      path: '/business-software-bangladesh'
+      fullPath: '/business-software-bangladesh'
+      preLoaderRoute: typeof BusinessSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/market-analyst': {
-      id: '/_authenticated/market-analyst'
-      path: '/market-analyst'
-      fullPath: '/market-analyst'
-      preLoaderRoute: typeof AuthenticatedMarketAnalystRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/business-profit-management-software': {
+      id: '/business-profit-management-software'
+      path: '/business-profit-management-software'
+      fullPath: '/business-profit-management-software'
+      preLoaderRoute: typeof BusinessProfitManagementSoftwareRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/products': {
-      id: '/_authenticated/products'
-      path: '/products'
-      fullPath: '/products'
-      preLoaderRoute: typeof AuthenticatedProductsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/business-management-software-bangladesh': {
+      id: '/business-management-software-bangladesh'
+      path: '/business-management-software-bangladesh'
+      fullPath: '/business-management-software-bangladesh'
+      preLoaderRoute: typeof BusinessManagementSoftwareBangladeshRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/auth-callback': {
+      id: '/auth-callback'
+      path: '/auth-callback'
+      fullPath: '/auth-callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/purchases': {
-      id: '/_authenticated/purchases'
-      path: '/purchases'
-      fullPath: '/purchases'
-      preLoaderRoute: typeof AuthenticatedPurchasesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/reports': {
-      id: '/_authenticated/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof AuthenticatedReportsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/sales': {
-      id: '/_authenticated/sales'
-      path: '/sales'
-      fullPath: '/sales'
-      preLoaderRoute: typeof AuthenticatedSalesRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/info/$slug': {
+      id: '/info/$slug'
+      path: '/info/$slug'
+      fullPath: '/info/$slug'
+      preLoaderRoute: typeof InfoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/suppliers': {
+      id: '/_authenticated/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/stock': {
@@ -528,19 +472,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStockRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/suppliers': {
-      id: '/_authenticated/suppliers'
-      path: '/suppliers'
-      fullPath: '/suppliers'
-      preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
+    '/_authenticated/sales': {
+      id: '/_authenticated/sales'
+      path: '/sales'
+      fullPath: '/sales'
+      preLoaderRoute: typeof AuthenticatedSalesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/info/$slug': {
-      id: '/info/$slug'
-      path: '/info/$slug'
-      fullPath: '/info/$slug'
-      preLoaderRoute: typeof InfoSlugRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/purchases': {
+      id: '/_authenticated/purchases'
+      path: '/purchases'
+      fullPath: '/purchases'
+      preLoaderRoute: typeof AuthenticatedPurchasesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/products': {
+      id: '/_authenticated/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof AuthenticatedProductsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/market-analyst': {
+      id: '/_authenticated/market-analyst'
+      path: '/market-analyst'
+      fullPath: '/market-analyst'
+      preLoaderRoute: typeof AuthenticatedMarketAnalystRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dues': {
+      id: '/_authenticated/dues'
+      path: '/dues'
+      fullPath: '/dues'
+      preLoaderRoute: typeof AuthenticatedDuesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/customers': {
+      id: '/_authenticated/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof AuthenticatedCustomersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
