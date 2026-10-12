@@ -171,7 +171,7 @@ export function RisAssistant() {
                 <Lock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
                 {lang === "bn" ? "ফ্রি ভার্সনে এডভান্স এআই লক করা" : "Advance AI is locked in Free version"}
               </span>
-              <Link to="/subscribe" className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-2 py-0.5 rounded text-[11px] transition flex items-center gap-1">
+              <Link to="/subscribe" search={{ plan: "quarterly" }} className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-2 py-0.5 rounded text-[11px] transition flex items-center gap-1">
                 <Crown className="h-3 w-3" />
                 {lang === "bn" ? "আপগ্রেড করুন" : "Upgrade"}
               </Link>
