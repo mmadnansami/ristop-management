@@ -22,7 +22,7 @@ export async function viaLovable(apiKey: string, sys: string, messages: RisMsg[]
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: "google/gemini-3.7-flash",
+      model: "google/gemini-3.8-flash",
       messages: [{ role: "system", content: sys }, ...messages.filter((m) => m.role !== "system")],
     }),
   });
