@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Sparkles, Mail, KeyRound, Check } from "lucide-react";
 import { toast } from "sonner";
+import { AdminAffiliates } from "@/components/AdminAffiliates";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   ssr: false,
@@ -115,6 +116,8 @@ function Admin() {
           </table>
         </div>
       </section>
+
+      <AdminAffiliates />
 
       {/* All users */}
       <section>

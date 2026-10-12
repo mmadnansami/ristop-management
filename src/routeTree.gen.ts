@@ -35,6 +35,7 @@ import { Route as AuthenticatedDuesRouteImport } from './routes/_authenticated/d
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicRisChatRouteImport } from './routes/api/public/ris-chat'
 
 const SubscribeRoute = SubscribeRouteImport.update({
   id: '/subscribe',
@@ -172,6 +173,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicRisChatRoute = ApiPublicRisChatRouteImport.update({
+  id: '/api/public/ris-chat',
+  path: '/api/public/ris-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/stock': typeof AuthenticatedStockRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/info/$slug': typeof InfoSlugRoute
+  '/api/public/ris-chat': typeof ApiPublicRisChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -226,6 +233,7 @@ export interface FileRoutesByTo {
   '/stock': typeof AuthenticatedStockRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/info/$slug': typeof InfoSlugRoute
+  '/api/public/ris-chat': typeof ApiPublicRisChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/_authenticated/stock': typeof AuthenticatedStockRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/info/$slug': typeof InfoSlugRoute
+  '/api/public/ris-chat': typeof ApiPublicRisChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -284,6 +293,7 @@ export interface FileRouteTypes {
     | '/stock'
     | '/suppliers'
     | '/info/$slug'
+    | '/api/public/ris-chat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -311,6 +321,7 @@ export interface FileRouteTypes {
     | '/stock'
     | '/suppliers'
     | '/info/$slug'
+    | '/api/public/ris-chat'
   id:
     | '__root__'
     | '/'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/_authenticated/stock'
     | '/_authenticated/suppliers'
     | '/info/$slug'
+    | '/api/public/ris-chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -356,6 +368,7 @@ export interface RootRouteChildren {
   SalesManagementSoftwareBangladeshRoute: typeof SalesManagementSoftwareBangladeshRoute
   SubscribeRoute: typeof SubscribeRoute
   InfoSlugRoute: typeof InfoSlugRoute
+  ApiPublicRisChatRoute: typeof ApiPublicRisChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -542,6 +555,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/ris-chat': {
+      id: '/api/public/ris-chat'
+      path: '/api/public/ris-chat'
+      fullPath: '/api/public/ris-chat'
+      preLoaderRoute: typeof ApiPublicRisChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -597,6 +617,7 @@ const rootRouteChildren: RootRouteChildren = {
     SalesManagementSoftwareBangladeshRoute,
   SubscribeRoute: SubscribeRoute,
   InfoSlugRoute: InfoSlugRoute,
+  ApiPublicRisChatRoute: ApiPublicRisChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
