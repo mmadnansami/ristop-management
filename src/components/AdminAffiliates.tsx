@@ -39,7 +39,7 @@ export function AdminAffiliates() {
   const setStatus = async (a: App, status: "approved" | "rejected" | "suspended") => {
     setBusy(a.id);
     const { data: u } = await supabase.auth.getUser();
-    const patch: Record<string, unknown> = { status, reviewed_at: new Date().toISOString(), reviewed_by: u.user?.id ?? null };
+    const patch = { status, reviewed_at: new Date().toISOString(), reviewed_by: u.user?.id ?? null };
     const { error } = await supabase.from("affiliate_applications").update(patch).eq("id", a.id);
     setBusy(null);
     if (error) return toast.error(error.message);
