@@ -40,7 +40,6 @@ export function AdminAffiliates() {
     setBusy(a.id);
     const { data: u } = await supabase.auth.getUser();
     const patch: Record<string, unknown> = { status, reviewed_at: new Date().toISOString(), reviewed_by: u.user?.id ?? null };
-    if (status === "approved" && !a.affiliate_code) patch.affiliate_code = makeCode(a.full_name);
     const { error } = await supabase.from("affiliate_applications").update(patch).eq("id", a.id);
     setBusy(null);
     if (error) return toast.error(error.message);
