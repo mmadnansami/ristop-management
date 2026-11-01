@@ -1,6 +1,7 @@
 # Ristop Management — Roadmap
 
 ## Now (this batch)
+
 - [ ] Official logo single source + larger size everywhere; remove stale logo assets
 - [ ] PWA manifest + installable icons (black RISTOP + purple MANAGEMENT)
 - [ ] Admin-curated Market Insights (add/delete one or all) feeding Market Analyst
@@ -13,6 +14,7 @@
 - [ ] Default language English (html lang)
 
 ## Next
+
 - [ ] Business Health Score (real data)
 - [ ] Daily Business Brief + What Should I Do Today
 - [ ] Ask Ris business-data grounded answers

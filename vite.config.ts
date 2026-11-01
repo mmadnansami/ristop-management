@@ -15,9 +15,16 @@ export default defineConfig({
   },
   vite: {
     define: {
-      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(process.env.VITE_SUPABASE_URL || "https://bnnfwffyvpvjaprlaibn.supabase.co"),
-      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_2A3ALYEuxj4OaDgneJX79Q_v41Gbs36"),
-      "import.meta.env.VITE_SUPABASE_PROJECT_ID": JSON.stringify(process.env.VITE_SUPABASE_PROJECT_ID || "bnnfwffyvpvjaprlaibn"),
+      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
+        process.env.VITE_SUPABASE_URL || "https://bnnfwffyvpvjaprlaibn.supabase.co",
+      ),
+      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(
+        process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+          "sb_publishable_2A3ALYEuxj4OaDgneJX79Q_v41Gbs36",
+      ),
+      "import.meta.env.VITE_SUPABASE_PROJECT_ID": JSON.stringify(
+        process.env.VITE_SUPABASE_PROJECT_ID || "bnnfwffyvpvjaprlaibn",
+      ),
     },
   },
 });

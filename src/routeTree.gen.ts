@@ -21,12 +21,14 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as InventoryManagementSoftwareBangladeshRouteImport } from './routes/inventory-management-software-bangladesh'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SalesManagementSoftwareBangladeshRouteImport } from './routes/sales-management-software-bangladesh'
+import { Route as SpecialMembershipRouteImport } from './routes/special-membership'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDuesRouteImport } from './routes/_authenticated/dues'
 import { Route as AuthenticatedMarketAnalystRouteImport } from './routes/_authenticated/market-analyst'
+import { Route as AuthenticatedMembershipRouteImport } from './routes/_authenticated/membership'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPurchasesRouteImport } from './routes/_authenticated/purchases'
@@ -35,6 +37,8 @@ import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedStockRouteImport } from './routes/_authenticated/stock'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as InfoSlugRouteImport } from './routes/info.$slug'
+import { Route as MembershipInvitationTokenRouteImport } from './routes/membership-invitation.$token'
+import { Route as VerifyMembershipTokenRouteImport } from './routes/verify-membership.$token'
 import { Route as ApiPublicRisChatRouteImport } from './routes/api/public/ris-chat'
 
 const IndexRoute = IndexRouteImport.update({
@@ -102,6 +106,11 @@ const SalesManagementSoftwareBangladeshRoute =
     path: '/sales-management-software-bangladesh',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SpecialMembershipRoute = SpecialMembershipRouteImport.update({
+  id: '/special-membership',
+  path: '/special-membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SubscribeRoute = SubscribeRouteImport.update({
   id: '/subscribe',
   path: '/subscribe',
@@ -133,6 +142,11 @@ const AuthenticatedMarketAnalystRoute =
     path: '/market-analyst',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMembershipRoute = AuthenticatedMembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -173,6 +187,17 @@ const InfoSlugRoute = InfoSlugRouteImport.update({
   path: '/info/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MembershipInvitationTokenRoute =
+  MembershipInvitationTokenRouteImport.update({
+    id: '/membership-invitation/$token',
+    path: '/membership-invitation/$token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const VerifyMembershipTokenRoute = VerifyMembershipTokenRouteImport.update({
+  id: '/verify-membership/$token',
+  path: '/verify-membership/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicRisChatRoute = ApiPublicRisChatRouteImport.update({
   id: '/api/public/ris-chat',
   path: '/api/public/ris-chat',
@@ -191,12 +216,14 @@ export interface FileRoutesByFullPath {
   '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
+  '/special-membership': typeof SpecialMembershipRoute
   '/subscribe': typeof SubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dues': typeof AuthenticatedDuesRoute
   '/market-analyst': typeof AuthenticatedMarketAnalystRoute
+  '/membership': typeof AuthenticatedMembershipRoute
   '/products': typeof AuthenticatedProductsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/purchases': typeof AuthenticatedPurchasesRoute
@@ -205,6 +232,8 @@ export interface FileRoutesByFullPath {
   '/stock': typeof AuthenticatedStockRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/info/$slug': typeof InfoSlugRoute
+  '/membership-invitation/$token': typeof MembershipInvitationTokenRoute
+  '/verify-membership/$token': typeof VerifyMembershipTokenRoute
   '/api/public/ris-chat': typeof ApiPublicRisChatRoute
 }
 export interface FileRoutesByTo {
@@ -219,12 +248,14 @@ export interface FileRoutesByTo {
   '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
+  '/special-membership': typeof SpecialMembershipRoute
   '/subscribe': typeof SubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dues': typeof AuthenticatedDuesRoute
   '/market-analyst': typeof AuthenticatedMarketAnalystRoute
+  '/membership': typeof AuthenticatedMembershipRoute
   '/products': typeof AuthenticatedProductsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/purchases': typeof AuthenticatedPurchasesRoute
@@ -233,6 +264,8 @@ export interface FileRoutesByTo {
   '/stock': typeof AuthenticatedStockRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/info/$slug': typeof InfoSlugRoute
+  '/membership-invitation/$token': typeof MembershipInvitationTokenRoute
+  '/verify-membership/$token': typeof VerifyMembershipTokenRoute
   '/api/public/ris-chat': typeof ApiPublicRisChatRoute
 }
 export interface FileRoutesById {
@@ -249,12 +282,14 @@ export interface FileRoutesById {
   '/inventory-management-software-bangladesh': typeof InventoryManagementSoftwareBangladeshRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sales-management-software-bangladesh': typeof SalesManagementSoftwareBangladeshRoute
+  '/special-membership': typeof SpecialMembershipRoute
   '/subscribe': typeof SubscribeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dues': typeof AuthenticatedDuesRoute
   '/_authenticated/market-analyst': typeof AuthenticatedMarketAnalystRoute
+  '/_authenticated/membership': typeof AuthenticatedMembershipRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/purchases': typeof AuthenticatedPurchasesRoute
@@ -263,6 +298,8 @@ export interface FileRoutesById {
   '/_authenticated/stock': typeof AuthenticatedStockRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/info/$slug': typeof InfoSlugRoute
+  '/membership-invitation/$token': typeof MembershipInvitationTokenRoute
+  '/verify-membership/$token': typeof VerifyMembershipTokenRoute
   '/api/public/ris-chat': typeof ApiPublicRisChatRoute
 }
 export interface FileRouteTypes {
@@ -279,12 +316,14 @@ export interface FileRouteTypes {
     | '/inventory-management-software-bangladesh'
     | '/reset-password'
     | '/sales-management-software-bangladesh'
+    | '/special-membership'
     | '/subscribe'
     | '/admin'
     | '/customers'
     | '/dashboard'
     | '/dues'
     | '/market-analyst'
+    | '/membership'
     | '/products'
     | '/profile'
     | '/purchases'
@@ -293,6 +332,8 @@ export interface FileRouteTypes {
     | '/stock'
     | '/suppliers'
     | '/info/$slug'
+    | '/membership-invitation/$token'
+    | '/verify-membership/$token'
     | '/api/public/ris-chat'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -307,12 +348,14 @@ export interface FileRouteTypes {
     | '/inventory-management-software-bangladesh'
     | '/reset-password'
     | '/sales-management-software-bangladesh'
+    | '/special-membership'
     | '/subscribe'
     | '/admin'
     | '/customers'
     | '/dashboard'
     | '/dues'
     | '/market-analyst'
+    | '/membership'
     | '/products'
     | '/profile'
     | '/purchases'
@@ -321,6 +364,8 @@ export interface FileRouteTypes {
     | '/stock'
     | '/suppliers'
     | '/info/$slug'
+    | '/membership-invitation/$token'
+    | '/verify-membership/$token'
     | '/api/public/ris-chat'
   id:
     | '__root__'
@@ -336,12 +381,14 @@ export interface FileRouteTypes {
     | '/inventory-management-software-bangladesh'
     | '/reset-password'
     | '/sales-management-software-bangladesh'
+    | '/special-membership'
     | '/subscribe'
     | '/_authenticated/admin'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/dues'
     | '/_authenticated/market-analyst'
+    | '/_authenticated/membership'
     | '/_authenticated/products'
     | '/_authenticated/profile'
     | '/_authenticated/purchases'
@@ -350,6 +397,8 @@ export interface FileRouteTypes {
     | '/_authenticated/stock'
     | '/_authenticated/suppliers'
     | '/info/$slug'
+    | '/membership-invitation/$token'
+    | '/verify-membership/$token'
     | '/api/public/ris-chat'
   fileRoutesById: FileRoutesById
 }
@@ -366,8 +415,11 @@ export interface RootRouteChildren {
   InventoryManagementSoftwareBangladeshRoute: typeof InventoryManagementSoftwareBangladeshRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SalesManagementSoftwareBangladeshRoute: typeof SalesManagementSoftwareBangladeshRoute
+  SpecialMembershipRoute: typeof SpecialMembershipRoute
   SubscribeRoute: typeof SubscribeRoute
   InfoSlugRoute: typeof InfoSlugRoute
+  MembershipInvitationTokenRoute: typeof MembershipInvitationTokenRoute
+  VerifyMembershipTokenRoute: typeof VerifyMembershipTokenRoute
   ApiPublicRisChatRoute: typeof ApiPublicRisChatRoute
 }
 
@@ -457,6 +509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalesManagementSoftwareBangladeshRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/special-membership': {
+      id: '/special-membership'
+      path: '/special-membership'
+      fullPath: '/special-membership'
+      preLoaderRoute: typeof SpecialMembershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/subscribe': {
       id: '/subscribe'
       path: '/subscribe'
@@ -497,6 +556,13 @@ declare module '@tanstack/react-router' {
       path: '/market-analyst'
       fullPath: '/market-analyst'
       preLoaderRoute: typeof AuthenticatedMarketAnalystRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/membership': {
+      id: '/_authenticated/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof AuthenticatedMembershipRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/products': {
@@ -555,6 +621,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InfoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/membership-invitation/$token': {
+      id: '/membership-invitation/$token'
+      path: '/membership-invitation/$token'
+      fullPath: '/membership-invitation/$token'
+      preLoaderRoute: typeof MembershipInvitationTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-membership/$token': {
+      id: '/verify-membership/$token'
+      path: '/verify-membership/$token'
+      fullPath: '/verify-membership/$token'
+      preLoaderRoute: typeof VerifyMembershipTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ris-chat': {
       id: '/api/public/ris-chat'
       path: '/api/public/ris-chat'
@@ -571,6 +651,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDuesRoute: typeof AuthenticatedDuesRoute
   AuthenticatedMarketAnalystRoute: typeof AuthenticatedMarketAnalystRoute
+  AuthenticatedMembershipRoute: typeof AuthenticatedMembershipRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedPurchasesRoute: typeof AuthenticatedPurchasesRoute
@@ -586,6 +667,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDuesRoute: AuthenticatedDuesRoute,
   AuthenticatedMarketAnalystRoute: AuthenticatedMarketAnalystRoute,
+  AuthenticatedMembershipRoute: AuthenticatedMembershipRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedPurchasesRoute: AuthenticatedPurchasesRoute,
@@ -615,8 +697,11 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SalesManagementSoftwareBangladeshRoute:
     SalesManagementSoftwareBangladeshRoute,
+  SpecialMembershipRoute: SpecialMembershipRoute,
   SubscribeRoute: SubscribeRoute,
   InfoSlugRoute: InfoSlugRoute,
+  MembershipInvitationTokenRoute: MembershipInvitationTokenRoute,
+  VerifyMembershipTokenRoute: VerifyMembershipTokenRoute,
   ApiPublicRisChatRoute: ApiPublicRisChatRoute,
 }
 export const routeTree = rootRouteImport

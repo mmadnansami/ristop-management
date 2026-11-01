@@ -7,7 +7,10 @@ import { risSystemPrompt, viaLovable } from "@/lib/ris-ai.server";
 // Relay endpoint used by Vercel / custom-domain deployments that have no AI key.
 // Callers must send a valid signed-in user token; advance access is checked here.
 const bodySchema = z.object({
-  messages: z.array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().min(1).max(4000) })).min(1).max(50),
+  messages: z
+    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().min(1).max(4000) }))
+    .min(1)
+    .max(50),
   lang: z.enum(["bn", "en"]).default("bn"),
   mode: z.enum(["free", "advance"]).default("free"),
 });
@@ -17,14 +20,17 @@ const cors = {
   "Access-Control-Allow-Headers": "authorization, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-const json = (b: unknown, status = 200) => Response.json(b, { status, headers: { ...cors, "Cache-Control": "no-store" } });
+const json = (b: unknown, status = 200) =>
+  Response.json(b, { status, headers: { ...cors, "Cache-Control": "no-store" } });
 
 export const Route = createFileRoute("/api/public/ris-chat")({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       POST: async ({ request }) => {
-        const token = (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+        const token = (request.headers.get("authorization") ?? "")
+          .replace(/^Bearer\s+/i, "")
+          .trim();
         if (!token) return json({ error: "Please sign in again" }, 401);
 
         const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -39,18 +45,30 @@ export const Route = createFileRoute("/api/public/ris-chat")({
         });
         const { data: claims, error } = await supabase.auth.getClaims(token);
         const userId = claims?.claims?.sub;
-        if (error || !userId) return json({ error: lang === "bn" ? "অনুগ্রহ করে আবার লগইন করুন" : "Please sign in again" }, 401);
+        if (error || !userId)
+          return json(
+            { error: lang === "bn" ? "অনুগ্রহ করে আবার লগইন করুন" : "Please sign in again" },
+            401,
+          );
 
         if (mode === "advance") {
           const [{ data: subs }, { data: roles }] = await Promise.all([
-            supabase.from("subscriptions").select("id").eq("user_id", userId).eq("status", "active").limit(1),
+            supabase
+              .from("subscriptions")
+              .select("id")
+              .eq("user_id", userId)
+              .eq("status", "active")
+              .limit(1),
             supabase.from("user_roles").select("role").eq("user_id", userId),
           ]);
           const allowed = (subs ?? []).length > 0 || (roles ?? []).some((r) => r.role === "admin");
           if (!allowed) {
-            return json({ reply: lang === "bn"
-              ? "Ris AI Advance Mode ব্যবহার করার জন্য সক্রিয় প্রিমিয়াম সাবস্ক্রিপশন প্রয়োজন। /subscribe ভিজিট করুন।"
-              : "An active premium subscription is required for Advance Mode. Visit /subscribe." });
+            return json({
+              reply:
+                lang === "bn"
+                  ? "Ris AI Advance Mode ব্যবহার করার জন্য সক্রিয় প্রিমিয়াম সাবস্ক্রিপশন প্রয়োজন। /subscribe ভিজিট করুন।"
+                  : "An active premium subscription is required for Advance Mode. Visit /subscribe.",
+            });
           }
         }
 

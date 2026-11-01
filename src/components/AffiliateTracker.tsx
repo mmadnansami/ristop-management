@@ -6,7 +6,9 @@ const COOKIE = "ristop_affiliate_click";
 async function sha256(value: string) {
   const bytes = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export function AffiliateTracker() {
@@ -33,7 +35,10 @@ export function AffiliateTracker() {
         }
       }
 
-      const clickId = document.cookie.split("; ").find((part) => part.startsWith(`${COOKIE}=`))?.split("=")[1];
+      const clickId = document.cookie
+        .split("; ")
+        .find((part) => part.startsWith(`${COOKIE}=`))
+        ?.split("=")[1];
       if (!clickId) return;
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
@@ -41,7 +46,9 @@ export function AffiliateTracker() {
     };
 
     void track();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") void track();
     });
     return () => subscription.unsubscribe();

@@ -14,9 +14,16 @@ export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
       { title: "Forgot password | Ristop Management" },
-      { name: "description", content: "Request a secure password reset link for your Ristop Management business account." },
+      {
+        name: "description",
+        content:
+          "Request a secure password reset link for your Ristop Management business account.",
+      },
       { property: "og:title", content: "Forgot password | Ristop Management" },
-      { property: "og:description", content: "Request a password reset link for your Ristop Management account." },
+      {
+        property: "og:description",
+        content: "Request a password reset link for your Ristop Management account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -53,7 +60,9 @@ function ForgotPassword() {
   return (
     <div className="auth-scene flex min-h-screen flex-col items-center justify-center px-4">
       <div className="w-full max-w-md rounded-3xl glass-strong p-8 shadow-glow">
-        <div className="mb-5 flex justify-center"><Logo className="h-14 w-auto" /></div>
+        <div className="mb-5 flex justify-center">
+          <Logo className="h-14 w-auto" />
+        </div>
         <h1 className="text-center text-2xl font-bold">
           {lang === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot your password?"}
         </h1>
@@ -81,14 +90,22 @@ function ForgotPassword() {
                 className="mt-1.5 h-12 rounded-xl border-white/15 bg-white/5 focus-visible:ring-primary"
               />
             </div>
-            <Button type="submit" disabled={loading} className="h-12 w-full rounded-xl bg-gradient-primary text-base font-semibold shadow-glow">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="h-12 w-full rounded-xl bg-gradient-primary text-base font-semibold shadow-glow"
+            >
               {loading ? "..." : lang === "bn" ? "রিসেট লিংক পাঠান" : "Send reset link"}
             </Button>
           </form>
         )}
 
         <p className="mt-6 text-center text-sm text-foreground/60">
-          <Link to="/auth" search={{ mode: "signin", referral: "" }} className="font-semibold text-primary-glow">
+          <Link
+            to="/auth"
+            search={{ mode: "signin", referral: "" }}
+            className="font-semibold text-primary-glow"
+          >
             {lang === "bn" ? "লগইনে ফিরে যান" : "Back to sign in"}
           </Link>
         </p>

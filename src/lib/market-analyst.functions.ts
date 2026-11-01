@@ -34,28 +34,132 @@ type MarketOverview = {
   sources: SourceArticle[];
 };
 
-async function ensurePremium(supabase: { from: (t: string) => { select: (c: string) => { eq: (a: string, b: string) => { eq: (c: string, d: string) => { maybeSingle: () => Promise<{ data: unknown }> } } } } }, userId: string) {
-  const { data } = await supabase.from("subscriptions").select("id").eq("user_id", userId).eq("status", "active").maybeSingle();
+async function ensurePremium(
+  supabase: {
+    from: (t: string) => {
+      select: (c: string) => {
+        eq: (
+          a: string,
+          b: string,
+        ) => { eq: (c: string, d: string) => { maybeSingle: () => Promise<{ data: unknown }> } };
+      };
+    };
+  },
+  userId: string,
+) {
+  const { data } = await supabase
+    .from("subscriptions")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .maybeSingle();
   if (!data) throw new Error("PREMIUM_REQUIRED");
 }
 
-const safeText = (value: unknown) => String(value ?? "").replace(/\s+/g, " ").trim();
+const safeText = (value: unknown) =>
+  String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const PRODUCT_KEYWORDS = [
-  { name: "Rice", bn: "চাল", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["rice", "paddy", "beras", "চাল", "ধান"] },
-  { name: "Onion", bn: "পেঁয়াজ", category: "Vegetables", bnCategory: "সবজি", terms: ["onion", "onions", "পেঁয়াজ"] },
-  { name: "Potato", bn: "আলু", category: "Vegetables", bnCategory: "সবজি", terms: ["potato", "potatoes", "আলু"] },
-  { name: "Egg", bn: "ডিম", category: "Protein", bnCategory: "প্রোটিন", terms: ["egg", "eggs", "ডিম"] },
-  { name: "Chicken", bn: "মুরগি", category: "Protein", bnCategory: "প্রোটিন", terms: ["chicken", "broiler", "poultry", "মুরগি", "ব্রয়লার"] },
-  { name: "Beef", bn: "গরুর মাংস", category: "Protein", bnCategory: "প্রোটিন", terms: ["beef", "cattle", "গরুর মাংস"] },
-  { name: "Fish", bn: "মাছ", category: "Protein", bnCategory: "প্রোটিন", terms: ["fish", "hilsa", "seafood", "মাছ", "ইলিশ"] },
-  { name: "Soybean Oil", bn: "সয়াবিন তেল", category: "Edible oil", bnCategory: "ভোজ্যতেল", terms: ["soybean oil", "edible oil", "cooking oil", "সয়াবিন", "ভোজ্যতেল"] },
-  { name: "Sugar", bn: "চিনি", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["sugar", "চিনি"] },
-  { name: "Wheat", bn: "গম", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["wheat", "flour", "atta", "গম", "আটা", "ময়দা"] },
-  { name: "Lentil", bn: "ডাল", category: "Food staples", bnCategory: "খাদ্যপণ্য", terms: ["lentil", "pulse", "pulses", "dal", "ডাল"] },
-  { name: "Cotton", bn: "তুলা", category: "Textile", bnCategory: "টেক্সটাইল", terms: ["cotton", "yarn", "তুলা", "সুতা"] },
-  { name: "Garments", bn: "গার্মেন্টস", category: "Textile", bnCategory: "টেক্সটাইল", terms: ["garment", "apparel", "rmg", "গার্মেন্টস", "পোশাক"] },
-  { name: "Fuel", bn: "জ্বালানি", category: "Energy", bnCategory: "জ্বালানি", terms: ["fuel", "diesel", "petrol", "gas", "oil price", "জ্বালানি", "ডিজেল", "গ্যাস"] },
+  {
+    name: "Rice",
+    bn: "চাল",
+    category: "Food staples",
+    bnCategory: "খাদ্যপণ্য",
+    terms: ["rice", "paddy", "beras", "চাল", "ধান"],
+  },
+  {
+    name: "Onion",
+    bn: "পেঁয়াজ",
+    category: "Vegetables",
+    bnCategory: "সবজি",
+    terms: ["onion", "onions", "পেঁয়াজ"],
+  },
+  {
+    name: "Potato",
+    bn: "আলু",
+    category: "Vegetables",
+    bnCategory: "সবজি",
+    terms: ["potato", "potatoes", "আলু"],
+  },
+  {
+    name: "Egg",
+    bn: "ডিম",
+    category: "Protein",
+    bnCategory: "প্রোটিন",
+    terms: ["egg", "eggs", "ডিম"],
+  },
+  {
+    name: "Chicken",
+    bn: "মুরগি",
+    category: "Protein",
+    bnCategory: "প্রোটিন",
+    terms: ["chicken", "broiler", "poultry", "মুরগি", "ব্রয়লার"],
+  },
+  {
+    name: "Beef",
+    bn: "গরুর মাংস",
+    category: "Protein",
+    bnCategory: "প্রোটিন",
+    terms: ["beef", "cattle", "গরুর মাংস"],
+  },
+  {
+    name: "Fish",
+    bn: "মাছ",
+    category: "Protein",
+    bnCategory: "প্রোটিন",
+    terms: ["fish", "hilsa", "seafood", "মাছ", "ইলিশ"],
+  },
+  {
+    name: "Soybean Oil",
+    bn: "সয়াবিন তেল",
+    category: "Edible oil",
+    bnCategory: "ভোজ্যতেল",
+    terms: ["soybean oil", "edible oil", "cooking oil", "সয়াবিন", "ভোজ্যতেল"],
+  },
+  {
+    name: "Sugar",
+    bn: "চিনি",
+    category: "Food staples",
+    bnCategory: "খাদ্যপণ্য",
+    terms: ["sugar", "চিনি"],
+  },
+  {
+    name: "Wheat",
+    bn: "গম",
+    category: "Food staples",
+    bnCategory: "খাদ্যপণ্য",
+    terms: ["wheat", "flour", "atta", "গম", "আটা", "ময়দা"],
+  },
+  {
+    name: "Lentil",
+    bn: "ডাল",
+    category: "Food staples",
+    bnCategory: "খাদ্যপণ্য",
+    terms: ["lentil", "pulse", "pulses", "dal", "ডাল"],
+  },
+  {
+    name: "Cotton",
+    bn: "তুলা",
+    category: "Textile",
+    bnCategory: "টেক্সটাইল",
+    terms: ["cotton", "yarn", "তুলা", "সুতা"],
+  },
+  {
+    name: "Garments",
+    bn: "গার্মেন্টস",
+    category: "Textile",
+    bnCategory: "টেক্সটাইল",
+    terms: ["garment", "apparel", "rmg", "গার্মেন্টস", "পোশাক"],
+  },
+  {
+    name: "Fuel",
+    bn: "জ্বালানি",
+    category: "Energy",
+    bnCategory: "জ্বালানি",
+    terms: ["fuel", "diesel", "petrol", "gas", "oil price", "জ্বালানি", "ডিজেল", "গ্যাস"],
+  },
 ];
 
 function todayLabel(lang: Lang) {
@@ -92,11 +196,18 @@ function emptyOverview(lang: Lang, note?: string): MarketOverview {
 
 function buildMarketQuery(region: Region, category?: string, userQuestion?: string) {
   const regionPart = region === "bangladesh" ? "Bangladesh" : "global OR world OR international";
-  const topic = safeText(category || userQuestion || "retail product commodity market price demand supply inflation").slice(0, 140);
+  const topic = safeText(
+    category || userQuestion || "retail product commodity market price demand supply inflation",
+  ).slice(0, 140);
   return `(${regionPart}) (${topic}) (price OR demand OR market OR retail OR commodity OR inflation OR supply OR shortage OR export OR import)`;
 }
 
-async function fetchMarketSources(region: Region, category?: string, userQuestion?: string, days = 1): Promise<{ articles: SourceArticle[]; note?: string }> {
+async function fetchMarketSources(
+  region: Region,
+  category?: string,
+  userQuestion?: string,
+  days = 1,
+): Promise<{ articles: SourceArticle[]; note?: string }> {
   const params = new URLSearchParams({
     query: buildMarketQuery(region, category, userQuestion),
     mode: "artlist",
@@ -114,7 +225,7 @@ async function fetchMarketSources(region: Region, category?: string, userQuestio
       const msg = await res.text();
       return { articles: [], note: `SOURCE_${res.status}_${msg.slice(0, 120)}` };
     }
-    const json = await res.json() as { articles?: Array<Record<string, unknown>> };
+    const json = (await res.json()) as { articles?: Array<Record<string, unknown>> };
     const articles = (json.articles ?? [])
       .map((a) => ({
         title: safeText(a.title),
@@ -132,20 +243,28 @@ async function fetchMarketSources(region: Region, category?: string, userQuestio
 
 function dailyTrendFromSources(articles: SourceArticle[]) {
   const byDay = new Map<string, { mention_count: number; sources: Set<string> }>();
-  const formatter = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Dhaka" });
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    timeZone: "Asia/Dhaka",
+  });
   articles.forEach((a) => {
     const parsed = Date.parse(a.published_at);
-    const day = Number.isNaN(parsed) ? formatter.format(new Date()) : formatter.format(new Date(parsed));
+    const day = Number.isNaN(parsed)
+      ? formatter.format(new Date())
+      : formatter.format(new Date(parsed));
     const item = byDay.get(day) ?? { mention_count: 0, sources: new Set<string>() };
     item.mention_count += 1;
     item.sources.add(a.source);
     byDay.set(day, item);
   });
-  return Array.from(byDay.entries()).reverse().map(([day, item]) => ({
-    day,
-    mention_count: item.mention_count,
-    source_count: item.sources.size,
-  }));
+  return Array.from(byDay.entries())
+    .reverse()
+    .map(([day, item]) => ({
+      day,
+      mention_count: item.mention_count,
+      source_count: item.sources.size,
+    }));
 }
 
 const callAI = async (system: string, user: string, jsonMode = false) => {
@@ -153,7 +272,10 @@ const callAI = async (system: string, user: string, jsonMode = false) => {
   if (!apiKey) return "";
   const body: Record<string, unknown> = {
     model: "google/gemini-2.5-flash",
-    messages: [{ role: "system", content: system }, { role: "user", content: user }],
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
   };
   if (jsonMode) body.response_format = { type: "json_object" };
   const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -167,7 +289,10 @@ const callAI = async (system: string, user: string, jsonMode = false) => {
 };
 
 function fallbackOverview(articles: SourceArticle[], lang: Lang, note?: string): MarketOverview {
-  const matched = new Map<string, { category: string; titles: Set<string>; sources: Set<string> }>();
+  const matched = new Map<
+    string,
+    { category: string; titles: Set<string>; sources: Set<string> }
+  >();
   for (const article of articles) {
     const haystack = `${article.title} ${article.source}`.toLowerCase();
     for (const item of PRODUCT_KEYWORDS) {
@@ -199,51 +324,79 @@ function fallbackOverview(articles: SourceArticle[], lang: Lang, note?: string):
 
   const maxMentions = Math.max(1, ...Array.from(categories.values()).map((item) => item.mentions));
 
-  return normalizeOverview({
-    top_products: products.map(({ name, item }) => ({
-      name,
-      category: item.category,
-      mentions: item.titles.size,
-      source_count: item.sources.size,
-      trend: "unknown" as const,
-      confidence: item.sources.size > 2 ? "medium" as const : "low" as const,
-      summary: lang === "bn"
-        ? `যাচাই করা সোর্সে ${name} নিয়ে ${item.titles.size}টি রিপোর্ট/উল্লেখ পাওয়া গেছে; স্পষ্ট দাম/দিক না থাকলে ট্রেন্ড unknown রাখা হয়েছে।`
-        : `${name} appears in ${item.titles.size} verified source mention(s); trend is kept unknown unless the source states a clear direction.`,
-      citations: Array.from(item.titles).slice(0, 3),
-    })),
-    category_demand: Array.from(categories.entries()).map(([category, item]) => ({
-      category,
-      demand_score: Math.round((item.mentions / maxMentions) * 100),
-      source_count: item.sources.size,
-    })),
-    insights: articles.slice(0, 3).map((article) => lang === "bn"
-      ? `সোর্স রিপোর্ট: ${article.title} — ${article.source}`
-      : `Source report: ${article.title} — ${article.source}`),
-  }, articles, lang, note);
+  return normalizeOverview(
+    {
+      top_products: products.map(({ name, item }) => ({
+        name,
+        category: item.category,
+        mentions: item.titles.size,
+        source_count: item.sources.size,
+        trend: "unknown" as const,
+        confidence: item.sources.size > 2 ? ("medium" as const) : ("low" as const),
+        summary:
+          lang === "bn"
+            ? `যাচাই করা সোর্সে ${name} নিয়ে ${item.titles.size}টি রিপোর্ট/উল্লেখ পাওয়া গেছে; স্পষ্ট দাম/দিক না থাকলে ট্রেন্ড unknown রাখা হয়েছে।`
+            : `${name} appears in ${item.titles.size} verified source mention(s); trend is kept unknown unless the source states a clear direction.`,
+        citations: Array.from(item.titles).slice(0, 3),
+      })),
+      category_demand: Array.from(categories.entries()).map(([category, item]) => ({
+        category,
+        demand_score: Math.round((item.mentions / maxMentions) * 100),
+        source_count: item.sources.size,
+      })),
+      insights: articles
+        .slice(0, 3)
+        .map((article) =>
+          lang === "bn"
+            ? `সোর্স রিপোর্ট: ${article.title} — ${article.source}`
+            : `Source report: ${article.title} — ${article.source}`,
+        ),
+    },
+    articles,
+    lang,
+    note,
+  );
 }
 
-function normalizeOverview(value: Partial<MarketOverview>, articles: SourceArticle[], lang: Lang, note?: string): MarketOverview {
+function normalizeOverview(
+  value: Partial<MarketOverview>,
+  articles: SourceArticle[],
+  lang: Lang,
+  note?: string,
+): MarketOverview {
   return {
     generated_at: new Date().toISOString(),
     date_label: todayLabel(lang),
     source_count: articles.length,
     source_note: sourceNote(lang, articles.length, note),
-    top_products: (value.top_products ?? []).slice(0, 10).map((p) => ({
-      name: safeText(p.name) || (lang === "bn" ? "সোর্সে উল্লেখিত পণ্য" : "Source-mentioned product"),
-      category: safeText(p.category) || (lang === "bn" ? "সাধারণ" : "General"),
-      mentions: Number.isFinite(Number(p.mentions)) ? Number(p.mentions) : 1,
-      source_count: Number.isFinite(Number(p.source_count)) ? Number(p.source_count) : 1,
-      trend: ["up", "down", "stable", "unknown"].includes(String(p.trend)) ? p.trend as "up" | "down" | "stable" | "unknown" : "unknown",
-      confidence: ["high", "medium", "low"].includes(String(p.confidence)) ? p.confidence as "high" | "medium" | "low" : "low",
-      summary: safeText(p.summary),
-      citations: Array.isArray(p.citations) ? p.citations.map(safeText).filter(Boolean).slice(0, 3) : [],
-    })).filter((p) => p.summary || p.citations.length > 0),
-    category_demand: (value.category_demand ?? []).slice(0, 8).map((c) => ({
-      category: safeText(c.category),
-      demand_score: Math.max(0, Math.min(100, Number(c.demand_score) || 0)),
-      source_count: Number.isFinite(Number(c.source_count)) ? Number(c.source_count) : 1,
-    })).filter((c) => c.category),
+    top_products: (value.top_products ?? [])
+      .slice(0, 10)
+      .map((p) => ({
+        name:
+          safeText(p.name) || (lang === "bn" ? "সোর্সে উল্লেখিত পণ্য" : "Source-mentioned product"),
+        category: safeText(p.category) || (lang === "bn" ? "সাধারণ" : "General"),
+        mentions: Number.isFinite(Number(p.mentions)) ? Number(p.mentions) : 1,
+        source_count: Number.isFinite(Number(p.source_count)) ? Number(p.source_count) : 1,
+        trend: ["up", "down", "stable", "unknown"].includes(String(p.trend))
+          ? (p.trend as "up" | "down" | "stable" | "unknown")
+          : "unknown",
+        confidence: ["high", "medium", "low"].includes(String(p.confidence))
+          ? (p.confidence as "high" | "medium" | "low")
+          : "low",
+        summary: safeText(p.summary),
+        citations: Array.isArray(p.citations)
+          ? p.citations.map(safeText).filter(Boolean).slice(0, 3)
+          : [],
+      }))
+      .filter((p) => p.summary || p.citations.length > 0),
+    category_demand: (value.category_demand ?? [])
+      .slice(0, 8)
+      .map((c) => ({
+        category: safeText(c.category),
+        demand_score: Math.max(0, Math.min(100, Number(c.demand_score) || 0)),
+        source_count: Number.isFinite(Number(c.source_count)) ? Number(c.source_count) : 1,
+      }))
+      .filter((c) => c.category),
     monthly_trend: dailyTrendFromSources(articles),
     insights: (value.insights ?? []).map(safeText).filter(Boolean).slice(0, 3),
     sources: articles.slice(0, 12),
@@ -253,32 +406,46 @@ function normalizeOverview(value: Partial<MarketOverview>, articles: SourceArtic
 export const getMarketOverview = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .middleware([requireDeploymentAuth as any])
-  .inputValidator((d: unknown) => z.object({
-    region: z.enum(["bangladesh", "global"]).default("bangladesh"),
-    category: z.string().max(60).optional(),
-    lang: z.enum(["bn", "en"]).default("bn"),
-  }).parse(d))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .handler(async ({ data, context }: { data: { region: Region; category?: string; lang: Lang }; context: any }) => {
-    await marketCore.ensurePremium(context.supabase, context.userId);
-    const windowDays = data.region === "bangladesh" ? 7 : 10;
-    const regionLabel = data.region === "bangladesh" ? "Bangladesh" : "the global market";
-    const focus = data.category ? `focused on ${data.category}` : "across major retail products and commodities";
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        region: z.enum(["bangladesh", "global"]).default("bangladesh"),
+        category: z.string().max(60).optional(),
+        lang: z.enum(["bn", "en"]).default("bn"),
+      })
+      .parse(d),
+  )
 
-    const gdelt = await marketCore.fetchMarketSourcesWithFallback(data.region, data.category);
-    const researchedDays = gdelt.days;
-    const grounded = await marketCore.geminiGroundedSearch(
-      `Search the web right now and report market movement in ${regionLabel} ${focus}. Start with the last ${windowDays} days; if evidence is sparse, expand to 30 days and then one year. Include current retail/wholesale prices, demand direction, best-selling or trending products, supply issues, imports/exports and inflation. Use only what you find in search results, with dates and outlet names. Today is ${marketCore.todayLabel("en")}.`,
-    );
-    const articles = marketCore.mergeSources(grounded.sources, gdelt.articles);
-    const note = grounded.text ? undefined : (grounded.note ?? gdelt.note);
-    if (articles.length === 0 && !grounded.text) {
-      return marketCore.emptyOverview(data.lang, marketCore.sourceNote(data.lang, 0, note));
-    }
+  .handler(
+    async ({
+      data,
+      context,
+    }: {
+      data: { region: Region; category?: string; lang: Lang };
+      context: any;
+    }) => {
+      await marketCore.ensurePremium(context.supabase, context.userId);
+      const windowDays = data.region === "bangladesh" ? 7 : 10;
+      const regionLabel = data.region === "bangladesh" ? "Bangladesh" : "the global market";
+      const focus = data.category
+        ? `focused on ${data.category}`
+        : "across major retail products and commodities";
 
-    const langNote = data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
-    const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the research brief and source list supplied by the app.`;
-    const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Build a market overview for ${regionLabel} ${focus} using the ${researchedDays}-day verified source window.
+      const gdelt = await marketCore.fetchMarketSourcesWithFallback(data.region, data.category);
+      const researchedDays = gdelt.days;
+      const grounded = await marketCore.geminiGroundedSearch(
+        `Search the web right now and report market movement in ${regionLabel} ${focus}. Start with the last ${windowDays} days; if evidence is sparse, expand to 30 days and then one year. Include current retail/wholesale prices, demand direction, best-selling or trending products, supply issues, imports/exports and inflation. Use only what you find in search results, with dates and outlet names. Today is ${marketCore.todayLabel("en")}.`,
+      );
+      const articles = marketCore.mergeSources(grounded.sources, gdelt.articles);
+      const note = grounded.text ? undefined : (grounded.note ?? gdelt.note);
+      if (articles.length === 0 && !grounded.text) {
+        return marketCore.emptyOverview(data.lang, marketCore.sourceNote(data.lang, 0, note));
+      }
+
+      const langNote =
+        data.lang === "bn" ? "সব লেবেল/নাম বাংলায় দিন।" : "Return all labels/names in English.";
+      const sys = `You are a strict source-grounded market analyst. Return ONLY valid JSON, no prose. ${langNote} Never invent events, prices, festivals, demand, growth, or product names. Use ONLY the research brief and source list supplied by the app.`;
+      const prompt = `Today is ${marketCore.todayLabel(data.lang)} in Bangladesh time. Build a market overview for ${regionLabel} ${focus} using the ${researchedDays}-day verified source window.
 
 LIVE RESEARCH BRIEF (from Google Search):
 ${grounded.text || "(none)"}
@@ -293,67 +460,106 @@ Return JSON exactly in this shape:
   "insights": [ string, string, string ]
 }
 Rules: include concrete prices/percentages ONLY when the brief or a source states them. Give at least 5 products when the brief supports it.`;
-    const raw = await marketCore.callAI(sys, prompt, true);
-    if (!raw) return marketCore.fallbackOverview(articles, data.lang, note);
-    try {
-      return marketCore.normalizeOverview(JSON.parse(raw), articles, data.lang, note);
-    } catch {
-      const m = raw.match(/\{[\s\S]*\}/);
-      if (m) return marketCore.normalizeOverview(JSON.parse(m[0]), articles, data.lang, note);
-      return marketCore.fallbackOverview(articles, data.lang, note);
-    }
-  });
+      const raw = await marketCore.callAI(sys, prompt, true);
+      if (!raw) return marketCore.fallbackOverview(articles, data.lang, note);
+      try {
+        return marketCore.normalizeOverview(JSON.parse(raw), articles, data.lang, note);
+      } catch {
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (m) return marketCore.normalizeOverview(JSON.parse(m[0]), articles, data.lang, note);
+        return marketCore.fallbackOverview(articles, data.lang, note);
+      }
+    },
+  );
 
 export const chatMarketAnalyst = createServerFn({ method: "POST" })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .middleware([requireDeploymentAuth as any])
-  .inputValidator((d: unknown) => z.object({
-    messages: z.array(z.object({
-      role: z.enum(["user", "assistant", "system"]),
-      content: z.string().min(1).max(4000),
-    })).min(1).max(50),
-    lang: z.enum(["bn", "en"]).default("bn"),
-  }).parse(d))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .handler(async ({ data, context }: { data: { messages: { role: "user" | "assistant" | "system"; content: string }[]; lang: Lang }; context: any }) => {
-    await marketCore.ensurePremium(context.supabase, context.userId);
-    const question = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "market prices demand";
-    const history = data.messages.slice(-6).map((m) => `${m.role}: ${m.content}`).join("\n");
-    const replyLang = data.lang === "bn" ? "Answer in Bengali (বাংলা)." : "Answer in English.";
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        messages: z
+          .array(
+            z.object({
+              role: z.enum(["user", "assistant", "system"]),
+              content: z.string().min(1).max(4000),
+            }),
+          )
+          .min(1)
+          .max(50),
+        lang: z.enum(["bn", "en"]).default("bn"),
+      })
+      .parse(d),
+  )
 
-    const grounded = await marketCore.geminiGroundedSearch(
-      `You are Ristop's business & market analyst. Search the web now and answer the question with real, current data (prices, demand, supply, import/export, inflation) for Bangladesh and global markets where relevant. ${replyLang} Be concrete, use numbers and dates you actually found, and list the outlet names you used at the end. Today is ${marketCore.todayLabel("en")}.
+  .handler(
+    async ({
+      data,
+      context,
+    }: {
+      data: { messages: { role: "user" | "assistant" | "system"; content: string }[]; lang: Lang };
+      context: any;
+    }) => {
+      await marketCore.ensurePremium(context.supabase, context.userId);
+      const question =
+        [...data.messages].reverse().find((m) => m.role === "user")?.content ??
+        "market prices demand";
+      const history = data.messages
+        .slice(-6)
+        .map((m) => `${m.role}: ${m.content}`)
+        .join("\n");
+      const replyLang = data.lang === "bn" ? "Answer in Bengali (বাংলা)." : "Answer in English.";
+
+      const grounded = await marketCore.geminiGroundedSearch(
+        `You are Ristop's business & market analyst. Search the web now and answer the question with real, current data (prices, demand, supply, import/export, inflation) for Bangladesh and global markets where relevant. ${replyLang} Be concrete, use numbers and dates you actually found, and list the outlet names you used at the end. Today is ${marketCore.todayLabel("en")}.
 
 Conversation:
 ${history}
 
 Question: ${question}`,
-    );
+      );
 
-    if (grounded.text) {
-      const cite = grounded.sources.slice(0, 5).map((s, i) => `${i + 1}. ${s.title}`).join("\n");
-      return { reply: cite ? `${grounded.text}\n\n${data.lang === "bn" ? "সোর্স:" : "Sources:"}\n${cite}` : grounded.text };
-    }
+      if (grounded.text) {
+        const cite = grounded.sources
+          .slice(0, 5)
+          .map((s, i) => `${i + 1}. ${s.title}`)
+          .join("\n");
+        return {
+          reply: cite
+            ? `${grounded.text}\n\n${data.lang === "bn" ? "সোর্স:" : "Sources:"}\n${cite}`
+            : grounded.text,
+        };
+      }
 
-    const { articles, note } = await marketCore.fetchMarketSourcesWithFallback("bangladesh", undefined, question);
-    if (articles.length === 0) {
-      return {
-        reply: data.lang === "bn"
-          ? "এই মুহূর্তে লাইভ সার্চ সোর্স পাওয়া যাচ্ছে না, তাই আমি অনুমান দেব না। কিছুক্ষণ পর আবার চেষ্টা করুন।"
-          : "Live search sources are unavailable right now, so I will not guess. Please try again shortly.",
-      };
-    }
-    const sys = data.lang === "bn"
-      ? `তুমি একজন সোর্স-ভিত্তিক মার্কেট অ্যানালিস্ট। শুধুমাত্র নিচের সোর্স থেকে উত্তর দাও। Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`
-      : `You are a source-grounded market analyst. Answer only from the sources below. Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`;
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) return { reply: marketCore.aiMissingReply(articles, data.lang) };
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: "google/gemini-2.5-flash", messages: [{ role: "system", content: sys }, ...data.messages] }),
-    });
-    if (!res.ok) throw new Error(`AI ${res.status}: ${(await res.text()).slice(0, 200)}`);
-    const j = await res.json();
-    return { reply: j?.choices?.[0]?.message?.content ?? "" };
-  });
+      const { articles, note } = await marketCore.fetchMarketSourcesWithFallback(
+        "bangladesh",
+        undefined,
+        question,
+      );
+      if (articles.length === 0) {
+        return {
+          reply:
+            data.lang === "bn"
+              ? "এই মুহূর্তে লাইভ সার্চ সোর্স পাওয়া যাচ্ছে না, তাই আমি অনুমান দেব না। কিছুক্ষণ পর আবার চেষ্টা করুন।"
+              : "Live search sources are unavailable right now, so I will not guess. Please try again shortly.",
+        };
+      }
+      const sys =
+        data.lang === "bn"
+          ? `তুমি একজন সোর্স-ভিত্তিক মার্কেট অ্যানালিস্ট। শুধুমাত্র নিচের সোর্স থেকে উত্তর দাও। Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`
+          : `You are a source-grounded market analyst. Answer only from the sources below. Source note: ${note ?? "ok"}\n\nSOURCES:\n${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.source} | ${a.published_at} | ${a.url}`).join("\n")}`;
+      const apiKey = process.env.LOVABLE_API_KEY;
+      if (!apiKey) return { reply: marketCore.aiMissingReply(articles, data.lang) };
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [{ role: "system", content: sys }, ...data.messages],
+        }),
+      });
+      if (!res.ok) throw new Error(`AI ${res.status}: ${(await res.text()).slice(0, 200)}`);
+      const j = await res.json();
+      return { reply: j?.choices?.[0]?.message?.content ?? "" };
+    },
+  );

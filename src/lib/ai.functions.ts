@@ -1,13 +1,25 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { DEFAULT_RIS_RELAY, risSystemPrompt, viaGemini, viaLovable, viaRelay, type RisMsg } from "./ris-ai.server";
+import {
+  DEFAULT_RIS_RELAY,
+  risSystemPrompt,
+  viaGemini,
+  viaLovable,
+  viaRelay,
+  type RisMsg,
+} from "./ris-ai.server";
 
 const inputSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(["user", "assistant", "system"]),
-    content: z.string().min(1).max(4000),
-  })).min(1).max(50),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant", "system"]),
+        content: z.string().min(1).max(4000),
+      }),
+    )
+    .min(1)
+    .max(50),
   lang: z.enum(["bn", "en"]).default("bn"),
   mode: z.enum(["free", "advance"]).default("free"),
   isSubscribed: z.boolean().default(false),
@@ -20,9 +32,10 @@ export const chatWithRis = createServerFn({ method: "POST" })
 
     if (mode === "advance" && !isSubscribed) {
       return {
-        reply: lang === "bn"
-          ? "Ris AI Advance Mode ব্যবহার করার জন্য সক্রিয় প্রিমিয়াম সাবস্ক্রিপশন প্রয়োজন। প্রিমিয়াম প্ল্যান দেখতে /subscribe ভিজিট করুন।"
-          : "Active premium subscription is required for Ris AI Advance Mode. Please visit /subscribe to upgrade.",
+        reply:
+          lang === "bn"
+            ? "Ris AI Advance Mode ব্যবহার করার জন্য সক্রিয় প্রিমিয়াম সাবস্ক্রিপশন প্রয়োজন। প্রিমিয়াম প্ল্যান দেখতে /subscribe ভিজিট করুন।"
+            : "Active premium subscription is required for Ris AI Advance Mode. Please visit /subscribe to upgrade.",
       };
     }
 
@@ -53,6 +66,10 @@ export const chatWithRis = createServerFn({ method: "POST" })
       return { reply: await viaRelay(relayUrl, auth, { messages: relayMessages, lang, mode }) };
     } catch (e) {
       console.error("Ris AI relay failed", e);
-      throw new Error(lang === "bn" ? "Ris AI এখন সংযোগ করতে পারছে না, একটু পরে আবার চেষ্টা করুন।" : "Ris AI can't connect right now, please try again shortly.");
+      throw new Error(
+        lang === "bn"
+          ? "Ris AI এখন সংযোগ করতে পারছে না, একটু পরে আবার চেষ্টা করুন।"
+          : "Ris AI can't connect right now, please try again shortly.",
+      );
     }
   });

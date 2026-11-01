@@ -25,7 +25,10 @@ function NotFoundComponent() {
         <h2 className="mt-4 text-xl font-semibold">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">এই পেজটি পাওয়া যায়নি।</p>
         <div className="mt-6">
-          <Link to="/" className="inline-flex items-center justify-center rounded-md bg-gradient-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-glow">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-gradient-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-glow"
+          >
             Go home
           </Link>
         </div>
@@ -36,24 +39,43 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
-  useEffect(() => { reportLovableError(error, { boundary: "tanstack_root_error_component" }); }, [error]);
-  const message = error instanceof Error ? error.message : typeof error === "string" && error ? error : "A temporary issue happened. Please try again.";
+  useEffect(() => {
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  }, [error]);
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === "string" && error
+        ? error
+        : "A temporary issue happened. Please try again.";
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="glass-strong max-w-md rounded-3xl p-8 text-center shadow-glow">
         <h1 className="text-xl font-semibold text-gradient">Something went wrong</h1>
         <p className="mt-2 text-sm text-muted-foreground">{message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-xl bg-gradient-primary px-4 py-2 text-sm text-primary-foreground shadow-glow">Try again</button>
-          <a href="/" className="rounded-xl border border-border px-4 py-2 text-sm">Go home</a>
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="rounded-xl bg-gradient-primary px-4 py-2 text-sm text-primary-foreground shadow-glow"
+          >
+            Try again
+          </button>
+          <a href="/" className="rounded-xl border border-border px-4 py-2 text-sm">
+            Go home
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
-const SITE_TITLE = "Ristop Management - Complete Business Management Software with Ris AI Assistant";
-const SITE_DESC = "Ristop Management- আপনার ব্যবসার পূর্ণ ম্যানেজমেন্ট, এক জায়গায়। স্মার্ট স্টক, সেলস, প্রফিট, কাস্টমার ম্যানেজমেন্ট এবং Ris AI অ্যাসিস্ট্যান্ট সম্বলিত একটি সম্পূর্ণ বিজনেস ম্যানেজমেন্ট সিস্টেম। Best business management software in Bangladesh, top AI-powered POS system in Dhaka.";
+const SITE_TITLE =
+  "Ristop Management - Complete Business Management Software with Ris AI Assistant";
+const SITE_DESC =
+  "Ristop Management- আপনার ব্যবসার পূর্ণ ম্যানেজমেন্ট, এক জায়গায়। স্মার্ট স্টক, সেলস, প্রফিট, কাস্টমার ম্যানেজমেন্ট এবং Ris AI অ্যাসিস্ট্যান্ট সম্বলিত একটি সম্পূর্ণ বিজনেস ম্যানেজমেন্ট সিস্টেম। Best business management software in Bangladesh, top AI-powered POS system in Dhaka.";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -64,7 +86,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: SITE_TITLE },
       { name: "description", content: SITE_DESC },
       { name: "author", content: "Ristop" },
-      { name: "keywords", content: "Ristop Management, business management software Bangladesh, POS Dhaka, stock management, sales tracking, Ris AI, inventory software Bangladesh, ব্যবসা ম্যানেজমেন্ট" },
+      {
+        name: "keywords",
+        content:
+          "Ristop Management, business management software Bangladesh, POS Dhaka, stock management, sales tracking, Ris AI, inventory software Bangladesh, ব্যবসা ম্যানেজমেন্ট",
+      },
       { property: "og:title", content: SITE_TITLE },
       { property: "og:description", content: SITE_DESC },
       { property: "og:type", content: "website" },
@@ -83,7 +109,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "canonical", href: "/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap",
+      },
     ],
     scripts: [
       {
@@ -97,7 +126,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             url: "https://ristopmanagement.site",
             logo: "https://ristopmanagement.site/ristop-official-logo.png",
             image: "https://ristopmanagement.site/ristop-official-logo.png",
-            description: "Ristop Management is a smart business management software designed to help businesses manage sales, inventory, customers, suppliers, invoices, profit and business insights from one place.",
+            description:
+              "Ristop Management is a smart business management software designed to help businesses manage sales, inventory, customers, suppliers, invoices, profit and business insights from one place.",
           },
           {
             "@context": "https://schema.org",
@@ -106,7 +136,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             operatingSystem: "Web",
             applicationCategory: "BusinessApplication",
             url: "https://ristopmanagement.site",
-            description: "Ristop Management is a smart business management software designed to help businesses manage sales, inventory, customers, suppliers, invoices, profit and business insights from one place.",
+            description:
+              "Ristop Management is a smart business management software designed to help businesses manage sales, inventory, customers, suppliers, invoices, profit and business insights from one place.",
             image: "https://ristopmanagement.site/ristop-official-logo.png",
             offers: [
               { "@type": "Offer", priceCurrency: "BDT", price: "190", name: "Monthly plan" },
@@ -118,7 +149,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         ]),
       },
     ],
-
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -129,8 +159,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-lang="en" className="dark">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
     </html>
   );
 }
@@ -145,7 +180,8 @@ function RecoveryRedirect() {
     if (typeof window === "undefined") return;
     const { pathname, hash, search } = window.location;
     if (pathname === "/reset-password") return;
-    const isRecovery = hash.includes("type=recovery") || new URLSearchParams(search).get("type") === "recovery";
+    const isRecovery =
+      hash.includes("type=recovery") || new URLSearchParams(search).get("type") === "recovery";
     if (isRecovery) window.location.replace(`/reset-password${search}${hash}`);
   }, []);
   return null;
@@ -155,9 +191,12 @@ function AuthListener() {
   const router = useRouter();
   const qc = useQueryClient();
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        if (window.location.pathname !== "/reset-password") window.location.replace("/reset-password");
+        if (window.location.pathname !== "/reset-password")
+          window.location.replace("/reset-password");
         return;
       }
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
@@ -170,7 +209,6 @@ function AuthListener() {
   return null;
 }
 
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
@@ -180,7 +218,6 @@ function RootComponent() {
           <AuthListener />
           <RecoveryRedirect />
           <AffiliateTracker />
-
 
           <Outlet />
           <Toaster position="top-right" />

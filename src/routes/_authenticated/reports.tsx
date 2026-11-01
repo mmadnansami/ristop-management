@@ -14,7 +14,8 @@ function Reports() {
     queryKey: ["reports"],
     queryFn: async () => {
       const [sales, purchases] = await Promise.all([
-        supabase.from("sales").select("*"), supabase.from("purchases").select("*"),
+        supabase.from("sales").select("*"),
+        supabase.from("purchases").select("*"),
       ]);
       return { sales: sales.data ?? [], purchases: purchases.data ?? [] };
     },
@@ -23,11 +24,29 @@ function Reports() {
   const totalProfit = (data?.sales ?? []).reduce((a, s) => a + Number(s.profit), 0);
   const totalCost = (data?.purchases ?? []).reduce((a, p) => a + Number(p.total), 0);
 
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const monthly = months.map((m, i) => {
     const ms = (data?.sales ?? []).filter((s) => new Date(s.sold_at).getMonth() === i);
     const mp = (data?.purchases ?? []).filter((p) => new Date(p.purchased_at).getMonth() === i);
-    return { month: m, sales: ms.reduce((a, s) => a + Number(s.total), 0), purchases: mp.reduce((a, p) => a + Number(p.total), 0), profit: ms.reduce((a, s) => a + Number(s.profit), 0) };
+    return {
+      month: m,
+      sales: ms.reduce((a, s) => a + Number(s.total), 0),
+      purchases: mp.reduce((a, p) => a + Number(p.total), 0),
+      profit: ms.reduce((a, s) => a + Number(s.profit), 0),
+    };
   });
 
   return (
@@ -52,7 +71,9 @@ function Reports() {
             <CartesianGrid strokeDasharray="3 3" stroke="#3b2a55" />
             <XAxis dataKey="month" stroke="#a78bfa" fontSize={11} />
             <YAxis stroke="#a78bfa" fontSize={11} />
-            <Tooltip contentStyle={{ background: "#1a1030", border: "1px solid #6b21a8", borderRadius: 8 }} />
+            <Tooltip
+              contentStyle={{ background: "#1a1030", border: "1px solid #6b21a8", borderRadius: 8 }}
+            />
             <Bar dataKey="sales" fill="#a855f7" radius={[6, 6, 0, 0]} />
             <Bar dataKey="purchases" fill="#7c3aed" radius={[6, 6, 0, 0]} />
             <Bar dataKey="profit" fill="#c084fc" radius={[6, 6, 0, 0]} />

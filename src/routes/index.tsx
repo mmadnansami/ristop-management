@@ -7,29 +7,55 @@ import { RisAssistant } from "@/components/RisAssistant";
 import { SiteFooter, CareersCta } from "@/components/SiteFooter";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import { PLAN_LIST, formatPrice, priceOf, originalPriceOf, discountPercent, type Currency } from "@/lib/pricing";
+import {
+  PLAN_LIST,
+  formatPrice,
+  priceOf,
+  originalPriceOf,
+  discountPercent,
+  type Currency,
+} from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
 import {
-  Boxes, TrendingUp, PieChart, Bell, Users, FileText,
-  Sparkles, Cloud, ShieldCheck, ArrowRight, Check, Star,
-  LineChart, Wallet,
+  Boxes,
+  TrendingUp,
+  PieChart,
+  Bell,
+  Users,
+  FileText,
+  Sparkles,
+  Cloud,
+  ShieldCheck,
+  ArrowRight,
+  Check,
+  Star,
+  LineChart,
+  Wallet,
 } from "lucide-react";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Ristop Management | Business Management Software in Bangladesh" },
-      { name: "description", content: "Ristop Management is a smart business management software in Bangladesh for sales, inventory, customers, suppliers, dues, invoices, profit, reports and AI-powered business insights." },
-      { property: "og:title", content: "Ristop Management | Business Management Software in Bangladesh" },
-      { property: "og:description", content: "Manage your business with greater clarity, control and confidence. Ristop Management brings sales, inventory, customers, profit, invoices and AI-powered insights into one place." },
+      {
+        name: "description",
+        content:
+          "Ristop Management is a smart business management software in Bangladesh for sales, inventory, customers, suppliers, dues, invoices, profit, reports and AI-powered business insights.",
+      },
+      {
+        property: "og:title",
+        content: "Ristop Management | Business Management Software in Bangladesh",
+      },
+      {
+        property: "og:description",
+        content:
+          "Manage your business with greater clarity, control and confidence. Ristop Management brings sales, inventory, customers, profit, invoices and AI-powered insights into one place.",
+      },
       { property: "og:url", content: "https://ristopmanagement.site/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [
-      { rel: "canonical", href: "https://ristopmanagement.site/" },
-    ],
+    links: [{ rel: "canonical", href: "https://ristopmanagement.site/" }],
   }),
   component: Landing,
 });
@@ -42,19 +68,32 @@ function Landing() {
       {/* Top ad banner strip (auto-rotating) */}
       <AdBanner />
 
-
       {/* Nav */}
       <header className="sticky top-0 z-40 glass border-b border-border/50">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2"><Logo className="h-12 md:h-14 w-auto" /></Link>
+          <Link to="/" className="flex items-center gap-2">
+            <Logo className="h-12 md:h-14 w-auto" />
+          </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <a href="#features" className="text-muted-foreground hover:text-foreground transition">{t("features")}</a>
-            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition">{t("pricing")}</a>
+            <a href="#features" className="text-muted-foreground hover:text-foreground transition">
+              {t("features")}
+            </a>
+            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition">
+              {t("pricing")}
+            </a>
           </nav>
           <div className="flex items-center gap-2">
             <LanguageToggle />
-            <Link to="/auth" search={{ mode: "signin" }}><Button variant="outline" size="sm" className="border-primary/40">{t("signIn")}</Button></Link>
-            <Link to="/auth" search={{ mode: "signup" }}><Button size="sm" className="bg-gradient-primary shadow-glow hidden sm:inline-flex">{t("signUp")}</Button></Link>
+            <Link to="/auth" search={{ mode: "signin" }}>
+              <Button variant="outline" size="sm" className="border-primary/40">
+                {t("signIn")}
+              </Button>
+            </Link>
+            <Link to="/auth" search={{ mode: "signup" }}>
+              <Button size="sm" className="bg-gradient-primary shadow-glow hidden sm:inline-flex">
+                {t("signUp")}
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -69,7 +108,8 @@ function Landing() {
             <span className="text-gradient">Understand Your BUSINESS.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Ristop Management is a smart business management software that helps you manage sales, inventory, customers, profit, invoices and business insights from one place.
+            Ristop Management is a smart business management software that helps you manage sales,
+            inventory, customers, profit, invoices and business insights from one place.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link to="/auth" search={{ mode: "signup" }}>
@@ -78,7 +118,9 @@ function Landing() {
               </Button>
             </Link>
             <a href="#features">
-              <Button size="lg" variant="outline" className="text-base h-12 px-7 border-primary/40">{t("watchDemo")}</Button>
+              <Button size="lg" variant="outline" className="text-base h-12 px-7 border-primary/40">
+                {t("watchDemo")}
+              </Button>
             </a>
           </div>
           <div className="mt-12 flex justify-center">
@@ -91,9 +133,14 @@ function Landing() {
                     { k: t("totalOrders"), v: "342", c: "from-purple-500/30" },
                     { k: t("lowStock"), v: "5", c: "from-rose-500/30", warn: true },
                   ].map((s) => (
-                    <div key={s.k} className={`rounded-xl p-4 bg-gradient-to-br ${s.c} to-transparent border border-border ${s.warn ? "border-destructive/50" : ""}`}>
+                    <div
+                      key={s.k}
+                      className={`rounded-xl p-4 bg-gradient-to-br ${s.c} to-transparent border border-border ${s.warn ? "border-destructive/50" : ""}`}
+                    >
                       <div className="text-xs text-muted-foreground">{s.k}</div>
-                      <div className={`text-xl font-bold mt-1 ${s.warn ? "text-destructive" : ""}`}>{s.v}</div>
+                      <div className={`text-xl font-bold mt-1 ${s.warn ? "text-destructive" : ""}`}>
+                        {s.v}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -109,14 +156,19 @@ function Landing() {
           <span className="text-gradient">{lang === "bn" ? "ডেমো ভিডিও" : "Demo videos"}</span>
         </h2>
         <p className="text-center text-muted-foreground mt-3 max-w-2xl mx-auto">
-          {lang === "bn" ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।" : "See how Ristop Management works, in under a minute."}
+          {lang === "bn"
+            ? "এক নজরে দেখে নিন Ristop Management কীভাবে কাজ করে।"
+            : "See how Ristop Management works, in under a minute."}
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {[
             { src: "/ristop-demo-1.mp4", type: "video/mp4" },
-            { src: "/ristop-demo-2.mp4", type: "video/mp4" }
+            { src: "/ristop-demo-2.mp4", type: "video/mp4" },
           ].map((video, i) => (
-            <div key={video.src} className="rounded-2xl glass border border-primary/30 p-2 shadow-glow">
+            <div
+              key={video.src}
+              className="rounded-2xl glass border border-primary/30 p-2 shadow-glow"
+            >
               <video
                 controls
                 playsInline
@@ -137,10 +189,13 @@ function Landing() {
       {/* SEO Section: A Smarter Business Management Software for Growing Businesses */}
       <section className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-3xl md:text-4xl font-bold">
-          <span className="text-gradient">A Smarter Business Management Software for Growing Businesses</span>
+          <span className="text-gradient">
+            A Smarter Business Management Software for Growing Businesses
+          </span>
         </h2>
         <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
-          Manage your sales, inventory, customers, supplier dues, invoices, profit and reports in one connected workspace with Ristop Management.
+          Manage your sales, inventory, customers, supplier dues, invoices, profit and reports in
+          one connected workspace with Ristop Management.
         </p>
       </section>
 
@@ -151,7 +206,10 @@ function Landing() {
             Why Choose <span className="text-gradient">Ristop Management</span>?
           </h2>
           <p className="text-muted-foreground text-center leading-relaxed max-w-3xl mx-auto">
-            Ristop Management gives you full clarity over your daily business operations. From real-time stock alerts and customer dues tracking to instant invoice generation and AI-assisted insights, Ristop Management is designed to help small and growing businesses in Bangladesh and worldwide streamline their workflows efficiently.
+            Ristop Management gives you full clarity over your daily business operations. From
+            real-time stock alerts and customer dues tracking to instant invoice generation and
+            AI-assisted insights, Ristop Management is designed to help small and growing businesses
+            in Bangladesh and worldwide streamline their workflows efficiently.
           </p>
         </div>
       </section>
@@ -159,23 +217,84 @@ function Landing() {
       {/* Features */}
 
       <section id="features" className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl md:text-5xl font-bold text-center"><span className="text-gradient">{lang === "bn" ? "যা যা পাবেন" : "Everything you need"}</span></h2>
-        <p className="text-center text-muted-foreground mt-3 max-w-2xl mx-auto">{lang === "bn" ? "একটাই সফটওয়্যার, পুরো ব্যবসার কন্ট্রোল।" : "One software, complete control of your business."}</p>
+        <h2 className="text-3xl md:text-5xl font-bold text-center">
+          <span className="text-gradient">
+            {lang === "bn" ? "যা যা পাবেন" : "Everything you need"}
+          </span>
+        </h2>
+        <p className="text-center text-muted-foreground mt-3 max-w-2xl mx-auto">
+          {lang === "bn"
+            ? "একটাই সফটওয়্যার, পুরো ব্যবসার কন্ট্রোল।"
+            : "One software, complete control of your business."}
+        </p>
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
-            { i: Boxes, t: lang === "bn" ? "স্মার্ট স্টক ম্যানেজমেন্ট" : "Smart Stock Management", d: lang === "bn" ? "রিয়েল টাইম স্টক ট্র্যাকিং।" : "Real-time stock tracking." },
-            { i: TrendingUp, t: lang === "bn" ? "স্মার্ট সেলস ট্র্যাকিং" : "Smart Sales Tracking", d: lang === "bn" ? "দৈনিক বিক্রি ও রিপোর্ট।" : "Daily sales & reports." },
-            { i: PieChart, t: lang === "bn" ? "স্মার্ট প্রফিট এনালাইসিস" : "Smart Profit Analysis", d: lang === "bn" ? "লাভ-ক্ষতি সহজ বিশ্লেষণ।" : "Easy profit/loss analytics." },
-            { i: Bell, t: lang === "bn" ? "ইনভেন্টরি এলার্ট" : "Inventory Alerts", d: lang === "bn" ? "স্টক কমলেই ওয়ার্নিং।" : "Get notified on low stock." },
-            { i: Users, t: lang === "bn" ? "কাস্টমার ম্যানেজমেন্ট" : "Customer Management", d: lang === "bn" ? "কাস্টমার লিস্ট ও ব্যালেন্স।" : "Customer list & balances." },
-            { i: FileText, t: lang === "bn" ? "ইনভয়েস ও বিল" : "Invoices & Billing", d: lang === "bn" ? "দ্রুত ইনভয়েস জেনারেট।" : "Generate invoices fast." },
-            { i: Sparkles, t: lang === "bn" ? "Ris — AI অ্যাসিস্ট্যান্ট" : "Ris — AI Assistant", d: lang === "bn" ? "সবসময় আপনার পাশে।" : "Always by your side." },
-            { i: Cloud, t: lang === "bn" ? "ক্লাউড ব্যাকাপ" : "Cloud Backup", d: lang === "bn" ? "সেরা ক্লাউড সুবিধা।" : "Best-in-class cloud." },
-            { i: ShieldCheck, t: lang === "bn" ? "ভাষা ট্রান্সলেটর" : "Language Translator", d: lang === "bn" ? "বাংলা / English টগল।" : "Bangla / English toggle." },
-            { i: LineChart, t: lang === "bn" ? "স্মার্ট মার্কেট অ্যানালাইসিস" : "Smart Market Analysis", d: lang === "bn" ? "রিয়েল-টাইম মার্কেট ট্রেন্ড ও ইনসাইট।" : "Real-time market trends & insights." },
-            { i: Wallet, t: lang === "bn" ? "স্মার্ট বকেয়া" : "Smart Bakeya (Dues)", d: lang === "bn" ? "কাস্টমার ও সাপ্লায়ার বকেয়া ট্র্যাক করুন।" : "Track customer & supplier dues easily." },
+            {
+              i: Boxes,
+              t: lang === "bn" ? "স্মার্ট স্টক ম্যানেজমেন্ট" : "Smart Stock Management",
+              d: lang === "bn" ? "রিয়েল টাইম স্টক ট্র্যাকিং।" : "Real-time stock tracking.",
+            },
+            {
+              i: TrendingUp,
+              t: lang === "bn" ? "স্মার্ট সেলস ট্র্যাকিং" : "Smart Sales Tracking",
+              d: lang === "bn" ? "দৈনিক বিক্রি ও রিপোর্ট।" : "Daily sales & reports.",
+            },
+            {
+              i: PieChart,
+              t: lang === "bn" ? "স্মার্ট প্রফিট এনালাইসিস" : "Smart Profit Analysis",
+              d: lang === "bn" ? "লাভ-ক্ষতি সহজ বিশ্লেষণ।" : "Easy profit/loss analytics.",
+            },
+            {
+              i: Bell,
+              t: lang === "bn" ? "ইনভেন্টরি এলার্ট" : "Inventory Alerts",
+              d: lang === "bn" ? "স্টক কমলেই ওয়ার্নিং।" : "Get notified on low stock.",
+            },
+            {
+              i: Users,
+              t: lang === "bn" ? "কাস্টমার ম্যানেজমেন্ট" : "Customer Management",
+              d: lang === "bn" ? "কাস্টমার লিস্ট ও ব্যালেন্স।" : "Customer list & balances.",
+            },
+            {
+              i: FileText,
+              t: lang === "bn" ? "ইনভয়েস ও বিল" : "Invoices & Billing",
+              d: lang === "bn" ? "দ্রুত ইনভয়েস জেনারেট।" : "Generate invoices fast.",
+            },
+            {
+              i: Sparkles,
+              t: lang === "bn" ? "Ris — AI অ্যাসিস্ট্যান্ট" : "Ris — AI Assistant",
+              d: lang === "bn" ? "সবসময় আপনার পাশে।" : "Always by your side.",
+            },
+            {
+              i: Cloud,
+              t: lang === "bn" ? "ক্লাউড ব্যাকাপ" : "Cloud Backup",
+              d: lang === "bn" ? "সেরা ক্লাউড সুবিধা।" : "Best-in-class cloud.",
+            },
+            {
+              i: ShieldCheck,
+              t: lang === "bn" ? "ভাষা ট্রান্সলেটর" : "Language Translator",
+              d: lang === "bn" ? "বাংলা / English টগল।" : "Bangla / English toggle.",
+            },
+            {
+              i: LineChart,
+              t: lang === "bn" ? "স্মার্ট মার্কেট অ্যানালাইসিস" : "Smart Market Analysis",
+              d:
+                lang === "bn"
+                  ? "রিয়েল-টাইম মার্কেট ট্রেন্ড ও ইনসাইট।"
+                  : "Real-time market trends & insights.",
+            },
+            {
+              i: Wallet,
+              t: lang === "bn" ? "স্মার্ট বকেয়া" : "Smart Bakeya (Dues)",
+              d:
+                lang === "bn"
+                  ? "কাস্টমার ও সাপ্লায়ার বকেয়া ট্র্যাক করুন।"
+                  : "Track customer & supplier dues easily.",
+            },
           ].map((f) => (
-            <div key={f.t} className="group rounded-2xl glass border border-border p-6 hover:border-primary/50 hover:shadow-glow transition-all">
+            <div
+              key={f.t}
+              className="group rounded-2xl glass border border-border p-6 hover:border-primary/50 hover:shadow-glow transition-all"
+            >
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary shadow-glow mb-4">
                 <f.i className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -188,8 +307,16 @@ function Landing() {
 
       {/* Pricing */}
       <section id="pricing" className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl md:text-5xl font-bold text-center"><span className="text-gradient">{lang === "bn" ? "সাবসক্রিপশন প্ল্যান" : "Subscription Plans"}</span></h2>
-        <p className="text-center text-muted-foreground mt-3">{lang === "bn" ? "AI ফ্রি, প্রিমিয়াম ফিচারের জন্য একটা প্ল্যান বাছাই করুন।" : "AI is free forever. Choose a plan to unlock premium features."}</p>
+        <h2 className="text-3xl md:text-5xl font-bold text-center">
+          <span className="text-gradient">
+            {lang === "bn" ? "সাবসক্রিপশন প্ল্যান" : "Subscription Plans"}
+          </span>
+        </h2>
+        <p className="text-center text-muted-foreground mt-3">
+          {lang === "bn"
+            ? "AI ফ্রি, প্রিমিয়াম ফিচারের জন্য একটা প্ল্যান বাছাই করুন।"
+            : "AI is free forever. Choose a plan to unlock premium features."}
+        </p>
         <div className="mt-6 flex justify-center gap-2">
           {(["BDT", "USD"] as const).map((c) => (
             <button
@@ -204,7 +331,10 @@ function Landing() {
         </div>
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {PLAN_LIST.map((p) => (
-            <div key={p.id} className={`relative rounded-2xl glass p-7 border ${p.popular ? "border-primary shadow-glow glow-ring" : "border-border"}`}>
+            <div
+              key={p.id}
+              className={`relative rounded-2xl glass p-7 border ${p.popular ? "border-primary shadow-glow glow-ring" : "border-border"}`}
+            >
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1">
                   <Star className="h-3 w-3" /> {t("popular")}
@@ -212,15 +342,23 @@ function Landing() {
               )}
               <h3 className="font-semibold text-xl">{lang === "bn" ? p.label_bn : p.label_en}</h3>
               <div className="mt-4 flex items-baseline gap-2 flex-wrap">
-                <span className="text-4xl font-bold text-gradient">{formatPrice(priceOf(p, currency), currency)}</span>
+                <span className="text-4xl font-bold text-gradient">
+                  {formatPrice(priceOf(p, currency), currency)}
+                </span>
                 {originalPriceOf(p, currency) && (
-                  <span className="text-sm text-muted-foreground line-through">{formatPrice(originalPriceOf(p, currency)!, currency)}</span>
+                  <span className="text-sm text-muted-foreground line-through">
+                    {formatPrice(originalPriceOf(p, currency)!, currency)}
+                  </span>
                 )}
-                <span className="text-muted-foreground text-sm">{lang === "bn" ? p.period_bn : p.period_en}</span>
+                <span className="text-muted-foreground text-sm">
+                  {lang === "bn" ? p.period_bn : p.period_en}
+                </span>
               </div>
               {discountPercent(p, currency) > 0 && (
                 <div className="mt-2 inline-flex rounded-full bg-success/15 px-2.5 py-1 text-xs text-success">
-                  {lang === "bn" ? `লঞ্চিং ডিসকাউন্ট ${discountPercent(p, currency)}%` : `Launch discount ${discountPercent(p, currency)}%`}
+                  {lang === "bn"
+                    ? `লঞ্চিং ডিসকাউন্ট ${discountPercent(p, currency)}%`
+                    : `Launch discount ${discountPercent(p, currency)}%`}
                 </div>
               )}
 
@@ -231,11 +369,17 @@ function Landing() {
                   lang === "bn" ? "Ris AI অ্যাসিস্ট্যান্ট" : "Ris AI assistant",
                   lang === "bn" ? "প্রায়োরিটি সাপোর্ট" : "Priority support",
                 ].map((x) => (
-                  <li key={x} className="flex items-center gap-2"><Check className="h-4 w-4 text-success" />{x}</li>
+                  <li key={x} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-success" />
+                    {x}
+                  </li>
                 ))}
               </ul>
               <Link to="/subscribe" search={{ plan: p.id as "monthly" | "quarterly" | "biannual" }}>
-                <Button className={`mt-7 w-full ${p.popular ? "bg-gradient-primary shadow-glow" : ""}`} variant={p.popular ? "default" : "outline"}>
+                <Button
+                  className={`mt-7 w-full ${p.popular ? "bg-gradient-primary shadow-glow" : ""}`}
+                  variant={p.popular ? "default" : "outline"}
+                >
                   {t("buyNow")} <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -248,14 +392,42 @@ function Landing() {
       <section className="container mx-auto px-4 pb-8">
         <div className="grid gap-5 md:grid-cols-3">
           {[
-            { t: lang === "bn" ? "কাস্টমার রিভিউ" : "Customer reviews", d: lang === "bn" ? "বাস্তব ব্যবসায়ীদের অভিজ্ঞতা পড়ুন।" : "Read what real business owners say.", slug: "reviews" },
-            { t: lang === "bn" ? "কেস স্টাডি" : "Case studies", d: lang === "bn" ? "কীভাবে দোকান ও ডিস্ট্রিবিউটররা লাভ বাড়িয়েছে।" : "How shops and distributors improved profit.", slug: "case-studies" },
-            { t: lang === "bn" ? "দ্রুত সাপোর্ট" : "Fast support", d: lang === "bn" ? "WhatsApp-এ ১৫ মিনিটের মধ্যে উত্তর।" : "WhatsApp replies within 15 minutes.", slug: "support" },
+            {
+              t: lang === "bn" ? "কাস্টমার রিভিউ" : "Customer reviews",
+              d:
+                lang === "bn"
+                  ? "বাস্তব ব্যবসায়ীদের অভিজ্ঞতা পড়ুন।"
+                  : "Read what real business owners say.",
+              slug: "reviews",
+            },
+            {
+              t: lang === "bn" ? "কেস স্টাডি" : "Case studies",
+              d:
+                lang === "bn"
+                  ? "কীভাবে দোকান ও ডিস্ট্রিবিউটররা লাভ বাড়িয়েছে।"
+                  : "How shops and distributors improved profit.",
+              slug: "case-studies",
+            },
+            {
+              t: lang === "bn" ? "দ্রুত সাপোর্ট" : "Fast support",
+              d:
+                lang === "bn"
+                  ? "WhatsApp-এ ১৫ মিনিটের মধ্যে উত্তর।"
+                  : "WhatsApp replies within 15 minutes.",
+              slug: "support",
+            },
           ].map((c) => (
-            <Link key={c.slug} to="/info/$slug" params={{ slug: c.slug }} className="rounded-2xl glass border border-border p-6 transition hover:border-primary/50 hover:shadow-glow">
+            <Link
+              key={c.slug}
+              to="/info/$slug"
+              params={{ slug: c.slug }}
+              className="rounded-2xl glass border border-border p-6 transition hover:border-primary/50 hover:shadow-glow"
+            >
               <h3 className="font-semibold text-lg">{c.t}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary-glow">{lang === "bn" ? "দেখুন" : "Explore"} <ArrowRight className="h-4 w-4" /></span>
+              <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary-glow">
+                {lang === "bn" ? "দেখুন" : "Explore"} <ArrowRight className="h-4 w-4" />
+              </span>
             </Link>
           ))}
         </div>
@@ -270,28 +442,28 @@ function Landing() {
           {[
             {
               q: "What is Ristop Management?",
-              a: "Ristop Management is a smart, cloud-based business management software designed for businesses in Bangladesh and worldwide to track sales, stock, customers, dues, invoices, profit, and business insights."
+              a: "Ristop Management is a smart, cloud-based business management software designed for businesses in Bangladesh and worldwide to track sales, stock, customers, dues, invoices, profit, and business insights.",
             },
             {
               q: "Who can use Ristop Management?",
-              a: "Retailers, wholesalers, distributors, e-commerce shop owners, service providers, and small to medium businesses can use Ristop Management."
+              a: "Retailers, wholesalers, distributors, e-commerce shop owners, service providers, and small to medium businesses can use Ristop Management.",
             },
             {
               q: "How does Ristop Management help manage sales and inventory?",
-              a: "Ristop Management updates inventory automatically whenever a sale is recorded, provides low-stock alerts, and generates detailed sales & stock reports."
+              a: "Ristop Management updates inventory automatically whenever a sale is recorded, provides low-stock alerts, and generates detailed sales & stock reports.",
             },
             {
               q: "Can I manage customers and suppliers with Ristop Management?",
-              a: "Yes! You can record customer purchases, manage supplier ledgers, and track pending dues easily."
+              a: "Yes! You can record customer purchases, manage supplier ledgers, and track pending dues easily.",
             },
             {
               q: "Does Ristop Management provide business reports?",
-              a: "Yes, Ristop Management provides profit and loss statements, daily sales reports, expense tracking, and customer balance summaries."
+              a: "Yes, Ristop Management provides profit and loss statements, daily sales reports, expense tracking, and customer balance summaries.",
             },
             {
               q: "Does Ristop Management include AI-powered business insights?",
-              a: "Yes, Ristop Management features Ris AI to assist with software navigation, product guidance, and business analytics."
-            }
+              a: "Yes, Ristop Management features Ris AI to assist with software navigation, product guidance, and business analytics.",
+            },
           ].map((faq) => (
             <div key={faq.q} className="rounded-2xl glass border border-border p-6">
               <h3 className="font-semibold text-lg text-foreground">{faq.q}</h3>
@@ -304,13 +476,16 @@ function Landing() {
       <section className="container mx-auto px-4 pb-16">
         <div className="rounded-2xl glass border border-primary/30 p-6 text-center">
           <h2 className="text-xl font-semibold">{lang === "bn" ? "ক্যারিয়ার" : "Careers"}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী</p>
-          <div className="mt-4 flex justify-center"><CareersCta /></div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী
+          </p>
+          <div className="mt-4 flex justify-center">
+            <CareersCta />
+          </div>
         </div>
       </section>
 
       <SiteFooter />
-
 
       <RisAssistant />
     </div>
