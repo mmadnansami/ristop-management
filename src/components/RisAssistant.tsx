@@ -34,7 +34,9 @@ export function RisAssistant() {
   // Check user subscription status
   useEffect(() => {
     async function checkSub() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         setIsSubscribed(false);
         return;
@@ -89,10 +91,7 @@ export function RisAssistant() {
         ...next,
         {
           role: "assistant",
-          content:
-            lang === "bn"
-              ? `দুঃখিত, একটা সমস্যা হয়েছে: ${err}`
-              : `Sorry, error: ${err}`,
+          content: lang === "bn" ? `দুঃখিত, একটা সমস্যা হয়েছে: ${err}` : `Sorry, error: ${err}`,
         },
       ]);
     } finally {
@@ -118,18 +117,29 @@ export function RisAssistant() {
             <div className="flex items-center gap-2 text-primary-foreground">
               <RisMascot className="h-9 w-9" />
               <div>
-                <span className="font-semibold text-sm block">Ris AI {lang === "bn" ? "এসিস্ট্যান্ট" : "Assistant"}</span>
+                <span className="font-semibold text-sm block">
+                  Ris AI {lang === "bn" ? "এসিস্ট্যান্ট" : "Assistant"}
+                </span>
                 <span className="text-[10px] opacity-80 flex items-center gap-1">
                   {mode === "advance" ? (
                     <Crown className="h-3 w-3 text-amber-300 inline" />
                   ) : (
                     <Sparkles className="h-3 w-3 inline" />
                   )}
-                  {mode === "advance" ? (lang === "bn" ? "এডভান্সড লেয়ার" : "Advance Layer") : (lang === "bn" ? "ফ্রি লেয়ার" : "Free Layer")}
+                  {mode === "advance"
+                    ? lang === "bn"
+                      ? "এডভান্সড লেয়ার"
+                      : "Advance Layer"
+                    : lang === "bn"
+                      ? "ফ্রি লেয়ার"
+                      : "Free Layer"}
                 </span>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} className="text-primary-foreground/80 hover:text-primary-foreground">
+            <button
+              onClick={() => setOpen(false)}
+              className="text-primary-foreground/80 hover:text-primary-foreground"
+            >
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -137,7 +147,9 @@ export function RisAssistant() {
           {/* Mode Badge / Selector */}
           {isSubscribed ? (
             <div className="p-2 bg-secondary/50 border-b border-border flex items-center justify-between text-xs px-3">
-              <span className="text-muted-foreground font-medium">{lang === "bn" ? "লেয়ার সিলেক্ট করুন:" : "Select Layer:"}</span>
+              <span className="text-muted-foreground font-medium">
+                {lang === "bn" ? "লেয়ার সিলেক্ট করুন:" : "Select Layer:"}
+              </span>
               <div className="flex rounded-lg bg-background/80 p-0.5 border border-border">
                 <button
                   type="button"
@@ -169,9 +181,15 @@ export function RisAssistant() {
             <div className="bg-amber-500/10 border-b border-amber-500/30 px-3 py-2 text-xs flex items-center justify-between text-amber-200">
               <span className="flex items-center gap-1.5">
                 <Lock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-                {lang === "bn" ? "ফ্রি ভার্সনে এডভান্স এআই লক করা" : "Advance AI is locked in Free version"}
+                {lang === "bn"
+                  ? "ফ্রি ভার্সনে এডভান্স এআই লক করা"
+                  : "Advance AI is locked in Free version"}
               </span>
-              <Link to="/subscribe" search={{ plan: "quarterly" }} className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-2 py-0.5 rounded text-[11px] transition flex items-center gap-1">
+              <Link
+                to="/subscribe"
+                search={{ plan: "quarterly" }}
+                className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-2 py-0.5 rounded text-[11px] transition flex items-center gap-1"
+              >
                 <Crown className="h-3 w-3" />
                 {lang === "bn" ? "আপগ্রেড করুন" : "Upgrade"}
               </Link>
@@ -181,7 +199,10 @@ export function RisAssistant() {
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
             {msgs.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div
+                key={i}
+                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+              >
                 <div
                   className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm whitespace-pre-wrap leading-relaxed ${
                     m.role === "user"
@@ -193,7 +214,11 @@ export function RisAssistant() {
                 </div>
               </div>
             ))}
-            {loading && <div className="text-xs text-muted-foreground animate-pulse">Ris AI {lang === "bn" ? "চিন্তা করছে..." : "is thinking..."}</div>}
+            {loading && (
+              <div className="text-xs text-muted-foreground animate-pulse">
+                Ris AI {lang === "bn" ? "চিন্তা করছে..." : "is thinking..."}
+              </div>
+            )}
           </div>
 
           {/* Input Box */}
@@ -210,8 +235,8 @@ export function RisAssistant() {
                     ? "এডভান্সড এআই প্রশ্ন করুন..."
                     : "Ask Advance AI..."
                   : lang === "bn"
-                  ? "মেসেজ লিখুন (ফ্রি)..."
-                  : "Type a message (Free)..."
+                    ? "মেসেজ লিখুন (ফ্রি)..."
+                    : "Type a message (Free)..."
               }
               className="flex-1 bg-input rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 ring-ring"
             />

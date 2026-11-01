@@ -165,7 +165,9 @@ function Profile() {
       {/* Display currency */}
       <div className="rounded-3xl glass-strong p-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="font-semibold">{lang === "bn" ? "ডিসপ্লে কারেন্সি" : "Display currency"}</div>
+          <div className="font-semibold">
+            {lang === "bn" ? "ডিসপ্লে কারেন্সি" : "Display currency"}
+          </div>
           <p className="text-xs text-muted-foreground mt-1">
             {lang === "bn"
               ? "সফটওয়্যারের সব টাকার অঙ্ক এই কারেন্সিতে দেখানো হবে (ডিফল্ট USD)।"
@@ -174,8 +176,6 @@ function Profile() {
         </div>
         <CurrencyToggle />
       </div>
-
-
 
       {/* Identity header */}
       <div className="rounded-3xl glass-strong p-6 flex items-center gap-5">

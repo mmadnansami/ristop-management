@@ -44,7 +44,11 @@ type Sale = {
 
 function fmtDate(d: string | null | undefined) {
   if (!d) return "";
-  return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  return new Date(d).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function Sales() {
@@ -62,7 +66,8 @@ function Sales() {
   const { data: products = [] } = useQuery({
     queryKey: ["products-min"],
     queryFn: async () =>
-      (await supabase.from("products").select("id,name,price,cost_price,stock,duration_days")).data ?? [],
+      (await supabase.from("products").select("id,name,price,cost_price,stock,duration_days"))
+        .data ?? [],
   });
   const { data: customers = [] } = useQuery({
     queryKey: ["customers-min"],
@@ -123,13 +128,14 @@ function Sales() {
     openInvoice(s, customer, me?.profile, money);
     const { data: u } = await supabase.auth.getUser();
     if (u.user && !isPaid) {
-      await supabase
-        .from("activity_log")
-        .insert({ user_id: u.user.id, action: INVOICE_ACTION, detail: `Invoice for ${s.product_name}` });
+      await supabase.from("activity_log").insert({
+        user_id: u.user.id,
+        action: INVOICE_ACTION,
+        detail: `Invoice for ${s.product_name}`,
+      });
       qc.invalidateQueries({ queryKey: ["invoice-quota"] });
     }
   };
-
 
   return (
     <div className="space-y-6">
@@ -147,7 +153,9 @@ function Sales() {
                 {lang === "bn" ? "প্রিমিয়াম — আনলিমিটেড ইনভয়েস" : "Premium — unlimited invoices"}
               </span>
             ) : (
-              <span className={`inline-flex rounded-full px-3 py-1 border ${remaining > 0 ? "border-border text-muted-foreground" : "border-destructive/50 text-destructive"}`}>
+              <span
+                className={`inline-flex rounded-full px-3 py-1 border ${remaining > 0 ? "border-border text-muted-foreground" : "border-destructive/50 text-destructive"}`}
+              >
                 {lang === "bn"
                   ? `ফ্রি ইনভয়েস বাকি: ${remaining}/${FREE_INVOICE_LIMIT}`
                   : `Free invoices left: ${remaining}/${FREE_INVOICE_LIMIT}`}
@@ -203,21 +211,24 @@ function Sales() {
                 sales.map((s: Sale) => {
                   const customer = customers.find((c) => c.id === s.customer_id) ?? null;
                   return (
-                    <tr key={s.id} className="border-t border-white/5 hover:bg-white/[0.03] transition-colors">
+                    <tr
+                      key={s.id}
+                      className="border-t border-white/5 hover:bg-white/[0.03] transition-colors"
+                    >
                       <td className="p-4">{fmtDate(s.sold_at)}</td>
                       <td className="p-4 font-medium">{s.product_name}</td>
                       <td className="p-4 text-right">{s.quantity}</td>
                       <td className="p-4 text-right">{money(s.unit_price)}</td>
-                      <td className="p-4 text-right font-semibold">
-                        {money(s.total)}
-                      </td>
-                      <td className="p-4 text-right text-success">
-                        {money(s.profit)}
-                      </td>
+                      <td className="p-4 text-right font-semibold">{money(s.total)}</td>
+                      <td className="p-4 text-right text-success">{money(s.profit)}</td>
                       <td className="p-4 text-xs">
                         {s.validity_start && s.validity_end ? (
-                          <span className="inline-block rounded-full bg-primary/15 text-primary-glow px-2.5 py-1 border border-primary/30">{fmtDate(s.validity_start)} → {fmtDate(s.validity_end)}</span>
-                        ) : <span className="text-muted-foreground">—</span>}
+                          <span className="inline-block rounded-full bg-primary/15 text-primary-glow px-2.5 py-1 border border-primary/30">
+                            {fmtDate(s.validity_start)} → {fmtDate(s.validity_end)}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
                       </td>
                       <td className="p-4 text-right">
                         <Button
@@ -249,7 +260,12 @@ type Customer = {
   email: string | null;
 } | null;
 
-function openInvoice(s: Sale, customer: Customer, company: CompanyProfile, money: (v: number | string | null | undefined) => string) {
+function openInvoice(
+  s: Sale,
+  customer: Customer,
+  company: CompanyProfile,
+  money: (v: number | string | null | undefined) => string,
+) {
   const c = company ?? {};
   const companyName = (c.company_name as string) || "Ristop Management";
   const tagline = (c.company_tagline as string) || "Smart Business Management";
@@ -484,7 +500,14 @@ function SaleForm({
   customers,
   onDone,
 }: {
-  products: { id: string; name: string; price: number; cost_price: number; stock: number; duration_days: number | null }[];
+  products: {
+    id: string;
+    name: string;
+    price: number;
+    cost_price: number;
+    stock: number;
+    duration_days: number | null;
+  }[];
   customers: { id: string; name: string }[];
   onDone: () => void;
 }) {
@@ -496,7 +519,9 @@ function SaleForm({
   const [overrideDays, setOverrideDays] = useState("");
   const [loading, setLoading] = useState(false);
   const p = products.find((x) => x.id === productId);
-  const effectiveDays = overrideDays ? Math.max(0, Math.floor(Number(overrideDays))) : (p?.duration_days ?? 0);
+  const effectiveDays = overrideDays
+    ? Math.max(0, Math.floor(Number(overrideDays)))
+    : (p?.duration_days ?? 0);
   const today = new Date();
   const endDate = effectiveDays > 0 ? new Date(today.getTime() + effectiveDays * 86400000) : null;
 
@@ -515,7 +540,8 @@ function SaleForm({
     }
     const total = p.price * qty;
     const profit = (p.price - p.cost_price) * qty;
-    const isoDate = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const isoDate = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const { error } = await supabase.from("sales").insert({
       user_id: u.user.id,
       product_id: p.id,
@@ -590,7 +616,9 @@ function SaleForm({
       </div>
       {p && (
         <div className="rounded-xl glass p-3 space-y-2">
-          <div className="text-xs text-muted-foreground">{lang === "bn" ? "মেয়াদ (override করতে পারেন)" : "Validity (override if needed)"}</div>
+          <div className="text-xs text-muted-foreground">
+            {lang === "bn" ? "মেয়াদ (override করতে পারেন)" : "Validity (override if needed)"}
+          </div>
           <div className="flex flex-wrap gap-2">
             {[
               { label_bn: "১ মাস", label_en: "1M", days: 30 },
@@ -599,19 +627,27 @@ function SaleForm({
               { label_bn: "১ বছর", label_en: "1Y", days: 365 },
               { label_bn: "৩ বছর", label_en: "3Y", days: 1095 },
             ].map((d) => (
-              <button type="button" key={d.days} onClick={() => setOverrideDays(String(d.days))}
-                className={`text-xs px-3 py-1 rounded-full border transition ${overrideDays === String(d.days) ? "bg-gradient-primary text-primary-foreground border-transparent" : "border-white/15 hover:border-primary/50"}`}>
+              <button
+                type="button"
+                key={d.days}
+                onClick={() => setOverrideDays(String(d.days))}
+                className={`text-xs px-3 py-1 rounded-full border transition ${overrideDays === String(d.days) ? "bg-gradient-primary text-primary-foreground border-transparent" : "border-white/15 hover:border-primary/50"}`}
+              >
                 {lang === "bn" ? d.label_bn : d.label_en}
               </button>
             ))}
-            <button type="button" onClick={() => setOverrideDays("")}
-              className="text-xs px-3 py-1 rounded-full border border-white/15 hover:border-primary/50">
+            <button
+              type="button"
+              onClick={() => setOverrideDays("")}
+              className="text-xs px-3 py-1 rounded-full border border-white/15 hover:border-primary/50"
+            >
               {lang === "bn" ? "ডিফল্ট" : "Default"}
             </button>
           </div>
           {endDate && (
             <div className="text-xs text-primary-glow font-medium">
-              {fmtDate(today.toISOString())} → {fmtDate(endDate.toISOString())} ({effectiveDays} {lang === "bn" ? "দিন" : "days"})
+              {fmtDate(today.toISOString())} → {fmtDate(endDate.toISOString())} ({effectiveDays}{" "}
+              {lang === "bn" ? "দিন" : "days"})
             </div>
           )}
         </div>

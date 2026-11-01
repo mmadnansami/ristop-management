@@ -8,19 +8,45 @@ const WHATSAPP = "https://wa.me/8801317680620?text=Hello%20Ristop%20Software";
 
 /** Payment methods accepted for Ristop Management subscriptions. */
 const PAY_METHODS = [
-  "bKash", "Nagad", "Rocket", "Upay", "Tap", "SureCash",
-  "Visa", "Mastercard", "Amex", "UnionPay", "American Express",
-  "DBBL", "BRAC Bank", "City Bank", "IFIC Bank", "Islami Bank", "EBL", "MTB",
-  "SSLCOMMERZ", "PayPal", "Payoneer", "Wise", "Skrill",
-  "USDT (TRC20)", "USDT (BEP20)", "Binance Pay",
-  "Google Pay", "Apple Pay", "Bank Transfer",
+  "bKash",
+  "Nagad",
+  "Rocket",
+  "Upay",
+  "Tap",
+  "SureCash",
+  "Visa",
+  "Mastercard",
+  "Amex",
+  "UnionPay",
+  "American Express",
+  "DBBL",
+  "BRAC Bank",
+  "City Bank",
+  "IFIC Bank",
+  "Islami Bank",
+  "EBL",
+  "MTB",
+  "SSLCOMMERZ",
+  "PayPal",
+  "Payoneer",
+  "Wise",
+  "Skrill",
+  "USDT (TRC20)",
+  "USDT (BEP20)",
+  "Binance Pay",
+  "Google Pay",
+  "Apple Pay",
+  "Bank Transfer",
 ];
 
 export function SiteFooter() {
   const { lang } = useI18n();
   const bn = lang === "bn";
 
-  const columns: Array<{ title: string; links: Array<{ label: string; to?: string; slug?: string; href?: string }> }> = [
+  const columns: Array<{
+    title: string;
+    links: Array<{ label: string; to?: string; slug?: string; href?: string }>;
+  }> = [
     {
       title: bn ? "প্রোডাক্ট" : "Product",
       links: [
@@ -76,28 +102,71 @@ export function SiteFooter() {
               : "Run your whole business from one place — sales, stock, customers, suppliers and dues in a single dashboard."}
           </p>
           <div className="mt-4 space-y-1.5 text-sm text-muted-foreground">
-            <a href="tel:+8801317680620" className="flex items-center gap-2 hover:text-foreground"><Phone className="h-4 w-4" /> +880 1317 680620</a>
-            <a href="mailto:ristopsoftware@gmail.com" className="flex items-center gap-2 break-all hover:text-foreground"><Mail className="h-4 w-4 shrink-0" /> ristopsoftware@gmail.com</a>
+            <a href="tel:+8801317680620" className="flex items-center gap-2 hover:text-foreground">
+              <Phone className="h-4 w-4" /> +880 1317 680620
+            </a>
+            <a
+              href="mailto:ristopsoftware@gmail.com"
+              className="flex items-center gap-2 break-all hover:text-foreground"
+            >
+              <Mail className="h-4 w-4 shrink-0" /> ristopsoftware@gmail.com
+            </a>
           </div>
           <div className="mt-4 flex items-center gap-3 text-muted-foreground">
-            <a href={WHATSAPP} target="_blank" rel="noreferrer" aria-label="WhatsApp" className="hover:text-foreground"><MessageCircle className="h-5 w-5" /></a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-foreground"><Facebook className="h-5 w-5" /></a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="hover:text-foreground"><Youtube className="h-5 w-5" /></a>
+            <a
+              href={WHATSAPP}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="WhatsApp"
+              className="hover:text-foreground"
+            >
+              <MessageCircle className="h-5 w-5" />
+            </a>
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook"
+              className="hover:text-foreground"
+            >
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="YouTube"
+              className="hover:text-foreground"
+            >
+              <Youtube className="h-5 w-5" />
+            </a>
           </div>
         </div>
 
         {columns.map((col) => (
           <div key={col.title}>
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-foreground">{col.title}</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+              {col.title}
+            </h2>
             <ul className="mt-3 space-y-2.5 text-sm text-muted-foreground">
               {col.links.map((l) => (
                 <li key={l.label}>
                   {l.slug ? (
-                    <Link to="/info/$slug" params={{ slug: l.slug }} className="transition-colors hover:text-foreground">{l.label}</Link>
+                    <Link
+                      to="/info/$slug"
+                      params={{ slug: l.slug }}
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {l.label}
+                    </Link>
                   ) : l.to ? (
-                    <Link to={l.to} className="transition-colors hover:text-foreground">{l.label}</Link>
+                    <Link to={l.to} className="transition-colors hover:text-foreground">
+                      {l.label}
+                    </Link>
                   ) : (
-                    <a href={l.href} className="transition-colors hover:text-foreground">{l.label}</a>
+                    <a href={l.href} className="transition-colors hover:text-foreground">
+                      {l.label}
+                    </a>
                   )}
                 </li>
               ))}
@@ -110,16 +179,23 @@ export function SiteFooter() {
       <div className="border-t border-border">
         <div className="container mx-auto grid gap-6 px-4 py-7 md:grid-cols-2">
           <div>
-            <p className="font-semibold text-foreground">Ristop Management {bn ? "(পরিচালনায় Ristop Software)" : "(Managed by Ristop Software)"}</p>
+            <p className="font-semibold text-foreground">
+              Ristop Management{" "}
+              {bn ? "(পরিচালনায় Ristop Software)" : "(Managed by Ristop Software)"}
+            </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {bn ? "সফটওয়্যার সংস্করণ: " : "Software version: "}Ristop Management v1.0 (Cloud)
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {bn ? "সাপোর্ট: ২৪ ঘণ্টা খোলা, সপ্তাহে ৭ দিন" : "Support: Open 24 hours, 7 days a week"}
+              {bn
+                ? "সাপোর্ট: ২৪ ঘণ্টা খোলা, সপ্তাহে ৭ দিন"
+                : "Support: Open 24 hours, 7 days a week"}
             </p>
           </div>
           <div className="md:text-right">
-            <p className="font-semibold text-foreground">{bn ? "কর্পোরেট অফিস" : "Corporate Office"}</p>
+            <p className="font-semibold text-foreground">
+              {bn ? "কর্পোরেট অফিস" : "Corporate Office"}
+            </p>
             <p className="mt-1 flex items-start gap-2 text-sm text-muted-foreground md:justify-end">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{bn ? "বনশ্রী, ঢাকা, বাংলাদেশ" : "Banasree, Dhaka, Bangladesh"}</span>
@@ -128,7 +204,6 @@ export function SiteFooter() {
               {bn ? "সাপোর্ট লাইন সবসময় চালু (ঢাকা)" : "Support line always available (Dhaka)"}
             </p>
           </div>
-
         </div>
       </div>
 
@@ -153,7 +228,10 @@ export function SiteFooter() {
 
       <div className="border-t border-border">
         <div className="container mx-auto flex flex-col items-center gap-2 px-4 py-5 text-center text-sm text-muted-foreground md:flex-row md:justify-between md:text-left">
-          <p>© {new Date().getFullYear()} Ristop Management. {bn ? "সব অধিকার সংরক্ষিত।" : "All rights reserved."}</p>
+          <p>
+            © {new Date().getFullYear()} Ristop Management.{" "}
+            {bn ? "সব অধিকার সংরক্ষিত।" : "All rights reserved."}
+          </p>
           <p className="font-medium text-foreground/80">Managed by Ristop Software</p>
         </div>
       </div>
@@ -164,7 +242,12 @@ export function SiteFooter() {
 export function CareersCta() {
   const { lang } = useI18n();
   return (
-    <a href={`${WHATSAPP}%2C%20I%20would%20like%20to%20send%20my%20CV.`} target="_blank" rel="noreferrer" className="inline-block">
+    <a
+      href={`${WHATSAPP}%2C%20I%20would%20like%20to%20send%20my%20CV.`}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-block"
+    >
       <Button variant="outline" className="gap-2 border-success/50">
         <MessageCircle className="h-4 w-4 text-success" />
         {lang === "bn" ? "WhatsApp-এ CV পাঠান (01317680620)" : "Send CV on WhatsApp (01317680620)"}

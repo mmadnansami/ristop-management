@@ -50,7 +50,8 @@ export const PLANS: Record<PlanId, Plan> = {
 
 export const PLAN_LIST: Plan[] = [PLANS.monthly, PLANS.quarterly, PLANS.biannual];
 
-export const priceOf = (plan: Plan, currency: Currency) => (currency === "BDT" ? plan.bdt : plan.usd);
+export const priceOf = (plan: Plan, currency: Currency) =>
+  currency === "BDT" ? plan.bdt : plan.usd;
 export const originalPriceOf = (plan: Plan, currency: Currency) =>
   currency === "BDT" ? plan.bdt_original : plan.usd_original;
 

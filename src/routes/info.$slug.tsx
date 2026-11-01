@@ -36,16 +36,32 @@ const PAGES: Record<string, Page> = {
     title_en: "Careers at Ristop",
     title_bn: "Ristop-এ ক্যারিয়ার",
     desc: "We love talking to creative people. Send your CV to Ristop Software on WhatsApp.",
-    body_en: ["We love talking to creative people — designers, developers, marketers and support stars.", "Send your CV on WhatsApp and our team will get back to you.", "Remote-friendly roles, flexible hours and a fast-moving product team."],
-    body_bn: ["আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — ডিজাইনার, ডেভেলপার, মার্কেটার ও সাপোর্ট টিম।", "WhatsApp-এ আপনার CV পাঠান, আমাদের টিম যোগাযোগ করবে।", "রিমোট-ফ্রেন্ডলি রোল, ফ্লেক্সিবল সময় ও দ্রুতগতির প্রোডাক্ট টিম।"],
+    body_en: [
+      "We love talking to creative people — designers, developers, marketers and support stars.",
+      "Send your CV on WhatsApp and our team will get back to you.",
+      "Remote-friendly roles, flexible hours and a fast-moving product team.",
+    ],
+    body_bn: [
+      "আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — ডিজাইনার, ডেভেলপার, মার্কেটার ও সাপোর্ট টিম।",
+      "WhatsApp-এ আপনার CV পাঠান, আমাদের টিম যোগাযোগ করবে।",
+      "রিমোট-ফ্রেন্ডলি রোল, ফ্লেক্সিবল সময় ও দ্রুতগতির প্রোডাক্ট টিম।",
+    ],
     careers: true,
   },
   contact: {
     title_en: "Contact Ristop",
     title_bn: "যোগাযোগ",
     desc: "Contact Ristop Management support by WhatsApp, phone or email.",
-    body_en: ["WhatsApp / Phone: +880 1317 680620", "Email: ristopsoftware@gmail.com", "Support hours: 24 hours a day, 7 days a week."],
-    body_bn: ["WhatsApp / ফোন: +880 1317 680620", "ইমেইল: ristopsoftware@gmail.com", "সাপোর্ট সময়: ২৪ ঘণ্টা, সপ্তাহে ৭ দিন।"],
+    body_en: [
+      "WhatsApp / Phone: +880 1317 680620",
+      "Email: ristopsoftware@gmail.com",
+      "Support hours: 24 hours a day, 7 days a week.",
+    ],
+    body_bn: [
+      "WhatsApp / ফোন: +880 1317 680620",
+      "ইমেইল: ristopsoftware@gmail.com",
+      "সাপোর্ট সময়: ২৪ ঘণ্টা, সপ্তাহে ৭ দিন।",
+    ],
     careers: true,
   },
   blog: {
@@ -120,22 +136,30 @@ const PAGES: Record<string, Page> = {
     title_bn: "কাস্টমার রিভিউ",
     desc: "What business owners say about Ristop Management.",
     body_en: [
-      "\"Stock and dues in one place — I finally know my real profit.\" — Retail shop owner, Dhaka",
-      "\"Bangla interface made it easy for my staff.\" — Wholesaler, Narayanganj",
-      "\"Support replies on WhatsApp within minutes.\" — Distributor, Khulna",
+      '"Stock and dues in one place — I finally know my real profit." — Retail shop owner, Dhaka',
+      '"Bangla interface made it easy for my staff." — Wholesaler, Narayanganj',
+      '"Support replies on WhatsApp within minutes." — Distributor, Khulna',
     ],
     body_bn: [
-      "\"স্টক ও বকেয়া একসাথে—এখন আসল লাভ বুঝতে পারি।\" — রিটেইল শপ ওনার, ঢাকা",
-      "\"বাংলা ইন্টারফেসে স্টাফদের জন্য সহজ হয়েছে।\" — হোলসেলার, নারায়ণগঞ্জ",
-      "\"WhatsApp-এ কয়েক মিনিটেই সাপোর্ট পাই।\" — ডিস্ট্রিবিউটর, খুলনা",
+      '"স্টক ও বকেয়া একসাথে—এখন আসল লাভ বুঝতে পারি।" — রিটেইল শপ ওনার, ঢাকা',
+      '"বাংলা ইন্টারফেসে স্টাফদের জন্য সহজ হয়েছে।" — হোলসেলার, নারায়ণগঞ্জ',
+      '"WhatsApp-এ কয়েক মিনিটেই সাপোর্ট পাই।" — ডিস্ট্রিবিউটর, খুলনা',
     ],
   },
   support: {
     title_en: "Fast Support",
     title_bn: "দ্রুত সাপোর্ট",
     desc: "Get fast Ristop Management support on WhatsApp, phone and email.",
-    body_en: ["Average first response under 15 minutes during support hours.", "WhatsApp: +880 1317 680620", "Email: ristopsoftware@gmail.com"],
-    body_bn: ["সাপোর্ট সময়ে গড়ে ১৫ মিনিটের মধ্যে প্রথম উত্তর।", "WhatsApp: +880 1317 680620", "ইমেইল: ristopsoftware@gmail.com"],
+    body_en: [
+      "Average first response under 15 minutes during support hours.",
+      "WhatsApp: +880 1317 680620",
+      "Email: ristopsoftware@gmail.com",
+    ],
+    body_bn: [
+      "সাপোর্ট সময়ে গড়ে ১৫ মিনিটের মধ্যে প্রথম উত্তর।",
+      "WhatsApp: +880 1317 680620",
+      "ইমেইল: ristopsoftware@gmail.com",
+    ],
     careers: true,
   },
   security: {
@@ -277,7 +301,6 @@ const PAGES: Record<string, Page> = {
   },
 };
 
-
 export const Route = createFileRoute("/info/$slug")({
   loader: ({ params }) => {
     const page = PAGES[params.slug];
@@ -287,7 +310,8 @@ export const Route = createFileRoute("/info/$slug")({
   head: ({ loaderData }) => {
     const page = loaderData?.page;
     const title = page ? `${page.title_en} | Ristop Management` : "Ristop Management";
-    const description = page?.desc ?? "Ristop Management — business management software for Bangladesh.";
+    const description =
+      page?.desc ?? "Ristop Management — business management software for Bangladesh.";
     return {
       meta: [
         { title },
@@ -312,10 +336,16 @@ function InfoPage() {
     <div className="min-h-screen bg-gradient-hero flex flex-col">
       <header className="sticky top-0 z-40 glass border-b border-border/50">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/"><Logo className="h-10 w-auto" /></Link>
+          <Link to="/">
+            <Logo className="h-10 w-auto" />
+          </Link>
           <div className="flex items-center gap-2">
             <LanguageToggle />
-            <Link to="/auth" search={{ mode: "signup" }}><Button size="sm" className="bg-gradient-primary shadow-glow">{bn ? "শুরু করুন" : "Get started"}</Button></Link>
+            <Link to="/auth" search={{ mode: "signup" }}>
+              <Button size="sm" className="bg-gradient-primary shadow-glow">
+                {bn ? "শুরু করুন" : "Get started"}
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -328,7 +358,10 @@ function InfoPage() {
             className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-primary/25 blur-3xl"
           />
           <div className="container relative mx-auto max-w-4xl px-4 py-14 md:py-20">
-            <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground">
+            <Link
+              to="/"
+              className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
               <ArrowLeft className="h-4 w-4" /> {bn ? "হোম" : "Home"}
             </Link>
             <span className="inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary-glow">
@@ -343,29 +376,39 @@ function InfoPage() {
 
         {/* Content cards */}
         <section className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
-          {page.title_en === "Careers at Ristop" ? <CareerPage /> : <div className="grid gap-4 sm:grid-cols-2">
-            {body.map((line, i) => (
-              <article
-                key={line}
-                className="group relative overflow-hidden rounded-2xl glass border border-border p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-primary text-xs font-bold text-primary-foreground shadow-glow">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <p className="text-sm leading-7 text-muted-foreground group-hover:text-foreground/90">{line}</p>
-                </div>
-                <Check className="absolute -bottom-3 -right-3 h-16 w-16 text-primary/5 transition-colors group-hover:text-primary/10" />
-              </article>
-            ))}
-          </div>}
+          {page.title_en === "Careers at Ristop" ? (
+            <CareerPage />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {body.map((line, i) => (
+                <article
+                  key={line}
+                  className="group relative overflow-hidden rounded-2xl glass border border-border p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-primary text-xs font-bold text-primary-foreground shadow-glow">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="text-sm leading-7 text-muted-foreground group-hover:text-foreground/90">
+                      {line}
+                    </p>
+                  </div>
+                  <Check className="absolute -bottom-3 -right-3 h-16 w-16 text-primary/5 transition-colors group-hover:text-primary/10" />
+                </article>
+              ))}
+            </div>
+          )}
 
           {page.careers && page.title_en !== "Careers at Ristop" && (
             <div className="mt-8 rounded-2xl glass-strong border border-primary/30 p-6 text-center">
               <p className="text-sm text-muted-foreground">
-                {bn ? "আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — WhatsApp-এ যোগাযোগ করুন।" : "We love talking to creative people — reach us on WhatsApp."}
+                {bn
+                  ? "আমরা ক্রিয়েটিভ মানুষের সাথে কথা বলতে আগ্রহী — WhatsApp-এ যোগাযোগ করুন।"
+                  : "We love talking to creative people — reach us on WhatsApp."}
               </p>
-              <div className="mt-4 flex justify-center"><CareersCta /></div>
+              <div className="mt-4 flex justify-center">
+                <CareersCta />
+              </div>
             </div>
           )}
 
@@ -376,12 +419,16 @@ function InfoPage() {
                 {bn ? "আজই আপনার ব্যবসা ডিজিটাল করুন" : "Digitise your business today"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                {bn ? "সেলস, স্টক, কাস্টমার ও বকেয়া — সব এক ড্যাশবোর্ডে। সাপোর্ট ২৪ ঘণ্টা।" : "Sales, stock, customers and dues in one dashboard. Support open 24 hours."}
+                {bn
+                  ? "সেলস, স্টক, কাস্টমার ও বকেয়া — সব এক ড্যাশবোর্ডে। সাপোর্ট ২৪ ঘণ্টা।"
+                  : "Sales, stock, customers and dues in one dashboard. Support open 24 hours."}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
               <Link to="/auth" search={{ mode: "signup" }}>
-                <Button className="bg-gradient-primary shadow-glow">{bn ? "ফ্রি শুরু করুন" : "Start free"}</Button>
+                <Button className="bg-gradient-primary shadow-glow">
+                  {bn ? "ফ্রি শুরু করুন" : "Start free"}
+                </Button>
               </Link>
               <Link to="/subscribe" search={{ plan: "quarterly" }}>
                 <Button variant="outline">{bn ? "প্ল্যান দেখুন" : "See pricing"}</Button>
@@ -395,4 +442,3 @@ function InfoPage() {
     </div>
   );
 }
-

@@ -58,7 +58,9 @@ export function useCurrency() {
 export function CurrencyToggle({ className = "" }: { className?: string }) {
   const { currency, setCurrency } = useCurrency();
   return (
-    <div className={`inline-flex items-center rounded-full border border-border p-0.5 ${className}`}>
+    <div
+      className={`inline-flex items-center rounded-full border border-border p-0.5 ${className}`}
+    >
       {(["USD", "BDT"] as const).map((c) => (
         <button
           key={c}

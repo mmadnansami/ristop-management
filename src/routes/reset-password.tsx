@@ -13,9 +13,16 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Set a new password | Ristop Management" },
-      { name: "description", content: "Choose a new password for your Ristop Management account and get back to your workspace." },
+      {
+        name: "description",
+        content:
+          "Choose a new password for your Ristop Management account and get back to your workspace.",
+      },
       { property: "og:title", content: "Set a new password | Ristop Management" },
-      { property: "og:description", content: "Choose a new password for your Ristop Management account." },
+      {
+        property: "og:description",
+        content: "Choose a new password for your Ristop Management account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -47,7 +54,10 @@ function ResetPassword() {
       const accessToken = hash.get("access_token");
       const refreshToken = hash.get("refresh_token");
       if (accessToken && refreshToken) {
-        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
         if (!cancelled) {
           if (error) setInvalid(true);
           else setReady(true);
@@ -58,7 +68,10 @@ function ResetPassword() {
       // 2) Email-link flow with token_hash (verify OTP).
       const tokenHash = params.get("token_hash") ?? hash.get("token_hash") ?? params.get("token");
       if (tokenHash) {
-        const { error } = await supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash });
+        const { error } = await supabase.auth.verifyOtp({
+          type: "recovery",
+          token_hash: tokenHash,
+        });
         if (!cancelled) {
           if (error) setInvalid(true);
           else setReady(true);
@@ -87,7 +100,6 @@ function ResetPassword() {
         }, 2500);
     })();
 
-
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
@@ -97,7 +109,9 @@ function ResetPassword() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 6) {
-      toast.error(lang === "bn" ? "পাসওয়ার্ড অন্তত ৬ অক্ষর" : "Password must be at least 6 characters");
+      toast.error(
+        lang === "bn" ? "পাসওয়ার্ড অন্তত ৬ অক্ষর" : "Password must be at least 6 characters",
+      );
       return;
     }
     if (password !== confirm) {
@@ -119,7 +133,9 @@ function ResetPassword() {
   return (
     <div className="auth-scene flex min-h-screen flex-col items-center justify-center px-4">
       <div className="w-full max-w-md rounded-3xl glass-strong p-8 shadow-glow">
-        <div className="mb-5 flex justify-center"><Logo className="h-14 w-auto" /></div>
+        <div className="mb-5 flex justify-center">
+          <Logo className="h-14 w-auto" />
+        </div>
         <h1 className="text-center text-2xl font-bold">
           {lang === "bn" ? "নতুন পাসওয়ার্ড দিন" : "Set a new password"}
         </h1>
@@ -131,7 +147,10 @@ function ResetPassword() {
                 ? "লিংকটি মেয়াদোত্তীর্ণ বা অবৈধ। আবার রিসেট লিংক নিন।"
                 : "This reset link is invalid or expired. Please request a new one."}
             </p>
-            <Link to="/forgot-password" className="inline-flex rounded-xl bg-gradient-primary px-5 py-2 text-sm text-primary-foreground shadow-glow">
+            <Link
+              to="/forgot-password"
+              className="inline-flex rounded-xl bg-gradient-primary px-5 py-2 text-sm text-primary-foreground shadow-glow"
+            >
               {lang === "bn" ? "নতুন লিংক নিন" : "Request a new link"}
             </Link>
           </div>
@@ -142,16 +161,36 @@ function ResetPassword() {
         ) : (
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
-              <Label className="text-foreground/70">{lang === "bn" ? "নতুন পাসওয়ার্ড" : "New password"}</Label>
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6}
-                className="mt-1.5 h-12 rounded-xl border-white/15 bg-white/5 focus-visible:ring-primary" />
+              <Label className="text-foreground/70">
+                {lang === "bn" ? "নতুন পাসওয়ার্ড" : "New password"}
+              </Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="mt-1.5 h-12 rounded-xl border-white/15 bg-white/5 focus-visible:ring-primary"
+              />
             </div>
             <div>
-              <Label className="text-foreground/70">{lang === "bn" ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm password"}</Label>
-              <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={6}
-                className="mt-1.5 h-12 rounded-xl border-white/15 bg-white/5 focus-visible:ring-primary" />
+              <Label className="text-foreground/70">
+                {lang === "bn" ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm password"}
+              </Label>
+              <Input
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                required
+                minLength={6}
+                className="mt-1.5 h-12 rounded-xl border-white/15 bg-white/5 focus-visible:ring-primary"
+              />
             </div>
-            <Button type="submit" disabled={loading} className="h-12 w-full rounded-xl bg-gradient-primary text-base font-semibold shadow-glow">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="h-12 w-full rounded-xl bg-gradient-primary text-base font-semibold shadow-glow"
+            >
               {loading ? "..." : lang === "bn" ? "পাসওয়ার্ড আপডেট করুন" : "Update password"}
             </Button>
           </form>

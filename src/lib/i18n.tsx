@@ -11,8 +11,14 @@ const dict = {
   pricing: { bn: "প্ল্যান", en: "Pricing" },
   features: { bn: "ফিচার", en: "Features" },
   // Hero
- heroTitle: { bn: "বাংলাদেশের সেরা বিজনেস ম্যানেজমেন্ট সফটওয়্যার", en: "Best Business Management Software in Bangladesh" },
- heroSub: { bn: "Ristop Management — স্মার্ট স্টক, সেলস, প্রফিট, কাস্টমার ম্যানেজমেন্ট এবং Ris AI অ্যাসিস্ট্যান্ট। ঢাকা সহ পুরো বাংলাদেশের ছোট-বড় ব্যবসার জন্য।", en: "Top AI-powered POS & business management system in Dhaka. Smart stock, sales, profit & customer tools powered by Ris AI." },
+  heroTitle: {
+    bn: "বাংলাদেশের সেরা বিজনেস ম্যানেজমেন্ট সফটওয়্যার",
+    en: "Best Business Management Software in Bangladesh",
+  },
+  heroSub: {
+    bn: "Ristop Management — স্মার্ট স্টক, সেলস, প্রফিট, কাস্টমার ম্যানেজমেন্ট এবং Ris AI অ্যাসিস্ট্যান্ট। ঢাকা সহ পুরো বাংলাদেশের ছোট-বড় ব্যবসার জন্য।",
+    en: "Top AI-powered POS & business management system in Dhaka. Smart stock, sales, profit & customer tools powered by Ris AI.",
+  },
   getStarted: { bn: "ফ্রি শুরু করুন", en: "Get Started Free" },
   watchDemo: { bn: "ফিচার দেখুন", en: "Explore Features" },
   // Sidebar items
@@ -46,19 +52,27 @@ const dict = {
 
 type Key = keyof typeof dict;
 
-interface I18nCtx { lang: Lang; setLang: (l: Lang) => void; t: (k: Key) => string; }
+interface I18nCtx {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: (k: Key) => string;
+}
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
   useEffect(() => {
-    const saved = (typeof window !== "undefined" && localStorage.getItem("ristop_lang")) as Lang | null;
+    const saved = (typeof window !== "undefined" &&
+      localStorage.getItem("ristop_lang")) as Lang | null;
     if (saved === "bn" || saved === "en") setLangState(saved);
   }, []);
   useEffect(() => {
     if (typeof document !== "undefined") document.documentElement.lang = lang;
   }, [lang]);
-  const setLang = (l: Lang) => { setLangState(l); if (typeof window !== "undefined") localStorage.setItem("ristop_lang", l); };
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    if (typeof window !== "undefined") localStorage.setItem("ristop_lang", l);
+  };
   const t = (k: Key) => dict[k][lang];
   return <Ctx.Provider value={{ lang, setLang, t }}>{children}</Ctx.Provider>;
 }

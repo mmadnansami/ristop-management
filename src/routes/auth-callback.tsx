@@ -8,9 +8,15 @@ export const Route = createFileRoute("/auth-callback")({
   head: () => ({
     meta: [
       { title: "Signing you in | Ristop Management" },
-      { name: "description", content: "Completing your secure sign-in to the Ristop Management workspace." },
+      {
+        name: "description",
+        content: "Completing your secure sign-in to the Ristop Management workspace.",
+      },
       { property: "og:title", content: "Signing you in | Ristop Management" },
-      { property: "og:description", content: "Completing your secure sign-in to Ristop Management." },
+      {
+        property: "og:description",
+        content: "Completing your secure sign-in to Ristop Management.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -78,7 +84,10 @@ function AuthCallback() {
       {error ? (
         <>
           <p className="text-sm text-destructive">{error}</p>
-          <a href="/auth?mode=signin" className="rounded-xl bg-gradient-primary px-5 py-2 text-sm text-primary-foreground shadow-glow">
+          <a
+            href="/auth?mode=signin"
+            className="rounded-xl bg-gradient-primary px-5 py-2 text-sm text-primary-foreground shadow-glow"
+          >
             Back to sign in
           </a>
         </>
