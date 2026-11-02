@@ -3,7 +3,7 @@ import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-const PUBLIC_BACKEND_URL = "https://bnnfwffyvpvjaprlaibn.supabase.co";
+const PUBLIC_BACKEND_URL = "https://qrqtzeccdsytqqrfgkhz.supabase.co";
 const PUBLIC_BACKEND_KEY = "sb_publishable_2A3ALYEuxj4OaDgneJX79Q_v41Gbs36";
 
 export const requireDeploymentAuth = createMiddleware({ type: "function" }).server(
