@@ -106,7 +106,7 @@ function MembershipInvitationPage() {
     }
 
     load();
-  }, [token]);
+  }, [token, bn]);
 
   const claimInvitation = async () => {
     if (!currentUser) {
